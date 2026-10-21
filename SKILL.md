@@ -1,6 +1,6 @@
 ---
 name: mtg-rules
-description: Answer Magic&#58; the Gathering rules questions from the official Comprehensive Rules and current Oracle card text instead of memory. Use this skill whenever the user asks how cards interact, whether a play is legal, what happens when two effects conflict, how the stack/priority/layers/state-based actions resolve, or anything involving a specific card's wording — even for questions that seem simple or that you think you already know the answer to. Also use it when the user quotes card text, describes a board state, asks "does X work with Y", or mentions rules numbers, judge calls, or format legality.
+description: Answer Magic&#58; the Gathering rules questions from the official Comprehensive Rules and current Oracle card text instead of memory. Use this skill whenever the user asks how cards interact, whether a play is legal, what happens when two effects conflict, how the stack/priority/layers/state-based actions resolve, or anything involving a specific card's wording — even for questions that seem simple or that you think you already know the answer to. Also use it when the user quotes card text, describes a board state, asks "does X work with Y", or mentions rules numbers, judge calls, or format legality. Use it too for format rules (deck size, starting life, mulligans, who plays first, best-of-one or best-of-three matches, sideboarding between games, multiplayer) for any format the app offers.
 ---
 
 # Magic: the Gathering rules
@@ -13,11 +13,11 @@ sources: the Comprehensive Rules and Oracle text.
 
 ## The three scripts
 
-| Script | Use it for |
-|---|---|
-| `scripts/card.py` | Current Oracle text and official rulings for any card |
-| `scripts/lookup.py` | Pulling specific rules out of the Comprehensive Rules |
-| `scripts/update_rules.py` | Downloading/refreshing the rules file |
+| Script                    | Use it for                                            |
+| ------------------------- | ----------------------------------------------------- |
+| `scripts/card.py`         | Current Oracle text and official rulings for any card |
+| `scripts/lookup.py`       | Pulling specific rules out of the Comprehensive Rules |
+| `scripts/update_rules.py` | Downloading/refreshing the rules file                 |
 
 **Never read `reference/MagicCompRules.txt` directly.** It is roughly a
 megabyte — reading it will blow out the context window for no benefit. Always
@@ -91,13 +91,28 @@ first principles:
 - **Timestamps and dependency** (613.7, 613.8) — dependency is checked before
   timestamps, and this ordering surprises nearly everyone.
 
+## Formats and matches
+
+`reference/formats.md` covers each format this app offers (Commander, Brawl,
+Oathbreaker, Standard, Pioneer, Modern, Legacy, Vintage, Pauper, Draft and
+Sealed): deck construction, starting life, mulligans, the first draw, and
+matches of several games — who starts later games, sideboarding, what resets
+between games, and what no official rule covers at three or four players. It
+is short; read it directly. Every CR number in it was checked with `lookup.py`
+when it was written: re-check the ones you rely on, since rules get renumbered,
+and cite the Magic Tournament Rules sections and other sources it names for
+what the CR doesn't cover. Oathbreaker is not in the CR at all; its rules come
+from oathbreakermtg.org, whose 906.x numbering is its own.
+
 ## Scope
 
-The Comprehensive Rules govern gameplay. They are *not* the tournament rules.
-Questions about missed triggers, slow play, deck registration, penalties, or
-judge procedure live in the Magic Tournament Rules and Infraction Procedure
-Guide at `wpn.wizards.com`, and this skill has no copy of them — say so rather
-than guessing.
+The Comprehensive Rules govern gameplay. They are _not_ the tournament rules.
+Match structure, the play/draw rule and sideboarding between games are
+summarized from the Magic Tournament Rules in `reference/formats.md`. For
+anything else there — missed triggers, slow play, deck registration,
+penalties, judge procedure — the Magic Tournament Rules and Infraction
+Procedure Guide at `wpn.wizards.com` apply, and this skill has no copy of them:
+say so rather than guessing.
 
 Format legality is partly in the CR (Commander is section 903, for example)
 but current banned and restricted lists are not; those change independently
