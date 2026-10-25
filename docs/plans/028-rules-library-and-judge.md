@@ -24,6 +24,8 @@ here with the skill's history on 2026-10-25. The number 028 is kept from there.
   RustFS bucket for the large files. A server shared by several users is out of scope.
 - `pypdf` is added, to read the tournament documents.
 - Tournament procedure and penalties are in scope.
+- The project is named **Bishop & Barrister** and licensed under **Apache-2.0**, with the Fan Content statement in
+  `NOTICE` so that redistributions must carry it.
 
 ## What exists
 
@@ -346,17 +348,17 @@ the record, rebuilds the index, and fetches objects only when a ruling needs one
 
 `scripts/judge.py`:
 
-| Command                        | Does                                                                                                                               |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Command                        | Does                                                                                                                                          |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `judge.py build`               | Set up `~/.claude/bishop-and-barrister/` (git init on first run), download Scryfall's bulk rulings into the object store, and build the index |
-| `judge.py search <text>`       | Rulings by text, card or rule number: official first, then reviewed, then unreviewed                                               |
-| `judge.py record <file>`       | Store a new unreviewed ruling given as JSON (the shape above)                                                                      |
-| `judge.py discuss <id> <file>` | Add entries to a ruling's deliberation                                                                                             |
-| `judge.py review <id>`         | Mark a ruling reviewed, only on the user's say-so, recording their decision                                                        |
-| `judge.py show <id>`           | One ruling with its citations and deliberation; `--agent` for the compact agent form                                               |
-| `judge.py recheck`             | Mark `needs-recheck` every ruling whose cited rule text or Oracle text has changed                                                 |
-| `judge.py index`               | Rebuild the SQLite search index from the git record and the downloaded official rulings                                            |
-| `judge.py sync`                | Pull and push the git remote, and upload and download objects in RustFS, if configured                                             |
+| `judge.py search <text>`       | Rulings by text, card or rule number: official first, then reviewed, then unreviewed                                                          |
+| `judge.py record <file>`       | Store a new unreviewed ruling given as JSON (the shape above)                                                                                 |
+| `judge.py discuss <id> <file>` | Add entries to a ruling's deliberation                                                                                                        |
+| `judge.py review <id>`         | Mark a ruling reviewed, only on the user's say-so, recording their decision                                                                   |
+| `judge.py show <id>`           | One ruling with its citations and deliberation; `--agent` for the compact agent form                                                          |
+| `judge.py recheck`             | Mark `needs-recheck` every ruling whose cited rule text or Oracle text has changed                                                            |
+| `judge.py index`               | Rebuild the SQLite search index from the git record and the downloaded official rulings                                                       |
+| `judge.py sync`                | Pull and push the git remote, and upload and download objects in RustFS, if configured                                                        |
 
 `sources.py` runs `recheck` after it installs a new document. Rule numbers alone are not enough to spot a
 change, because rules get renumbered; the hash of each cited rule's text is.
@@ -386,6 +388,7 @@ SKILL.md gains the judge procedure, used for every rules question:
 ### 6. Open-source release
 
 - **Its own repository.** Done: smithy-org/bishop-and-barrister, public.
+- **Licence.** Done: Apache-2.0 (`LICENSE`), with the Fan Content statement in `NOTICE`.
 - **No payment needed.** Free to download, with an optional tip link where $0 is fine. Wizards' Fan Content
   Policy (checked 2026-10-25) bans selling fan content or requiring payment for it, but allows donations,
   sponsorships and Patreon. Scryfall's terms forbid paywalling card data.
@@ -465,7 +468,7 @@ of the skill.
 | 2     | `sources.py` with the MTR, IPG and JAR (`pypdf`); `lookup.py --doc`; `recheck` after each update                                                                           |
 | 3     | `reference/formats/` split, with per-file source versions                                                                                                                  |
 | 4     | Optional sync: a private git remote for the record, a RustFS bucket for the object store (after checking RustFS's release status)                                          |
-| 5     | The open-source release: licence, README with the disclaimer and the tip link                                                                                              |
+| 5     | The open-source release: the tip link (licence, disclaimer and repository done)                                                                                            |
 
 Phase 1 comes first, so rulings start piling up while the rest is built.
 
@@ -505,6 +508,4 @@ Constraints it would have to respect:
 
 ## Questions for the user
 
-1. **The licence.** For example, MIT (do anything, keep the notice) or Apache-2.0 (the same, plus an explicit
-   patent grant). The format files are prose and could take a content licence such as CC BY 4.0 instead.
-2. **The tip link.** Which service (GitHub Sponsors, Ko-fi, ...). It only needs to be a link in the README.
+None open. The remaining choice, the tip service, is tracked in `docs/ROADMAP.md`.
