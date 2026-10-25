@@ -6,7 +6,39 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
-## Iteration 3 (current)
+## Iteration 4 (current): phase 1
+
+Run on 2026-10-25 against commit `989d79b`, the phase 1 skill: SKILL.md's judge procedure, with `judge.py search`
+over a copy of a real record (79,706 official rulings) as step 0. All 25 with-skill cases were rerun. The runs
+without the skill are iteration 3's, since nothing changed for them. Runs were told to write the ruling they
+would record to `ruling.json` instead of running `judge.py record`, so they didn't commit to one shared record.
+
+|                         | Phase 1         | Iteration 3     | Without        |
+| ----------------------- | --------------- | --------------- | -------------- |
+| Assertions passed       | 110 / 114 (96%) | 113 / 114 (99%) | 83 / 114 (73%) |
+| Time per question       | 60.9 s          | 40.9 s          | 28.2 s         |
+| Tokens per question     | 79.0k           | 74.0k           | 66.5k          |
+| Drafted rulings valid   | 1 / 12          |                 |                |
+
+### What it shows
+
+- **Step 0 works.** Every run searched the record first, and 13 of 25 found official rulings that answered the
+  question (Torbran, Panglacial Wurm, Chains, Ob Nixilis, Karn, Blood Artist, Sting, Humility, Urborg and others)
+  and quoted them. These runs correctly recorded nothing.
+- **The score dropped by three, and none of the three is caused by the record.** Two answers cited a wrong rule
+  for a correct claim: Empower Jace cited 606.4 and 306.5b for "loyalty is the number of loyalty counters", and
+  Sting cited 704.5n (an Equipment attached illegally) where 704.5p applies (Sting has lost the subtype). The Magar
+  answer labelled its "no" unsettled but didn't send the user to a judge. These are single-run variance; repeat
+  runs would show it.
+- **Only 1 of the 12 drafted rulings would record.** The other 11 used a `question_type` or `confidence` value
+  that `judge.py` doesn't accept (`legality`, `outcome`, `format`; `probable`). SKILL.md never lists the allowed
+  values; the template shows one. With those mapped to the nearest allowed value, all 11 recorded.
+- **Scryfall rate-limited 9 of 25 runs** (HTTP 429) while 25 ran at once. Those answers quoted card text from
+  memory and said so; it was correct each time. `card.py` and `judge.py` don't retry. Most of the 20 s slowdown
+  is retries and the extra record search.
+- **The tournament remedy is still the one miss** carried from iteration 3 (no IPG until phase 2).
+
+## Iteration 3
 
 Run on 2026-10-25. There are 25 cases: iteration 2's 19, plus six on cards known for hard rules interactions:
 
