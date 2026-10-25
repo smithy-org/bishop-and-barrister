@@ -418,7 +418,7 @@ good for, and how to cite it. Checked on 2026-10-25; "Reachable" means a script 
 | Academy Ruins (academyruins.com and its API)                         | —     | Older versions of the CR, MTR and IPG, and what changed between them. A mirror: cite the official document                | Yes                                                                                             |
 | Yawgatog (yawgatog.com)                                              | —     | The CR with a link per rule. A mirror: cite the official document                                                         | Yes                                                                                             |
 | MTG Wiki (mtg.fandom.com)                                            | —     | Finding out which rules and terms are involved; never cited as a source                                                   | Yes                                                                                             |
-| Reddit (r/mtgrules), Stack Exchange                                  | —     | Judges answer there, but the skill cannot read them                                                                       | No: both refuse scripts, and Reddit also blocks Anthropic's crawler                             |
+| Reddit, Stack Exchange and other forums                              | —     | Excluded by design (decided 2026-10-25): not read, not stored, not cited                                                  | No: both refuse scripts, and Reddit also blocks Anthropic's crawler                             |
 | Judge chat (chat.magicjudges.org; #magicjudges-rules on Libera.Chat) | —     | Live answers from judges                                                                                                  | A person's channel, not a source: suggested to the user when the skill cannot settle a question |
 
 Rules for using them:
@@ -430,7 +430,8 @@ Rules for using them:
 - **Level 4 alone means lower confidence.** A ruling backed only by level 4 sources is at most `likely`, and
   the judge says so.
 - **What is not a source:**
-  - other AI-written answers, the judge's own included;
+  - AI-written answers or summaries (search-engine overviews included), the judge's own included;
+  - forum posts (Reddit, Stack Exchange and the like), even when a user pastes them in;
   - pages that copy the CR on sites that are not on the list;
   - anything with no author or date.
 - **When nothing settles it,** the judge says so, records a `cannot-tell` or `unsure` ruling, and points the user
