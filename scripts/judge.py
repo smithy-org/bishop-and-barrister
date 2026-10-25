@@ -27,7 +27,6 @@ import re
 import sqlite3
 import subprocess
 import sys
-import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -37,6 +36,7 @@ from pathlib import Path
 from xml.sax.saxutils import escape, quoteattr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import card as scryfall  # noqa: E402  (the skill's Scryfall client, card.py)
 import lookup  # noqa: E402  (the skill's own CR reader)
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
@@ -51,9 +51,7 @@ OBJECTS_DIR = HOME / "objects"
 MANIFEST = HOME / "sources" / "manifest.json"
 INDEX = HOME / "index.sqlite"
 
-API = "https://api.scryfall.com"
-HEADERS = {"User-Agent": "bishop-and-barrister/1.0", "Accept": "application/json"}
-DELAY = 0.1
+API = scryfall.API
 
 QUESTION_TYPES = {"interaction", "legality-check", "sequence", "card-text", "deck-legality", "format-rule", "tournament"}
 CONFIDENCE = {"certain", "likely", "unsure"}
@@ -132,16 +130,17 @@ def store_object(data: bytes) -> str:
 # --- Scryfall --------------------------------------------------------------------------------
 
 
+# All Scryfall traffic goes through card.py's client, which keeps to Scryfall's API terms:
+# the required headers, the rate limits shared by every process, the 30-second lockout after a
+# 429, and a 24-hour cache.
+
+
 def http_json(url: str) -> dict:
-    req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    return scryfall.get(url)
 
 
 def http_bytes(url: str) -> bytes:
-    req = urllib.request.Request(url, headers={"User-Agent": HEADERS["User-Agent"]})
-    with urllib.request.urlopen(req, timeout=300) as resp:
-        return resp.read()
+    return scryfall.fetch(url, timeout=300, accept="*/*")
 
 
 def oracle_text_of(card: dict) -> str:
@@ -155,9 +154,10 @@ def resolve_card(name: str) -> dict | None:
         return None
     try:
         card = http_json(f"{API}/cards/named?fuzzy={urllib.parse.quote(name)}")
-    except urllib.error.HTTPError:
+    except urllib.error.HTTPError as err:
+        if err.code == 429:
+            raise
         return None
-    time.sleep(DELAY)
     return {"name": card["name"], "oracle_id": card.get("oracle_id"), "oracle_sha256": sha256_text(oracle_text_of(card))}
 
 
@@ -755,5 +755,10 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except urllib.error.URLError as err:
+        if getattr(err, "code", None) == 429:
+            # Scryfall's terms forbid ignoring 429s: stop rather than loop.
+            print("Scryfall is still rate-limiting after waiting out its lockout. Try again in a few minutes, "
+                  "not in a loop.", file=sys.stderr)
+            sys.exit(1)
         print(f"Network error reaching Scryfall: {err}", file=sys.stderr)
         sys.exit(1)
