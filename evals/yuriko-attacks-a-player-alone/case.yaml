@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: yuriko-attacks-a-player-alone
+expected_outcome: |
+  Only the creature attacking C. A creature attacks a player alone only if no other creature is declared as an attacker attacking that same player (CR 506.6, new in the Reality Fracture rules update); the two attacking B don't. Yuriko also stops spells and non-mana abilities during combat.
+  Question type: sequence. Sources: Yuriko, Blade of the Mighty (Reality Fracture) Oracle text; CR 506.6 (added 2026-09-25).

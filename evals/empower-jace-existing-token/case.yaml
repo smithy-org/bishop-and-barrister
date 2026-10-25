@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: empower-jace-existing-token
+expected_outcome: |
+  No second token: when you control a Jace planeswalker token you must put the counters on it, so the existing token goes to 3 loyalty. The token has [-1]: Surveil 1 and [-3]: Draw a card. Empower Jace never puts counters on a nontoken Jace.
+  Question type: interaction. Sources: Arcane Amphisbaena (Reality Fracture) Oracle text and rulings (2026-08-21); CR 701.71a.

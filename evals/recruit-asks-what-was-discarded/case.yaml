@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: recruit-asks-what-was-discarded
+expected_outcome: |
+  It depends on what was discarded, which the question leaves out: recruit means draw a card, then discard a card, and you create a 1/1 white Human Soldier only if the discarded card was a nonland card (CR 701.70a). A discarded land gives no token.
+  Question type: interaction. Sources: Lake-town Lookout (The Hobbit) Oracle text and ruling (2026-06-29); CR 701.70a.
