@@ -71,6 +71,13 @@ Printed text and remembered text are both unreliable. Oracle text is what the
 game actually uses. Add `--rulings` when a card is famously fiddly — Scryfall's
 official rulings often answer the exact question directly.
 
+Look all the cards up in one call rather than one call each. The scripts keep
+to Scryfall's API terms for you: they pace requests across every process on
+the machine, cache answers for a day, and after a "429 Too Many Requests" wait
+out Scryfall's 30-second lockout before trying again. If `card.py` still
+reports rate limiting, don't retry it in a loop: answer without the live text
+and say so.
+
 **2. Find the governing rules.** Search by concept, then narrow to specific
 rules:
 
@@ -106,8 +113,20 @@ here:
 python scripts/judge.py record ruling.json
 ```
 
-Copy the shape from `reference/ruling-template.json`. The record is read later
-by an agent that never saw this conversation, so write it for that reader:
+Copy the shape from `reference/ruling-template.json`. Two fields take fixed
+values, and `record` refuses anything else:
+
+- **`question_type`:** `interaction` (how cards or effects combine),
+  `legality-check` (is this play or game state legal), `sequence` (what
+  happens in what order), `card-text` (what one card's wording means),
+  `deck-legality` (can this card or deck be played in a format), `format-rule`
+  (a format's own rules: life, mulligans, first draw, multiplayer) or
+  `tournament` (tournament rules and penalties).
+- **`confidence`:** `certain` (the rules or an official ruling settle it),
+  `likely` (the best reading, but nothing official settles it) or `unsure`.
+
+The record is read later by an agent that never saw this conversation, so
+write it for that reader:
 
 - **`agent_summary`:** the answer, its conditions and the deciding rule numbers
   in a few self-contained sentences.
