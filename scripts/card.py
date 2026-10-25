@@ -24,7 +24,7 @@ API = "https://api.scryfall.com"
 HEADERS = {"User-Agent": "mtg-rules-skill/1.0", "Accept": "application/json"}
 DELAY = 0.1
 
-# The formats the app offers, in Scryfall's legality keys. Scryfall's "brawl"
+# The formats the skill covers, in Scryfall's legality keys. Scryfall's "brawl"
 # is the 100-card Arena format; the CR's 60-card Brawl is "standardbrawl".
 FORMATS = {
     "standard": "Standard",
