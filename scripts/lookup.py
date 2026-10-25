@@ -233,6 +233,9 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # Windows consoles default to cp1252, which has no infinity sign (rule 702.186).
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     try:
         sys.exit(main())
     except BrokenPipeError:

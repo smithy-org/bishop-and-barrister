@@ -74,12 +74,14 @@ first principles:
 
 - **Layers** (613) — continuous effects apply in a fixed order, not in
   timestamp order alone. Power/toughness has its own sublayer stack.
-  Characteristic-defining abilities apply in layer 7a and ignore timestamps.
+  Characteristic-defining abilities apply first within each of layers 2–6
+  (613.3), and a power/toughness one applies in layer 7a.
 - **State-based actions** (704) — checked whenever a player would receive
   priority, not immediately when the condition arises, and never during
   resolution of a spell or ability.
 - **Replacement effects** (614) — never use the stack and never trigger. If
-  several apply, the affected object's controller chooses the order.
+  several apply, the affected player or the affected object's controller
+  chooses the order, self-replacement effects first (616.1).
 - **Triggered vs. activated vs. static** (602, 603, 604) — the distinction
   drives almost everything downstream about timing and responses.
 - **Priority and the stack** (117, 405) — nothing resolves while a player
@@ -118,7 +120,9 @@ Format legality is partly in the CR (Commander is section 903, for example)
 but current banned and restricted lists are not; those change independently
 and should be checked at
 `magic.wizards.com/en/banned-restricted-list`. `card.py` reports current
-legality per format, which is usually the faster answer.
+legality in every Constructed format the app offers (legal, restricted,
+banned or not legal), which is usually the faster answer. Scryfall's "Brawl"
+is the 100-card Arena format; the CR's 60-card Brawl is listed separately.
 
 Un-sets, Alchemy rebalancing, and digital-only cards behave differently from
 paper. Note the distinction if a question involves them.

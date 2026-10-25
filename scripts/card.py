@@ -24,6 +24,21 @@ API = "https://api.scryfall.com"
 HEADERS = {"User-Agent": "mtg-rules-skill/1.0", "Accept": "application/json"}
 DELAY = 0.1
 
+# The formats the app offers, in Scryfall's legality keys. Scryfall's "brawl"
+# is the 100-card Arena format; the CR's 60-card Brawl is "standardbrawl".
+FORMATS = {
+    "standard": "Standard",
+    "pioneer": "Pioneer",
+    "modern": "Modern",
+    "legacy": "Legacy",
+    "vintage": "Vintage",
+    "pauper": "Pauper",
+    "commander": "Commander",
+    "standardbrawl": "Brawl (CR, 60 cards)",
+    "brawl": "Brawl (Arena, 100 cards)",
+    "oathbreaker": "Oathbreaker",
+}
+
 
 def get(url: str) -> dict:
     req = urllib.request.Request(url, headers=HEADERS)
@@ -52,7 +67,13 @@ def show(name: str, rulings: bool) -> int:
         card = get(url)
     except urllib.error.HTTPError as err:
         if err.code == 404:
-            print(f"No card found matching {name!r}.", file=sys.stderr)
+            # Scryfall also answers 404 when the name matches too many cards,
+            # and says so in the body; pass that on rather than "not found".
+            try:
+                details = json.loads(err.read().decode("utf-8")).get("details")
+            except ValueError:
+                details = None
+            print(details or f"No card found matching {name!r}.", file=sys.stderr)
             return 1
         raise
 
@@ -62,10 +83,18 @@ def show(name: str, rulings: bool) -> int:
     else:
         print(render_face(card))
 
+    # Every format, grouped by status, so a banned or restricted card says so
+    # instead of just being missing from a list of legal formats.
     legal = card.get("legalities", {})
-    notable = [f for f in ("standard", "modern", "pioneer", "legacy", "vintage", "commander") if legal.get(f) == "legal"]
-    if notable:
-        print(f"\nLegal in: {', '.join(notable)}")
+    by_status: dict[str, list[str]] = {}
+    for key, label in FORMATS.items():
+        by_status.setdefault(legal.get(key, "unknown").replace("_", " "), []).append(label)
+    print()
+    for status in ("legal", "restricted", "banned", "not legal", "unknown"):
+        if status in by_status:
+            print(f"{status.capitalize()}: {', '.join(by_status.pop(status))}")
+    for status, labels in by_status.items():
+        print(f"{status.capitalize()}: {', '.join(labels)}")
 
     if rulings and card.get("rulings_uri"):
         time.sleep(DELAY)
@@ -93,6 +122,9 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # Windows consoles default to cp1252, which has no loyalty minus sign (U+2212).
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     try:
         sys.exit(main())
     except urllib.error.URLError as err:
