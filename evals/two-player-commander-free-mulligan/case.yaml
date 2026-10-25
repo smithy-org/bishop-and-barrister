@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: two-player-commander-free-mulligan
+expected_outcome: |
+  Not under the Comprehensive Rules: the free first mulligan (CR 103.5c) applies to multiplayer games and Brawl, and a two-player game isn't multiplayer. Many playgroups give it anyway as a house rule.
+  Question type: format-rule. Sources: CR 103.5c, 100.1b.

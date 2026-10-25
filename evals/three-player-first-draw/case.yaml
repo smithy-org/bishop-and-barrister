@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: three-player-first-draw
+expected_outcome: |
+  No. In a multiplayer game other than Two-Headed Giant, no player skips the draw step of their first turn (CR 103.8c). Only two-player games (103.8a) and Two-Headed Giant (103.8b) skip it.
+  Question type: format-rule. Sources: CR 103.8a-c.

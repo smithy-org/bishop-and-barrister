@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: humility-opalescence-asks-timestamp
+expected_outcome: |
+  Opalescence doesn't animate itself, so only Humility becomes a creature. The result depends on which entered first, which the question leaves out: Opalescence first gives a 1/1 Humility with no abilities; Humility first gives a 4/4 Humility with no abilities. Grounded in the layer system and timestamps (CR 613) and the official Humility rulings.
+  Question type: interaction. Sources: Scryfall/Gatherer rulings for Humility (2009-10-01, 2006-02-01) and Opalescence (2004-10-04); CR 613.

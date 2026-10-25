@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: llanowar-elves-summoning-sick
+expected_outcome: |
+  Not legally (unless something gave it haste). Summoning sickness (CR 302.6) stops a creature's {T} abilities, mana abilities included, until its controller has controlled it continuously since their most recent turn began.
+  Question type: legality-check. Sources: Oracle text of Llanowar Elves; CR 302.6.

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: trample-deathtouch-damage
+expected_outcome: |
+  5. With deathtouch, 1 damage counts as lethal for assignment (CR 702.2c), so 1 goes to the blocker and the other 5 can trample over (CR 702.19b).
+  Question type: sequence. Sources: CR 702.2c, 702.19b.
