@@ -11,11 +11,13 @@ Clone it into your Claude Code skills folder:
 git clone https://github.com/smithy-org/bishop-and-barrister ~/.claude/skills/bishop-and-barrister
 ```
 
-Then fetch the Comprehensive Rules once. They are not bundled, because they belong to Wizards of the Coast and
-change with every set:
+Then fetch the rules documents once: the Comprehensive Rules, the Magic Tournament Rules, the Infraction
+Procedure Guide and Judging at Regular REL. They are not bundled, because they belong to Wizards of the Coast
+and change several times a year. The three tournament documents are PDFs, read with `pypdf`:
 
 ```bash
-python ~/.claude/skills/bishop-and-barrister/scripts/update_rules.py
+pip install pypdf
+python ~/.claude/skills/bishop-and-barrister/scripts/sources.py update
 ```
 
 Optionally, build the rulings record now; otherwise the skill does it the first time it needs it. This downloads
@@ -26,7 +28,7 @@ every ruling the judge makes, with its history:
 python ~/.claude/skills/bishop-and-barrister/scripts/judge.py build
 ```
 
-Needs Python 3.10 or later and git.
+Needs Python 3.10 or later, git, and `pypdf` for the tournament documents.
 
 ## What's here
 
@@ -35,12 +37,14 @@ Needs Python 3.10 or later and git.
 | `SKILL.md`                       | The skill's instructions for Claude                                   |
 | `scripts/judge.py`               | The rulings record: search, record, discuss, review, recheck          |
 | `scripts/card.py`                | Oracle text, official rulings and format legality, from Scryfall      |
-| `scripts/lookup.py`              | Searches the downloaded Comprehensive Rules                           |
-| `scripts/update_rules.py`        | Downloads the Comprehensive Rules and checks for new releases         |
+| `scripts/lookup.py`              | Searches the Comprehensive Rules, or with `--doc` the MTR, IPG or JAR |
+| `scripts/sources.py`             | Downloads the rules documents and checks for new versions             |
+| `scripts/update_rules.py`        | Downloads the Comprehensive Rules (`sources.py` runs it)              |
+| `reference/trusted-sources.json` | The only web sources the judge may use, with their levels             |
 | `reference/formats.md`           | Rules for each format the skill covers, with a source for every fact  |
 | `reference/ruling-template.json` | The shape of a recorded ruling                                        |
 | `evals/`                         | Rules questions with known answers, and the baseline results          |
-| `tests/`                         | Tests for `judge.py`: `python -m unittest discover -s tests`          |
+| `tests/`                         | Tests: `python -m unittest discover -s tests`                         |
 | `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |
 | `docs/ROADMAP.md`                | Everything planned but not done yet, and who or what it waits on      |
 

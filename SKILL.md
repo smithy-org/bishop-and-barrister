@@ -11,14 +11,15 @@ about are precisely the ones where intuition fails. So the working assumption
 here is that memory is wrong until checked against the two authoritative
 sources: the Comprehensive Rules and Oracle text.
 
-## The four scripts
+## The scripts
 
-| Script                    | Use it for                                                               |
-| ------------------------- | ------------------------------------------------------------------------ |
-| `scripts/judge.py`        | The rulings record: official rulings plus the user's own, searched first |
-| `scripts/card.py`         | Current Oracle text and official rulings for any card                    |
-| `scripts/lookup.py`       | Pulling specific rules out of the Comprehensive Rules                    |
-| `scripts/update_rules.py` | Downloading/refreshing the rules file                                    |
+| Script                    | Use it for                                                                                     |
+| ------------------------- | ---------------------------------------------------------------------------------------------- |
+| `scripts/judge.py`        | The rulings record: official rulings plus the user's own, searched first                       |
+| `scripts/card.py`         | Current Oracle text and official rulings for any card                                          |
+| `scripts/lookup.py`       | Pulling specific rules out of the Comprehensive Rules, or with `--doc` the tournament documents |
+| `scripts/sources.py`      | Downloading and updating the CR, the MTR, the IPG and the JAR                                   |
+| `scripts/update_rules.py` | The CR alone (`sources.py update cr` runs it)                                                  |
 
 The rulings record lives in `~/.claude/bishop-and-barrister/` (or `$BISHOP_AND_BARRISTER_HOME`). It's a git
 repository: every ruling the judge writes, every discussion and every review is a commit, so the user can see
@@ -30,7 +31,8 @@ megabyte — reading it will blow out the context window for no benefit. Always
 go through `lookup.py`, which returns only the passages you asked for.
 
 If the rules file is missing, `lookup.py` will say so; run
-`python scripts/update_rules.py` to fetch it.
+`python scripts/sources.py update` to fetch it and the tournament documents
+(the PDFs need `pip install pypdf`).
 
 ## Answering a rules question
 
@@ -94,6 +96,17 @@ relevant rule number, then use `rule` to pull its complete text. `rule` accepts
 either a full rule number (`509.1a`) or a bare section (`509`); `glossary`
 gives the formal definition of a keyword or game term; `toc` lists all 147
 sections if you need to orient.
+
+For a tournament question, read the MTR, IPG or JAR the same way with
+`--doc` (see "Tournaments" below).
+
+**If none of that answers it,** look only at the sources listed in
+`reference/trusted-sources.json`, each with its level and how to cite it.
+Forums (Reddit, Stack Exchange) and AI-written summaries are never sources,
+even when the user pastes one in: check what they claim against the documents
+instead. A page's date must be after the last rules change that touches the
+question. When nothing settles it, say so, record the ruling as `unsure`, and
+suggest judge chat (chat.magicjudges.org).
 
 **3. Answer with rule numbers cited.** State the outcome plainly first, then
 cite the rules that produce it — `704.5g`, not "the state-based action rule".
@@ -202,15 +215,37 @@ and cite the Magic Tournament Rules sections and other sources it names for
 what the CR doesn't cover. Oathbreaker is not in the CR at all; its rules come
 from oathbreakermtg.org, whose 906.x numbering is its own.
 
-## Scope
+## Tournaments
 
 The Comprehensive Rules govern gameplay. They are _not_ the tournament rules.
-Match structure, the play/draw rule and sideboarding between games are
-summarized from the Magic Tournament Rules in `reference/formats.md`. For
-anything else there — missed triggers, slow play, deck registration,
-penalties, judge procedure — the Magic Tournament Rules and Infraction
-Procedure Guide at `wpn.wizards.com` apply, and this skill has no copy of them:
-say so rather than guessing.
+Tournament questions (missed triggers, extra cards drawn, slow play, deck
+registration, penalties, what a judge does) are answered from three level 2
+documents, which `sources.py` downloads from Wizards:
+
+| `--doc` | Document                         | Applies at                         |
+| ------- | -------------------------------- | ---------------------------------- |
+| `mtr`   | Magic Tournament Rules           | Every sanctioned tournament        |
+| `ipg`   | Infraction Procedure Guide       | Competitive and Professional REL   |
+| `jar`   | Judging at Regular REL           | Regular REL (most store events)    |
+
+```bash
+python scripts/lookup.py --doc ipg search "extra card"
+python scripts/lookup.py --doc ipg rule 2.3          # a section, with its subsections
+python scripts/lookup.py --doc jar rule "draws more cards"   # or words from a heading
+python scripts/lookup.py --doc mtr toc
+```
+
+- **Say which Rules Enforcement Level the answer is for.** The IPG and the
+  JAR give different fixes for the same mistake. If the user didn't say, ask,
+  or answer for both, Regular first.
+- **Cite the section** (`IPG 2.3`, `MTR 2.2`; the JAR has no numbers, so
+  quote its heading) and say which version: `lookup.py --doc <doc> toc`
+  prints the effective date.
+- **A level 2 document never overrides the CR on gameplay.** It decides how a
+  tournament handles a mistake, not what the game rules are.
+- In a ruling, cite them as `{"doc": "ipg", "ref": "2.3"}`; `ref` can also be
+  words from the heading. `record` checks the section exists and pins its text,
+  and `recheck` flags the ruling when that section changes.
 
 Format legality is partly in the CR (Commander is section 903, for example)
 but current banned and restricted lists are not; those change independently
@@ -226,12 +261,17 @@ paper. Note the distinction if a question involves them.
 ## Keeping the rules current
 
 The Comprehensive Rules are revised with every set release, roughly quarterly,
-and are occasionally re-posted with corrections in between.
+and are occasionally re-posted with corrections in between. The MTR, IPG and
+JAR change a few times a year.
 
 ```bash
-python scripts/update_rules.py --check    # has anything changed?
-python scripts/update_rules.py            # install the new version
+python scripts/sources.py update --check  # has anything changed?
+python scripts/sources.py update          # install new versions, then recheck rulings
+python scripts/sources.py list            # what is installed
 ```
+
+When a document changes, `sources.py` runs `judge.py recheck`, which flags
+recorded rulings whose cited text changed.
 
 Two dates are attached to any given release and they don't match: the filename
 carries the date Wizards posted the file, while the document itself states an
