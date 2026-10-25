@@ -32,7 +32,7 @@ REFERENCE_DIR = SKILL_DIR / "reference"
 RULES_FILE = REFERENCE_DIR / "MagicCompRules.txt"
 META_FILE = REFERENCE_DIR / "version.json"
 
-UA = "Mozilla/5.0 (compatible; mtg-rules-skill/1.0)"
+UA = "Mozilla/5.0 (compatible; bishop-and-barrister/1.0)"
 TXT_LINK = re.compile(
     r"https://media\.wizards\.com/[^\"'\s>]*(?:%20|\s)?MagicCompRules[^\"'>]*?\.txt",
     re.IGNORECASE,

@@ -21,7 +21,7 @@ import urllib.request
 
 API = "https://api.scryfall.com"
 # Scryfall asks API clients to identify themselves and to rate-limit.
-HEADERS = {"User-Agent": "mtg-rules-skill/1.0", "Accept": "application/json"}
+HEADERS = {"User-Agent": "bishop-and-barrister/1.0", "Accept": "application/json"}
 DELAY = 0.1
 
 # The formats the skill covers, in Scryfall's legality keys. Scryfall's "brawl"

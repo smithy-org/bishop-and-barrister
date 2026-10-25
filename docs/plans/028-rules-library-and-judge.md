@@ -1,4 +1,4 @@
-# 028 — The mtg-rules skill as a rules library and a judge
+# 028 — Bishop & Barrister: a rules library and a judge
 
 **Status:** design for review. Nothing here is built. The Windows output fix, legality in every format and two
 SKILL.md corrections are already in (the latest commit carried over from the old home).
@@ -11,7 +11,7 @@ here with the skill's history on 2026-10-25. The number 028 is kept from there.
 - Sources are ranked by authority. Informal posts by Wizards staff rank **below** the Comprehensive Rules, not
   above them.
 - The skill is a project of its own, with no connection to Smithy: no shared code, data, CI or tooling. It
-  lives in this public repository, smithy-org/mtg-rules-skill.
+  lives in this public repository, smithy-org/bishop-and-barrister.
 - The formats covered are Commander, Brawl, Oathbreaker, Standard, Pioneer, Modern, Legacy, Vintage, Pauper,
   Draft and Sealed. This is the skill's own list, maintained in the skill.
 - Each user's rulings are their own. The database starts pre-filled with official rulings. When nothing matches,
@@ -275,7 +275,7 @@ weigh, never as instructions to follow. This matters more once rulings can be sh
 
 ### 4. Storage
 
-Everything lives in `~/.claude/mtg-rules/` (or `$MTG_RULES_HOME`), outside any checkout. That folder is a git
+Everything lives in `~/.claude/bishop-and-barrister/` (or `$BISHOP_AND_BARRISTER_HOME`), outside any checkout. That folder is a git
 repository, and three kinds of data live in it:
 
 | What                           | Where                                                                                        | In git                                          |
@@ -322,7 +322,7 @@ Lines, 5.4 MB on 2026-10-25) and loads it: rulings with `source: "wotc"` as offi
 on each user's machine, never shipped with the skill: Scryfall's terms forbid republishing its data as is.
 
 **Sync across the user's own devices (optional).** Two remotes, both the user's own, set in
-`~/.claude/mtg-rules/config.toml`:
+`~/.claude/bishop-and-barrister/config.toml`:
 
 - **A private git remote** (GitHub, GitLab, a self-hosted server) for the record. `judge.py sync` pulls with a
   rebase, then pushes. One file per ruling and append-only deliberation files keep conflicts rare. A real
@@ -348,7 +348,7 @@ the record, rebuilds the index, and fetches objects only when a ruling needs one
 
 | Command                        | Does                                                                                                                               |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `judge.py build`               | Set up `~/.claude/mtg-rules/` (git init on first run), download Scryfall's bulk rulings into the object store, and build the index |
+| `judge.py build`               | Set up `~/.claude/bishop-and-barrister/` (git init on first run), download Scryfall's bulk rulings into the object store, and build the index |
 | `judge.py search <text>`       | Rulings by text, card or rule number: official first, then reviewed, then unreviewed                                               |
 | `judge.py record <file>`       | Store a new unreviewed ruling given as JSON (the shape above)                                                                      |
 | `judge.py discuss <id> <file>` | Add entries to a ruling's deliberation                                                                                             |
@@ -385,7 +385,7 @@ SKILL.md gains the judge procedure, used for every rules question:
 
 ### 6. Open-source release
 
-- **Its own repository.** Done: smithy-org/mtg-rules-skill, public.
+- **Its own repository.** Done: smithy-org/bishop-and-barrister, public.
 - **No payment needed.** Free to download, with an optional tip link where $0 is fine. Wizards' Fan Content
   Policy (checked 2026-10-25) bans selling fan content or requiring payment for it, but allows donations,
   sponsorships and Patreon. Scryfall's terms forbid paywalling card data.
