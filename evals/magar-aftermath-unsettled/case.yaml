@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: magar-aftermath-unsettled
+expected_outcome: |
+  Dusk: yes, you may cast either half of a split card's copy (CR 709.3, 709.3c). Dawn has aftermath, castable only from a graveyard (CR 702.127a). Whether Magar's copy counts as being in a graveyard isn't settled by any official ruling: 707.14 says to use the card's characteristics as it last existed in the graveyard, and 707.12 creates cast copies in the zone of the object, but no source states the zone for Magar. A good answer says it's unsettled, explains why, and suggests asking a judge, rather than presenting one reading as official.
+  Question type: interaction. Sources: Magar of the Magic Strings Oracle text and rulings (2022-10-07); Dusk // Dawn Oracle text; CR 702.127a, 707.12, 707.14, 709.3c.

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: karn-liberated-restart-commander
+expected_outcome: |
+  The game restarts (CR 727): no one wins or loses; a new game starts with you as the starting player. Life totals reset to 40, commander tax and commander damage reset to 0. The exiled commander stays in exile (it was exiled with Karn) and comes onto the battlefield under your control when Karn's ability finishes; other commanders start in the command zone.
+  Question type: sequence. Sources: Karn Liberated Oracle text and rulings (2020-08-07); CR 727.

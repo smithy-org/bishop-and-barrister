@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: torbran-trample-assignment
+expected_outcome: |
+  Assign first, then add Torbran's 2: assign 2 to the blocker (lethal) and 3 to the player; they become 4 and 5. Lethal damage for trample ignores effects that change the damage dealt (CR 702.19b); Torbran's ruling (2019-10-04) gives this exact example.
+  Question type: sequence. Sources: Torbran, Thane of Red Fell Oracle text and ruling (2019-10-04); CR 702.19b.
