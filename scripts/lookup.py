@@ -12,7 +12,8 @@ Usage:
     python scripts/lookup.py search deathtouch # rules mentioning a term
     python scripts/lookup.py glossary "First Strike"
     python scripts/lookup.py toc               # section numbers and titles
-    python scripts/lookup.py --doc ipg rule 2.2
+    python scripts/lookup.py rule 702.19b 702.2b      # several at once
+    python scripts/lookup.py --doc ipg rule 2.2 2.3   # without Examples and Philosophy; --all for those
     python scripts/lookup.py --doc jar search "extra cards"
     python scripts/lookup.py --doc mtr toc
 """
@@ -84,9 +85,18 @@ def glossary_bounds(lines: list[str]) -> tuple[int, int]:
 
 
 def cmd_rule(args) -> int:
+    status = 0
+    for i, number in enumerate(args.numbers):
+        if i:
+            print()
+        status |= cr_rule(number, args.limit)
+    return status
+
+
+def cr_rule(number: str, limit: int) -> int:
     lines = load()
     start = body_start(lines)
-    target = args.number.rstrip(".")
+    target = number.rstrip(".")
 
     # A bare section number like "704" means the whole section.
     section_mode = bool(re.fullmatch(r"\d{3}", target))
@@ -110,12 +120,12 @@ def cmd_rule(args) -> int:
             out.append(line.rstrip())
 
     if not out:
-        print(f"No rule found matching {args.number}.", file=sys.stderr)
+        print(f"No rule found matching {number}.", file=sys.stderr)
         return 1
 
-    if len(out) > args.limit:
-        print("\n".join(out[: args.limit]))
-        print(f"\n[truncated: {len(out) - args.limit} more lines; raise --limit to see them]")
+    if len(out) > limit:
+        print("\n".join(out[:limit]))
+        print(f"\n[truncated: {len(out) - limit} more lines; raise --limit to see them]")
     else:
         print("\n".join(out))
     return 0
@@ -247,15 +257,53 @@ def doc_section(doc: str, ref: str) -> dict | None:
     return found[0] if len(found) == 1 else None
 
 
+# The IPG splits each infraction into these parts. Examples and Philosophy explain the rule but don't
+# change the answer, so they're left out unless asked for (--all): that roughly halves a section.
+PARTS = ("Definition", "Examples", "Philosophy", "Additional Remedy")
+SKIPPED_PARTS = ("Examples", "Philosophy")
+
+
+def trim_parts(text: str, everything: bool) -> tuple[list[str], list[str]]:
+    """The section's lines without its Examples and Philosophy parts, and the names of the parts left out."""
+    if everything:
+        return text.splitlines(), []
+    out, skipped, skipping = [], [], False
+    for line in text.splitlines():
+        if line.strip() in PARTS:
+            skipping = line.strip() in SKIPPED_PARTS
+            if skipping:
+                skipped.append(line.strip())
+                continue
+        elif line.startswith("Upgrade:"):
+            skipping = False
+        if not skipping:
+            out.append(line)
+    return out, skipped
+
+
+def version_line(doc: str) -> str:
+    data = load_doc(doc)
+    return f"[{data['title']}, effective {data.get('effective') or 'unknown'}]"
+
+
 def doc_rule(args) -> int:
-    found = find_sections(args.doc, args.number)
+    found, missing = [], []
+    for ref in args.numbers:
+        hits = find_sections(args.doc, ref)
+        found += [s for s in hits if s not in found]
+        if not hits:
+            missing.append(ref)
+    for ref in missing:
+        print(f"No section of the {DOCS[args.doc]} matches {ref!r}. Try `--doc {args.doc} toc`.", file=sys.stderr)
     if not found:
-        print(f"No section of the {DOCS[args.doc]} matches {args.number!r}. Try `--doc {args.doc} toc`.", file=sys.stderr)
         return 1
-    out = []
+    out = [version_line(args.doc), ""]
     for s in found:
         out.append(f"{s['key']}  {s['heading']}")
-        out.extend(s["text"].splitlines())
+        lines, skipped = trim_parts(s["text"], args.all)
+        out.extend(lines)
+        if skipped:
+            out.append(f"[left out: {', '.join(skipped)}; add --all to see them]")
         out.append("")
     if len(out) > args.limit:
         print("\n".join(out[: args.limit]))
@@ -277,7 +325,7 @@ def doc_search(args) -> int:
         print(f"No section of the {DOCS[args.doc]} mentions {args.term!r}.", file=sys.stderr)
         return 1
     shown = hits[: args.limit]
-    print(f"{len(hits)} section(s) of the {DOCS[args.doc]} mention {args.term!r}:\n")
+    print(f"{version_line(args.doc)}\n{len(hits)} section(s) of the {DOCS[args.doc]} mention {args.term!r}:\n")
     for s, _ in shown:
         text = re.sub(r"\s+", " ", s["text"])
         if args.full:
@@ -319,9 +367,10 @@ def main() -> int:
                         help="which document: cr (default), mtr, ipg or jar")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p = sub.add_parser("rule", help="print a rule, subrule, or whole section")
-    p.add_argument("number")
-    p.add_argument("--limit", type=int, default=60)
+    p = sub.add_parser("rule", help="print rules, subrules or whole sections (several at once is fine)")
+    p.add_argument("numbers", nargs="+", metavar="number")
+    p.add_argument("--limit", type=int, default=60, help="maximum lines for each rule")
+    p.add_argument("--all", action="store_true", help="tournament documents: include Examples and Philosophy")
     p.set_defaults(func=cmd_rule)
 
     p = sub.add_parser("search", help="find rules mentioning a term")

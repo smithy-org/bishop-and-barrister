@@ -43,6 +43,7 @@ Needs Python 3.10 or later, git, and `pypdf` for the tournament documents.
 | `reference/trusted-sources.json` | The only web sources the judge may use, with their levels             |
 | `reference/formats.md`           | Rules for each format the skill covers, with a source for every fact  |
 | `reference/ruling-template.json` | The shape of a recorded ruling                                        |
+| `reference/recording.md`         | Recording, discussing and reviewing rulings; keeping documents current |
 | `evals/`                         | Rules questions with known answers, and the baseline results          |
 | `tests/`                         | Tests: `python -m unittest discover -s tests`                         |
 | `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |

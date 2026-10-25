@@ -6,7 +6,47 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
-## Iteration 5 (current): phase 2, the tournament documents
+## Iteration 6 (current): fewer tokens
+
+Run on 2026-10-25 on branch `phase-2-sources`, after six changes meant to cut tokens and time:
+
+1. `lookup.py --doc ipg rule` leaves out each section's Examples and Philosophy (`--all` adds them back).
+2. Every document lookup prints its effective date, so `toc` isn't needed to find it.
+3. `lookup.py rule` takes several rules or sections at once, and SKILL.md asks for batched calls.
+4. `judge.py search` keeps only close matches when not every word matches, takes `--type`, lists the user's
+   rulings briefly (`show` prints one in full), and returns 5 results instead of 8.
+5. SKILL.md went from 15.8k to 7.4k characters. Recording, discussing, reviewing and updating moved to
+   `reference/recording.md`, read only when needed.
+6. SKILL.md asks for shorter answers: the ruling, its citations, the sequence only when order matters, and edge
+   cases in a line each.
+
+The five tournament cases and three card cases (Torbran, Magar, Humility) were rerun with the skill, and compared
+with their latest earlier runs (iteration 5 for tournament cases, iteration 4 for card cases).
+
+| Mean over the 8 cases                    | Before  | Iteration 6 | Change   |
+| ---------------------------------------- | ------- | ----------- | -------- |
+| Tokens per run                           | 84.8k   | 81.0k       | −3.8k    |
+| The skill's share (above ~66.5k fixed)   | ~18.3k  | ~14.5k      | about −21% |
+| Time per run                             | 73.8 s  | 61.3 s      | −17%     |
+| Answer length (characters)               | 3,066   | 2,207       | −28%     |
+| Assertions passed                        | 40 / 41 | 39 / 41     | −1       |
+
+### What it shows
+
+- **Smaller and faster, but less than estimated.** The estimate was about 9k tokens saved per question; the
+  run saved 3.8k. Runs still asked for `--all` when they wanted examples, and runs that drafted a ruling read
+  `reference/recording.md` and the template (about 1.7k).
+- **Answers are a quarter shorter.** Output tokens cost more than input, so this is most of the money saved.
+- **Two new citation slips, both in side remarks:**
+  - The Deck Problem answer said both players may sideboard for game 2. IPG 1.1 says that after a Game Loss
+    issued before the match begins, neither may sideboard for the first game played. Iteration 5 had this right.
+  - The die-roll answer said that in single elimination the highest life total wins the match. MTR 2.4 uses
+    life totals to decide the current game, and only when game wins are tied.
+  - With one run per case, this could be variance or the shorter answers, which leave less room to qualify an
+    aside. Repeat runs would tell.
+- **Magar now passes 6/6:** its shorter answer still sends the user to judge chat, which iteration 4 left out.
+
+## Iteration 5: phase 2, the tournament documents
 
 Run on 2026-10-25 on branch `phase-2-sources`: `sources.py` downloads the Magic Tournament Rules (effective
 2026-02-27), the Infraction Procedure Guide (2024-09-23) and Judging at Regular REL (2024-08-05), and

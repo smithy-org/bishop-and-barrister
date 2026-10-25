@@ -439,7 +439,8 @@ def render_agent(r: dict, conn: sqlite3.Connection | None = None, with_deliberat
     """One ruling as XML for Claude: quotes before reasoning, empty fields left out."""
     if r.get("kind") == "official":
         name = card_name(conn, r.get("oracle_id")) if conn else None
-        return (f"<ruling {attrs(id=r['id'], kind='official', level=r['level'], source=r['source'], card=name, oracle_id=r.get('oracle_id'), published=r.get('published_at'))}>"
+        # The Oracle ID is only shown when the card's name isn't known: it's noise to the reader otherwise.
+        return (f"<ruling {attrs(id=r['id'], kind='official', level=r['level'], source=r['source'], card=name, oracle_id=None if name else r.get('oracle_id'), published=r.get('published_at'))}>"
                 f"{escape(r['comment'])}</ruling>")
     out = [f"<ruling {attrs(id=r['id'], type=r['question_type'], kind=r['kind'], level=r['level'], confidence=r['confidence'], house_rule=str(r.get('house_rule', False)).lower(), sources_changed=str(r['status'] == 'needs-recheck').lower())}>"]
     out.append(f"  <question>{escape(r['question'])}</question>")
@@ -558,33 +559,52 @@ def cmd_search(args) -> int:
         hits = {r[0] for r in conn.execute("SELECT ruling_id FROM citations WHERE ref = ? OR ref LIKE ?", (ref, ref + "%"))}
         candidates = hits if candidates is None else candidates & hits
 
-    scores = {}
+    scores, loose = {}, False
     if args.text and args.text.strip():
         for mode in ("AND", "OR"):
             q = fts_query(args.text, mode)
             rows = conn.execute("SELECT id, bm25(rulings_fts) FROM rulings_fts WHERE rulings_fts MATCH ? ORDER BY bm25(rulings_fts) LIMIT 500", (q,)).fetchall()
             if candidates is not None:
                 rows = [r for r in rows if r[0] in candidates]
+            if rows and mode == "OR":
+                # No ruling has every word. Keep only the close matches (bm25 is negative; lower is better),
+                # so a search doesn't fill up with rulings that share one common word.
+                best = rows[0][1]
+                rows = [r for r in rows if r[1] <= best * 0.6]
+                loose = True
             if rows:
                 scores = dict(rows)
                 break
         ids = set(scores)
     else:
         ids = candidates or set()
+    if ids and args.type:
+        marks = ",".join("?" * len(ids))
+        ids = {r[0] for r in conn.execute(f"SELECT id FROM rulings WHERE id IN ({marks}) AND question_type = ?", (*ids, args.type))}
     if not ids:
         print("No rulings match.")
         return 1
 
     marks = ",".join("?" * len(ids))
     rows = conn.execute(f"SELECT id, rank, json, oracle_id, source, level, kind, published_at FROM rulings WHERE id IN ({marks})", tuple(ids)).fetchall()
-    rows.sort(key=lambda r: (r[1], scores.get(r[0], 0)))
+    # A text search ranks by relevance first when only some words matched; otherwise by authority first.
+    rows.sort(key=(lambda r: (scores.get(r[0], 0), r[1])) if loose else (lambda r: (r[1], scores.get(r[0], 0))))
+    if loose:
+        print("[No ruling has every word; these are the closest. Check each one fits before relying on it.]\n")
     shown = rows[: args.limit]
     for r in shown:
         data = json.loads(r[2])
         if r[6] == "official":
             data = {**data, "id": r[0], "kind": "official", "level": r[5], "oracle_id": r[3], "source": r[4]}
-        print(render_agent(data, conn) if args.agent else render_plain(data, conn))
+        if args.agent and r[6] != "official" and not args.full:
+            # A user ruling is long; list it briefly, and `show` prints the one that fits.
+            print(f"<ruling {attrs(id=data['id'], type=data['question_type'], kind=data['kind'], level=data['level'], confidence=data['confidence'], sources_changed=str(data['status'] == 'needs-recheck').lower())}>"
+                  f"<question>{escape(data['question'])}</question><summary>{escape(data['agent_summary'])}</summary></ruling>")
+        else:
+            print(render_agent(data, conn) if args.agent else render_plain(data, conn))
         print()
+    if args.agent and not args.full and any(r[6] != "official" for r in shown):
+        print("[Your rulings are listed briefly. For one that may fit: judge.py show <id> --agent]")
     if len(rows) > len(shown):
         print(f"[{len(rows) - len(shown)} more; raise --limit or narrow the search]")
     return 0
@@ -739,8 +759,11 @@ def main() -> int:
     p.add_argument("text", nargs="?", default="")
     p.add_argument("--card", action="append", default=[], help="card name (repeatable)")
     p.add_argument("--rule", action="append", default=[], help="CR rule number cited (repeatable)")
-    p.add_argument("--limit", type=int, default=8)
+    p.add_argument("--type", choices=sorted(QUESTION_TYPES),
+                   help="only your rulings of this question type (official card rulings have none), e.g. tournament")
+    p.add_argument("--limit", type=int, default=5)
     p.add_argument("--agent", action="store_true", help="print rulings as XML for Claude")
+    p.add_argument("--full", action="store_true", help="with --agent, print your rulings in full, not briefly")
     p.set_defaults(func=cmd_search)
 
     p = sub.add_parser("record", help="store a new unreviewed ruling from a JSON file")
