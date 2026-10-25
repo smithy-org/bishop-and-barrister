@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: rest-in-peace-blood-artist
+expected_outcome: |
+  No. With Rest in Peace, the creatures are exiled instead of going to the graveyard, so they never die and Blood Artist never triggers. Rest in Peace is a replacement effect (CR 614); 'dies' means put into a graveyard from the battlefield (CR 700.4).
+  Question type: interaction. Sources: Scryfall/Gatherer ruling for Rest in Peace (2018-03-16); CR 614, 700.4.

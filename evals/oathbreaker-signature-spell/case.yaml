@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: oathbreaker-signature-spell
+expected_outcome: |
+  No. The Signature Spell can be cast only while its Oathbreaker is on the battlefield under its owner's control (Oathbreaker rules 906.4a / 906.11). The Oathbreaker can go to the command zone and be recast, with the {2} tax per earlier cast, and then the Signature Spell is castable again. These rules come from oathbreakermtg.org, not the Comprehensive Rules.
+  Question type: format-rule. Sources: oathbreakermtg.org/rules 906.4a, 906.11, 906.12.

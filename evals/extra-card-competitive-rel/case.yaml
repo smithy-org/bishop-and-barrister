@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: extra-card-competitive-rel
+expected_outcome: |
+  That's a Hidden Card Error (Game Play Error, IPG 2.3), penalty Warning. The remedy: reveal the hand, and the opponent chooses one card that wasn't previously known to them, which is shuffled back into the random portion of the library.
+  Question type: tournament. Sources: Infraction Procedure Guide 2.3 (Hidden Card Error), via blogs.magicjudges.org/rules/ipg2-3.

@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: wrath-blood-artist-triggers
+expected_outcome: |
+  Five triggers: all five creatures die at the same time, and Blood Artist sees itself and the others die because leaves-the-battlefield triggers look back in time (CR 603.10a). Each trigger targets a player who loses 1 life, and you gain 1 life.
+  Question type: sequence. Sources: Scryfall/Gatherer ruling for Blood Artist (2016-06-08); CR 603.10a.

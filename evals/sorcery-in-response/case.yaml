@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: sorcery-in-response
+expected_outcome: |
+  Illegal. Divination is a sorcery: it can be cast only by its controller during their own main phase with an empty stack (CR 307.1, 117.1a). The stack wasn't empty and it wasn't their turn.
+  Question type: legality-check. Sources: Oracle text of Divination; CR 307.1, 117.1a.

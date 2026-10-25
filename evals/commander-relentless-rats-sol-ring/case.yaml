@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: commander-relentless-rats-sol-ring
+expected_outcome: |
+  Yes to both. Relentless Rats' own text lets a deck have any number of copies, which overrides the singleton rule (CR 101.1 over 903.5b), and it is mono-black, within Sheoldred's color identity. Sol Ring is colorless and legal in Commander (as of 2026-10-25). The deck must still be exactly 100 cards including the commander.
+  Question type: deck-legality. Sources: Oracle text and ruling (2024-07-26) of Relentless Rats; Scryfall legality for Sol Ring; CR 101.1, 903.4, 903.5b.

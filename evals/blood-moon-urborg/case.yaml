@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: blood-moon-urborg
+expected_outcome: |
+  Blood Moon makes Urborg a Mountain and it loses its ability, so no land becomes a Swamp from Urborg, whatever the order the effects started. Urborg taps for {R}; it keeps its name and stays legendary. Blood Moon's effect applies first through dependency (CR 613.8), not timestamps.
+  Question type: interaction. Sources: Scryfall/Gatherer rulings for Urborg (2021-03-19) and Blood Moon (2020-08-07); CR 613.8.
