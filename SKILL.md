@@ -95,7 +95,7 @@ first principles:
 
 ## Formats and matches
 
-`reference/formats.md` covers each format this app offers (Commander, Brawl,
+`reference/formats.md` covers each format this skill covers (Commander, Brawl,
 Oathbreaker, Standard, Pioneer, Modern, Legacy, Vintage, Pauper, Draft and
 Sealed): deck construction, starting life, mulligans, the first draw, and
 matches of several games — who starts later games, sideboarding, what resets
@@ -120,7 +120,7 @@ Format legality is partly in the CR (Commander is section 903, for example)
 but current banned and restricted lists are not; those change independently
 and should be checked at
 `magic.wizards.com/en/banned-restricted-list`. `card.py` reports current
-legality in every Constructed format the app offers (legal, restricted,
+legality in every Constructed format the skill covers (legal, restricted,
 banned or not legal), which is usually the faster answer. Scryfall's "Brawl"
 is the 100-card Arena format; the CR's 60-card Brawl is listed separately.
 

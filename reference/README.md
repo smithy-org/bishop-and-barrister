@@ -1,7 +1,7 @@
 # reference/
 
 `formats.md` is written by hand and ships with the skill: the rules for each
-format the app offers and for matches of several games, with a source for every
+format the skill covers and for matches of several games, with a source for every
 fact. Update it when a source changes (its last section says how).
 
 `MagicCompRules.txt` is downloaded here by `scripts/update_rules.py`.

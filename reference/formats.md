@@ -1,6 +1,6 @@
 # Formats and matches
 
-The rules for each format this app offers, and for matches of more than one game. The
+The rules for each format this skill covers, and for matches of more than one game. The
 Comprehensive Rules (CR) cover gameplay, deck construction for Constructed, Limited, Commander and
 Brawl, and starting a game; they do not cover tournament structure, which lives in the Magic
 Tournament Rules (MTR), and they do not cover Oathbreaker at all. This file ties every fact to its
@@ -11,11 +11,9 @@ As of 2026-10-20: CR effective 2026-09-25 (every CR number below was checked wit
 renumbered), MTR effective 2026-02-27 (read through the judges' annotated pages), Wizards format
 pages, and the Oathbreaker rules site (fan-run and undated).
 
-## The formats this app offers
+## The formats this skill covers
 
-`SETUP_FORMATS` in `apps/activity/src/components/lobby/tableSetup.utils.ts`: Commander, Standard,
-Pioneer, Modern, Legacy, Vintage, Pauper, Brawl, Oathbreaker, Draft and Sealed. Commander, Brawl and
-Oathbreaker tables seat two to four players; every other format seats two.
+Commander, Standard, Pioneer, Modern, Legacy, Vintage, Pauper, Brawl, Oathbreaker, Draft and Sealed.
 
 ## Decks and starting values
 
