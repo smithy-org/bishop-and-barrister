@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: storied-enduring-story-persists
+expected_outcome: |
+  Yes. Once you have an enduring story you keep it for the rest of the game, even if you lose the permanents that gave it to you (CR 702.195a; Fíli rulings 2026-06-29). Fíli is legendary, so it counted as one of the three. The +1/+1 lasts as long as Fíli is on the battlefield and you have the enduring story.
+  Question type: interaction. Sources: Fíli the Pathfinder (The Hobbit) Oracle text and rulings (2026-06-29); CR 702.195a-b.

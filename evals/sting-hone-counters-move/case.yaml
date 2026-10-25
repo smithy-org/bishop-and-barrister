@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: sting-hone-counters-move
+expected_outcome: |
+  The bonus moves: each hone counter on an Equipment gives +1/+0 to whatever it's attached to (CR 122.1j), so the new creature gets +3/+0 and the first loses it. The bonus comes from the counters, not an ability, so it still works if Sting loses its abilities (Sting rulings 2026-06-29).
+  Question type: card-text. Sources: Sting, Bilbo's Sword (The Hobbit) Oracle text and rulings (2026-06-29); CR 122.1j.

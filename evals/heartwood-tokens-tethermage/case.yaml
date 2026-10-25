@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: heartwood-tokens-tethermage
+expected_outcome: |
+  They're not lands: a Heartwood token is a red and green artifact with the artifact subtype Heartwood and '{T}: Add {R} or {G}' (CR 111.10x). They enter tapped, so neither can be tapped for mana or for 'tap two untapped artifacts' this turn; they untap in your next untap step.
+  Question type: card-text. Sources: Tenured Tethermage (Reality Fracture) Oracle text and ruling (2026-08-21); CR 111.10x.
