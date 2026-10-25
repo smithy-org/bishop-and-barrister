@@ -28,11 +28,17 @@ python ~/.claude/skills/bishop-and-barrister/scripts/update_rules.py
 | `scripts/update_rules.py` | Downloads the Comprehensive Rules and checks for new releases         |
 | `reference/formats.md`    | Rules for each format the skill covers, with a source for every fact  |
 | `docs/plans/`             | Design plans; plan 028 turns the skill into a rules library and judge |
+| `docs/ROADMAP.md`         | Everything planned but not done yet, and who or what it waits on      |
 
 ## Status
 
-Early. Plan 028 is the design for what comes next. There is no licence yet, so all rights are reserved until
-one is chosen.
+Early. Plan 028 is the design for what comes next, and `docs/ROADMAP.md` tracks it.
+
+## Licence
+
+[Apache License 2.0](LICENSE). Redistributions must keep the [NOTICE](NOTICE), which carries the Fan Content
+statement below. The licence covers this project's own code and text, not Wizards of the Coast's materials or
+Scryfall's data.
 
 ## Fan Content
 
