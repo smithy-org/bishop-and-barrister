@@ -1,9 +1,9 @@
 ---
-name: mtg-rules
+name: bishop-and-barrister
 description: Answer Magic&#58; the Gathering rules questions from the official Comprehensive Rules and current Oracle card text instead of memory. Use this skill whenever the user asks how cards interact, whether a play is legal, what happens when two effects conflict, how the stack/priority/layers/state-based actions resolve, or anything involving a specific card's wording — even for questions that seem simple or that you think you already know the answer to. Also use it when the user quotes card text, describes a board state, asks "does X work with Y", or mentions rules numbers, judge calls, or format legality. Use it too for format rules (deck size, starting life, mulligans, who plays first, best-of-one or best-of-three matches, sideboarding between games, multiplayer) for any format the app offers.
 ---
 
-# Magic: the Gathering rules
+# Bishop & Barrister: Magic: the Gathering rules
 
 Magic's rules are unusually adversarial to recall-based answers. Card text is
 errata'd, rules are renumbered between sets, and the interactions people ask
