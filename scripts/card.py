@@ -100,9 +100,9 @@ def show(name: str, rulings: bool) -> int:
         time.sleep(DELAY)
         data = get(card["rulings_uri"])
         items = data.get("data", [])
-        print(f"\nOfficial rulings ({len(items)}):")
+        print(f"\nRulings ({len(items)}; wotc = Wizards' official ruling, scryfall = Scryfall's own note):")
         for r in items:
-            print(f"  [{r.get('published_at', '?')}] {r.get('comment', '')}")
+            print(f"  [{r.get('published_at', '?')}, {r.get('source', '?')}] {r.get('comment', '')}")
     print()
     return 0
 

@@ -18,17 +18,31 @@ change with every set:
 python ~/.claude/skills/bishop-and-barrister/scripts/update_rules.py
 ```
 
+Optionally, build the rulings record now; otherwise the skill does it the first time it needs it. This downloads
+Scryfall's official rulings (about 5 MB) into `~/.claude/bishop-and-barrister/`, a git repository that keeps
+every ruling the judge makes, with its history:
+
+```bash
+python ~/.claude/skills/bishop-and-barrister/scripts/judge.py build
+```
+
+Needs Python 3.10 or later and git.
+
 ## What's here
 
-| Path                      | What                                                                  |
-| ------------------------- | --------------------------------------------------------------------- |
-| `SKILL.md`                | The skill's instructions for Claude                                   |
-| `scripts/card.py`         | Oracle text, official rulings and format legality, from Scryfall      |
-| `scripts/lookup.py`       | Searches the downloaded Comprehensive Rules                           |
-| `scripts/update_rules.py` | Downloads the Comprehensive Rules and checks for new releases         |
-| `reference/formats.md`    | Rules for each format the skill covers, with a source for every fact  |
-| `docs/plans/`             | Design plans; plan 028 turns the skill into a rules library and judge |
-| `docs/ROADMAP.md`         | Everything planned but not done yet, and who or what it waits on      |
+| Path                             | What                                                                  |
+| -------------------------------- | --------------------------------------------------------------------- |
+| `SKILL.md`                       | The skill's instructions for Claude                                   |
+| `scripts/judge.py`               | The rulings record: search, record, discuss, review, recheck          |
+| `scripts/card.py`                | Oracle text, official rulings and format legality, from Scryfall      |
+| `scripts/lookup.py`              | Searches the downloaded Comprehensive Rules                           |
+| `scripts/update_rules.py`        | Downloads the Comprehensive Rules and checks for new releases         |
+| `reference/formats.md`           | Rules for each format the skill covers, with a source for every fact  |
+| `reference/ruling-template.json` | The shape of a recorded ruling                                        |
+| `evals/`                         | Rules questions with known answers, and the baseline results          |
+| `tests/`                         | Tests for `judge.py`: `python -m unittest discover -s tests`          |
+| `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |
+| `docs/ROADMAP.md`                | Everything planned but not done yet, and who or what it waits on      |
 
 ## Status
 
