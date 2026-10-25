@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: ob-nixilis-combat-damage-total
+expected_outcome: |
+  Combat: none. Combat damage is dealt at once, so the opponent loses 3 life, not exactly 1 (Ob Nixilis ruling 2023-05-12). Blood Artist: once, since the opponent loses exactly 1 life.
+  Question type: interaction. Sources: Ob Nixilis, Captive Kingpin Oracle text and rulings (2023-05-12); Blood Artist Oracle text.

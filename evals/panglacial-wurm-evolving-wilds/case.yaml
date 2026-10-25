@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: panglacial-wurm-evolving-wilds
+expected_outcome: |
+  Yes: Evolving Wilds says 'search your library', so you may cast the Wurm from the library during the search, paying its full cost (mana abilities allowed), and you must do it before finding a card. Then the search continues and you still get the basic land. The Wurm waits on the stack; once Evolving Wilds' ability finishes resolving, the active player gets priority and the Wurm resolves normally after that.
+  Question type: sequence. Sources: Panglacial Wurm Oracle text and rulings (2006-07-15); Evolving Wilds Oracle text; CR 608.2g.

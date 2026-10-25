@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: chains-of-mephistopheles-empty-hand
+expected_outcome: |
+  Each of the two draws is replaced separately. Your hand is empty when each draw would happen, so you can't discard: each draw becomes milling one card instead. You mill two and draw nothing. (A draw in your draw step's first draw is exempt; Divination's are not.)
+  Question type: sequence. Sources: Chains of Mephistopheles Oracle text and rulings (2007-09-16); Divination Oracle text; CR 121.2.

@@ -6,7 +6,39 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
-## Iteration 2 (current)
+## Iteration 3 (current)
+
+Run on 2026-10-25. There are 25 cases: iteration 2's 19, plus six on cards known for hard rules interactions:
+
+- Torbran, Thane of Red Fell with a trampler;
+- Panglacial Wurm cast during a fetch's search;
+- Chains of Mephistopheles with an empty hand;
+- Ob Nixilis, Captive Kingpin and simultaneous combat damage;
+- Karn Liberated's restart in Commander;
+- Magar of the Magic Strings with an aftermath card. This case has no official answer, and it tests whether the
+  skill says so.
+
+The skill hasn't changed since iteration 2, so those 19 cases keep their iteration 2 runs; only the six new ones
+were run.
+
+|                                 | With the skill  | Without        | Difference |
+| ------------------------------- | --------------- | -------------- | ---------- |
+| Assertions passed, all 25 cases | 113 / 114 (99%) | 83 / 114 (73%) | +26 points |
+| The six hard-card cases         | 29 / 29         | 20 / 29        |            |
+| Time per question, all 25       | 40.9 s          | 28.2 s         | +12.7 s    |
+| Tokens per question, all 25     | 74.0k           | 66.5k          | +7.4k      |
+
+### What it shows
+
+- **Claude without the skill knows these older cards fairly well, but its answers can't be checked.** Four of the
+  six cited no rule. The Karn answer wasn't sure who starts the restarted game, and never said that no one wins
+  the old one. The Magar answer misdescribed the card (it said Magar exiles the card, and called the face-down
+  creature a 2/2) while giving a firm "no" on Dawn.
+- **On Magar, the skill did what an unsettled question needs.** It found the contrasting rule for Garth One-Eye
+  (707.13) and an aftermath ruling, and leaned towards "no" on Dawn. It still said no official source settles it,
+  explained what would change the answer, and sent the user to a judge.
+
+## Iteration 2
 
 Run on 2026-10-25 against commit `d9a0170`, with the Comprehensive Rules effective 2026-09-25. There are 19 cases:
 
