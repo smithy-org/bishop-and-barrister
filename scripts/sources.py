@@ -16,7 +16,9 @@ reference/docs/<key>.json (sections, for lookup.py --doc). reference/sources.jso
 records the version of each.
 
 When a document changes, the judge's record is rechecked (judge.py recheck
---offline), so rulings that cite a changed section are flagged.
+--offline), so rulings that cite a changed section are flagged. `update` and
+`list` also name the reference/formats/ files whose header records an older
+version of a document than the one installed.
 
 Needs pypdf for the PDFs: pip install pypdf
 
@@ -277,6 +279,56 @@ def recheck() -> None:
     print((result.stdout or result.stderr).strip())
 
 
+FORMATS_DIR = lookup.REFERENCE_DIR / "formats"
+
+
+def installed_versions() -> dict:
+    """The effective date of each installed document, as `list` prints it."""
+    versions = {doc: info.get("effective") for doc, info in load_registry().items()}
+    cr = lookup.REFERENCE_DIR / "version.json"
+    if cr.exists():
+        versions["cr"] = json.loads(cr.read_text(encoding="utf-8")).get("effective_date")
+    return {doc: v for doc, v in versions.items() if v}
+
+
+def format_header(path: Path) -> dict:
+    """The `sources:` versions in a format file's header (see reference/formats/README.md)."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if not lines or lines[0].strip() != "---":
+        return {}
+    versions, in_sources = {}, False
+    for line in lines[1:]:
+        if line.strip() == "---":
+            break
+        if line.startswith("sources:"):
+            in_sources = True
+        elif in_sources and line.startswith("  ") and ":" in line:
+            key, value = line.strip().split(":", 1)
+            versions[key.strip()] = value.strip()
+        else:
+            in_sources = False
+    return versions
+
+
+def stale_formats(formats_dir: Path, installed: dict) -> list[tuple[str, list[str]]]:
+    """Format files checked against an older version of a document than the one installed, with why."""
+    stale = []
+    for path in sorted(formats_dir.glob("*.md")):
+        reasons = [f"{doc.upper()} {checked} → {installed[doc]}" for doc, checked in format_header(path).items()
+                   if doc in installed and installed[doc] != checked]
+        if reasons:
+            stale.append((path.name, reasons))
+    return stale
+
+
+def report_stale_formats() -> None:
+    stale = stale_formats(FORMATS_DIR, installed_versions())
+    if stale:
+        print("\nFormat files to re-check (re-run lookup.py on the numbers they cite, then update their header):")
+        for name, reasons in stale:
+            print(f"  reference/formats/{name}: {'; '.join(reasons)}")
+
+
 def cmd_update(args) -> int:
     docs = args.docs or ["cr", *lookup.DOCS]
     changed = False
@@ -287,6 +339,7 @@ def cmd_update(args) -> int:
             changed |= update_pdf(doc, args.check, args.force)
     if changed and not args.check:
         recheck()
+    report_stale_formats()
     return 0
 
 
@@ -305,6 +358,7 @@ def cmd_list(args) -> int:
                   f"downloaded {info.get('downloaded_at')}, sha256 {info.get('sha256', '')[:12]}")
         else:
             print(f"{doc}  {name}: not downloaded")
+    report_stale_formats()
     return 0
 
 
