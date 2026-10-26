@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: draft-snow-basics
+expected_outcome: |
+  No to both Snow-Covered basics and Wastes: in Limited tournaments players may add any number of Plains, Island, Swamp, Mountain and Forest to their deck and sideboard, but not snow basics or Wastes, even in formats where they are legal (MTR 7.2). Regular Forests can go in the sideboard (MTR 7.2); the sideboard is otherwise every pool card not in the deck (CR 100.4b, MTR 7.1). Snow basics or Wastes opened in the player's own packs are part of their pool and can be played.
+  Question type: format-rule. Sources: Magic Tournament Rules 7.1 and 7.2 (February 27, 2026); CR 100.2b, 100.4b.

@@ -90,11 +90,22 @@ Look these up rather than reasoning from first principles:
 
 ## Formats
 
-`reference/formats.md` covers each format (Commander, Brawl, Oathbreaker, Standard, Pioneer, Modern, Legacy,
-Vintage, Pauper, Draft, Sealed): deck construction, life, mulligans, the first draw, and matches. Read it
-directly; re-check the CR numbers you rely on. Oathbreaker's own 906.x numbering isn't the CR's. Current
-banned lists aren't in the CR: `card.py` reports legality per format (Scryfall's "Brawl" is Arena's 100-card
-format). Un-sets, Alchemy and digital-only cards differ from paper; say so if they come up.
+`reference/formats/` has one short file per format; read only the one the question needs, plus `matches.md`
+for who starts, mulligans, the first draw, matches and sideboarding:
+
+| File             | Formats                                    |
+| ---------------- | ------------------------------------------ |
+| `constructed.md` | Standard, Pioneer, Modern, Legacy, Vintage |
+| `pauper.md`      | Pauper                                     |
+| `limited.md`     | Draft, Sealed                              |
+| `commander.md`   | Commander                                  |
+| `brawl.md`       | Brawl (the CR's 60-card and Arena's 100-card)|
+| `oathbreaker.md` | Oathbreaker (its own 906.x numbering isn't the CR's) |
+| `matches.md`     | Starting a game, matches of several games, sideboarding |
+
+Every fact names its source and level, and each file's header says which CR and MTR versions it was checked
+against. Current banned lists change between sets: `card.py` reports legality per format. Un-sets, Alchemy and
+digital-only cards differ from paper; say so if they come up.
 
 ## Tournaments
 
