@@ -1,0 +1,108 @@
+{
+  "checked": "2026-10-25",
+  "about": "Where the judge may look when the rulings record, the scripts and the skill's own files don't answer a question. Anything not listed here is not a source. 'level' follows plan 028: 1 official, 2 binding for tournaments or one format, 4 judge and community consensus; null means a finding aid that is never cited.",
+  "sources": [
+    {
+      "name": "Scryfall API",
+      "domains": ["api.scryfall.com", "scryfall.com"],
+      "level": 1,
+      "good_for": "Oracle text, Wizards' rulings per card, legality",
+      "cite_as": "Use card.py; cite the card's Oracle text or the dated Wizards ruling"
+    },
+    {
+      "name": "Gatherer",
+      "domains": ["gatherer.wizards.com"],
+      "level": 1,
+      "good_for": "Wizards' own card database and rulings",
+      "cite_as": "The card name and the ruling's date"
+    },
+    {
+      "name": "Wizards of the Coast: rules, release notes, announcements",
+      "domains": ["magic.wizards.com"],
+      "level": 1,
+      "good_for": "The Comprehensive Rules; each set's release notes (the fullest official rulings for new cards); rules changes; banned and restricted lists",
+      "cite_as": "The page title, its date and its URL"
+    },
+    {
+      "name": "Wizards Play Network: rules documents",
+      "domains": ["wpn.wizards.com", "media.wizards.com"],
+      "level": 2,
+      "good_for": "The Magic Tournament Rules, the Infraction Procedure Guide, Judging at Regular REL",
+      "cite_as": "Use sources.py and lookup.py --doc; cite the section and the version"
+    },
+    {
+      "name": "Format sites",
+      "domains": ["oathbreakermtg.org"],
+      "level": 2,
+      "good_for": "Oathbreaker's own rules and banned list (Commander's are on magic.wizards.com)",
+      "cite_as": "The page and its own rule numbers, which are not CR numbers"
+    },
+    {
+      "name": "Magic Judges Rules Resources",
+      "domains": ["blogs.magicjudges.org"],
+      "level": 4,
+      "good_for": "The rules documents with a link per rule; the annotated MTR and IPG; the Missed Triggers Guides",
+      "cite_as": "The article, its author and date; for the documents themselves cite the official version"
+    },
+    {
+      "name": "Cranial Insertion",
+      "domains": ["cranial-insertion.com"],
+      "level": 4,
+      "good_for": "Judge-written answers about specific interactions. The newest found was from June 2025; older ones may predate rules changes",
+      "cite_as": "The article, its author and date"
+    },
+    {
+      "name": "Judge Foundry",
+      "domains": ["judgefoundry.org"],
+      "level": 4,
+      "good_for": "Judge training material from the judge organisation for the US and Canada",
+      "cite_as": "The page, its author and date"
+    },
+    {
+      "name": "Academy Ruins",
+      "domains": ["academyruins.com"],
+      "level": null,
+      "good_for": "Older versions of the CR, MTR and IPG, and what changed between them",
+      "cite_as": "Never: cite the official document it mirrors"
+    },
+    {
+      "name": "Yawgatog",
+      "domains": ["yawgatog.com"],
+      "level": null,
+      "good_for": "The CR with a link per rule",
+      "cite_as": "Never: cite the official document it mirrors"
+    },
+    {
+      "name": "MTG Wiki",
+      "domains": ["mtg.fandom.com"],
+      "level": null,
+      "good_for": "Finding out which rules and terms are involved",
+      "cite_as": "Never"
+    }
+  ],
+  "excluded": [
+    {
+      "what": "Reddit, Stack Exchange and other forums",
+      "why": "Decided 2026-10-25: not read, not stored, not cited, even when a user pastes a post in"
+    },
+    {
+      "what": "AI-written answers and summaries, search-engine overviews included, and the judge's own earlier answers",
+      "why": "They are not sources; check what they claim against the documents instead"
+    },
+    {
+      "what": "Copies of the CR or other documents on sites not listed here, and anything with no author or date",
+      "why": "Their version and accuracy can't be checked"
+    }
+  ],
+  "people": [
+    {
+      "what": "Judge chat: chat.magicjudges.org, or #magicjudges-rules on Libera.Chat",
+      "use": "Suggest it to the user when the skill can't settle a question. A judge's answer the user brings back goes into the ruling's deliberation, with who said it and when"
+    }
+  ],
+  "rules": [
+    "Check every web page's date against the current CR's effective date. An answer written before a rules change doesn't count.",
+    "A ruling backed only by level 4 sources is at most 'likely', and the answer says so.",
+    "A web page a ruling cites goes in the citation with its URL, title, date and an excerpt."
+  ]
+}

@@ -120,8 +120,14 @@ class JudgeTest(unittest.TestCase):
 
     def test_official_order_puts_wotc_before_scryfall(self):
         self.record()
-        out = self.run_ok("search", "trample OR urborg")
+        out = self.run_ok("search", "effect")  # in both a wotc and a scryfall ruling
         self.assertLess(out.index("official (wotc"), out.index("official (scryfall"))
+
+    def test_loose_match_keeps_only_close_rulings(self):
+        # No ruling has all three words, so the search falls back to any word and says so.
+        out = self.run_ok("search", "urborg swamps zebra")
+        self.assertIn("No ruling has every word", out)
+        self.assertNotIn("Trample", out)
 
     def test_record_pins_sources_and_commits(self):
         rid = self.record()
@@ -145,8 +151,11 @@ class JudgeTest(unittest.TestCase):
 
     def test_search_and_agent_rendering(self):
         rid = self.record()
-        out = self.run_ok("search", "Swamps", "--agent")
-        self.assertIn(f'id="{rid}"', out)
+        brief = self.run_ok("search", "Swamps", "--agent")
+        self.assertIn(f'id="{rid}"', brief)
+        self.assertIn("<summary>", brief)
+        self.assertNotIn("<citations>", brief)  # listed briefly; `show` has the rest
+        out = self.run_ok("search", "Swamps", "--agent", "--full")
         self.assertIn('<quote id="c1" doc="cr" ref="613.8"', out)
         self.assertIn("<applies_when><fact>", out)
         self.assertNotIn("<ask_if_unknown>", out)  # empty lists are left out

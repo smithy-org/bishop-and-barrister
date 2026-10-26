@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: missed-trigger-regular-pointing-out
+expected_outcome: |
+  A store event is Regular REL, so Judging at Regular REL applies. You don't have to point out an opponent's missed trigger; players may choose whether to. The trigger is missed because it wasn't acknowledged when it had a visible effect. Dark Confidant's trigger has no "may", so the judge puts it on the stack now unless that would be too disruptive, and doesn't if significant decisions have been made since. No penalty at Regular REL.
+  Question type: tournament. Sources: Judging at Regular REL (August 5, 2024), "A player forgets a triggered ability"; for contrast IPG 2.1.

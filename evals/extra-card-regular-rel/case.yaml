@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: extra-card-regular-rel
+expected_outcome: |
+  FNM is Regular REL, so Judging at Regular REL applies, not the IPG. Take one card at random from the player's hand and put it on top of the library, without shuffling. No penalty: the player is reminded to play carefully (a Game Loss only after repeated mistakes despite reminders).
+  Question type: tournament. Sources: Judging at Regular REL (August 5, 2024), "A player accidentally draws more cards...".

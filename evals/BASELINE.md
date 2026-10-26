@@ -6,7 +6,104 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
-## Iteration 4 (current): phase 1
+## Iteration 7 (current): checking side remarks
+
+Run on 2026-10-25 after one line was added to SKILL.md's step 3: every side remark gets the same check as the main
+answer (look up its rule and cite it), or is left out. Only the two cases that slipped in iteration 6 were rerun.
+
+| Case                             | Iteration 6 | Iteration 7 |
+| -------------------------------- | ----------- | ----------- |
+| `deck-problem-59-cards-game-one` | 4 / 5       | 5 / 5       |
+| `die-roll-decides-match`         | 4 / 5       | 5 / 5       |
+
+Both wrong remarks were gone: the Deck Problem answer no longer claimed sideboarding in game 2, and the die-roll
+answer no longer described single elimination. Every aside left in was backed by a section that says it (IPG
+section 3's introduction on intent, IPG 1.1 on when a Match Loss applies). With the eight iteration 6 cases, that
+makes 41 / 41. The session restarted while these runs finished, so their token and time figures weren't
+captured.
+
+## Iteration 6: fewer tokens
+
+Run on 2026-10-25 on branch `phase-2-sources`, after six changes meant to cut tokens and time:
+
+1. `lookup.py --doc ipg rule` leaves out each section's Examples and Philosophy (`--all` adds them back).
+2. Every document lookup prints its effective date, so `toc` isn't needed to find it.
+3. `lookup.py rule` takes several rules or sections at once, and SKILL.md asks for batched calls.
+4. `judge.py search` keeps only close matches when not every word matches, takes `--type`, lists the user's
+   rulings briefly (`show` prints one in full), and returns 5 results instead of 8.
+5. SKILL.md went from 15.8k to 7.4k characters. Recording, discussing, reviewing and updating moved to
+   `reference/recording.md`, read only when needed.
+6. SKILL.md asks for shorter answers: the ruling, its citations, the sequence only when order matters, and edge
+   cases in a line each.
+
+The five tournament cases and three card cases (Torbran, Magar, Humility) were rerun with the skill, and compared
+with their latest earlier runs (iteration 5 for tournament cases, iteration 4 for card cases).
+
+| Mean over the 8 cases                    | Before  | Iteration 6 | Change   |
+| ---------------------------------------- | ------- | ----------- | -------- |
+| Tokens per run                           | 84.8k   | 81.0k       | −3.8k    |
+| The skill's share (above ~66.5k fixed)   | ~18.3k  | ~14.5k      | about −21% |
+| Time per run                             | 73.8 s  | 61.3 s      | −17%     |
+| Answer length (characters)               | 3,066   | 2,207       | −28%     |
+| Assertions passed                        | 40 / 41 | 39 / 41     | −1       |
+
+### What it shows
+
+- **Smaller and faster, but less than estimated.** The estimate was about 9k tokens saved per question; the
+  run saved 3.8k. Runs still asked for `--all` when they wanted examples, and runs that drafted a ruling read
+  `reference/recording.md` and the template (about 1.7k).
+- **Answers are a quarter shorter.** Output tokens cost more than input, so this is most of the money saved.
+- **Two new citation slips, both in side remarks:**
+  - The Deck Problem answer said both players may sideboard for game 2. IPG 1.1 says that after a Game Loss
+    issued before the match begins, neither may sideboard for the first game played. Iteration 5 had this right.
+  - The die-roll answer said that in single elimination the highest life total wins the match. MTR 2.4 uses
+    life totals to decide the current game, and only when game wins are tied.
+  - With one run per case, this could be variance or the shorter answers, which leave less room to qualify an
+    aside. Repeat runs would tell.
+- **Magar now passes 6/6:** its shorter answer still sends the user to judge chat, which iteration 4 left out.
+
+## Iteration 5: phase 2, the tournament documents
+
+Run on 2026-10-25 on branch `phase-2-sources`: `sources.py` downloads the Magic Tournament Rules (effective
+2026-02-27), the Infraction Procedure Guide (2024-09-23) and Judging at Regular REL (2024-08-05), and
+`lookup.py --doc` reads them. Four tournament cases were added, for 29 in all:
+
+- `extra-card-regular-rel`: an extra card drawn at FNM (the JAR's fix, not the IPG's);
+- `deck-problem-59-cards-game-one`: a 59-card deck at pre-game shuffling (Warning, upgraded to a Game Loss);
+- `die-roll-decides-match`: rolling a die to settle a time draw (Match Loss; Cheating if they knew);
+- `missed-trigger-regular-pointing-out`: an opponent's missed Dark Confidant trigger at a store event.
+
+`extra-card-competitive-rel`'s grader 04 used to accept "says the skill has no copy of the IPG"; now that it
+has one, the grader asks for IPG 2.3. The five tournament cases were run with the skill; the four new ones
+without it too, and the old one's iteration 3 answer was regraded. The other 24 cases keep iteration 4's runs.
+
+|                                      | With the skill  | Without        |
+| ------------------------------------ | --------------- | -------------- |
+| The five tournament cases            | 25 / 25         | 13 / 25        |
+| All 29 cases                         | 131 / 134 (98%) | 92 / 134 (69%) |
+| Time per tournament question         | 78.2 s          | 29.9 s         |
+| Tokens per tournament question       | 85.8k           | 67.0k          |
+| Drafted rulings `record` accepts     | 5 / 5           |                |
+
+### What it shows
+
+- **Tournament rules are where memory fails worst.** Without the skill:
+  - At FNM, Claude gave the Competitive fix: reveal the hand, the opponent picks, shuffle it in. The JAR says to
+    put a random card on top and not to shuffle.
+  - It said rolling a die to settle a match disqualifies both players. IPG 4.3 makes it a Match Loss, and
+    Cheating only if the players knew.
+  - It knew the 59-card deck was a Game Loss but not why. It blamed the format minimum, which is the rule after
+    sideboarding, and didn't know the base penalty is a Warning.
+- **With the documents, every answer was right and cited the section and its version.** The runs used the
+  MTR to settle side questions too: Appendix F to confirm FNM is Regular REL, 2.4 for what happens at time.
+- **The iteration 3 and 4 miss is fixed.** The Competitive extra-card answer now says the card goes back into the
+  random portion of the library, from cards the opponent didn't already know.
+- **Rulings now record.** All five drafted rulings passed `judge.py record`, against 1 of 12 in iteration 4,
+  after SKILL.md listed the allowed values. Their IPG, MTR and JAR citations were pinned to the section, by
+  number or by words from a JAR heading.
+- **The cost:** about 50 s and 19k tokens more per tournament question, spent reading the documents.
+
+## Iteration 4: phase 1
 
 Run on 2026-10-25 against commit `989d79b`, the phase 1 skill: SKILL.md's judge procedure, with `judge.py search`
 over a copy of a real record (79,706 official rulings) as step 0. All 25 with-skill cases were rerun. The runs

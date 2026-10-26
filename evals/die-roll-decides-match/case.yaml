@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: die-roll-decides-match
+expected_outcome: |
+  Unsporting Conduct — Improperly Determining a Winner (IPG 4.3), penalty Match Loss, for both players since both used the die. If they knew it was against the rules, it's Unsporting Conduct — Cheating instead, a Disqualification. A match that ends in a draw because of time must be reported as a draw.
+  Question type: tournament. Sources: Infraction Procedure Guide 4.3 and 4.8 (September 23, 2024); Magic Tournament Rules 2.5.
