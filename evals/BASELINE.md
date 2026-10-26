@@ -6,7 +6,23 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
-## Iteration 6 (current): fewer tokens
+## Iteration 7 (current): checking side remarks
+
+Run on 2026-10-25 after one line was added to SKILL.md's step 3: every side remark gets the same check as the main
+answer (look up its rule and cite it), or is left out. Only the two cases that slipped in iteration 6 were rerun.
+
+| Case                             | Iteration 6 | Iteration 7 |
+| -------------------------------- | ----------- | ----------- |
+| `deck-problem-59-cards-game-one` | 4 / 5       | 5 / 5       |
+| `die-roll-decides-match`         | 4 / 5       | 5 / 5       |
+
+Both wrong remarks were gone: the Deck Problem answer no longer claimed sideboarding in game 2, and the die-roll
+answer no longer described single elimination. Every aside left in was backed by a section that says it (IPG
+section 3's introduction on intent, IPG 1.1 on when a Match Loss applies). With the eight iteration 6 cases, that
+makes 41 / 41. The session restarted while these runs finished, so their token and time figures weren't
+captured.
+
+## Iteration 6: fewer tokens
 
 Run on 2026-10-25 on branch `phase-2-sources`, after six changes meant to cut tokens and time:
 

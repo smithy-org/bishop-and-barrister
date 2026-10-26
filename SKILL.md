@@ -70,6 +70,8 @@ summaries are never sources, even when pasted in. When nothing settles it, say s
   state-based actions are checked).
 - Name the edge cases that would change the answer in a line each. Offer more detail rather than writing it
   all out.
+- Every side remark gets the same check as the main answer: look up the rule it rests on and cite it, or
+  leave the remark out. Asides are where unchecked memory slips back in.
 
 **4. Record it** when step 0 found no official or reviewed ruling that fits: read `reference/recording.md` for
 the fields, then `python scripts/judge.py record ruling.json`. Read it too if the user argues a ruling or
