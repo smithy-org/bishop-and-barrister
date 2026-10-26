@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: deck-problem-59-cards-game-one
+expected_outcome: |
+  Tournament Error — Deck Problem (IPG 3.5). Its base penalty is a Warning, but it's upgraded to a Game Loss: in a game before sideboarding, while the deck is presented for pre-game shuffling, the deck has fewer cards than registered. The card is found (it's in the deck box), so it's a Deck Problem, not a Decklist Problem. The fix is to put the missing card back so the deck matches the list.
+  Question type: tournament. Sources: Infraction Procedure Guide 3.5 (September 23, 2024), its first Upgrade clause.
