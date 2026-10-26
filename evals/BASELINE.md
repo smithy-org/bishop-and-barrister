@@ -6,7 +6,44 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
-## Iteration 7 (current): checking side remarks
+## Iteration 8 (current): phase 3, one file per format
+
+Run on 2026-10-26 on branch `phase-3-formats`. `reference/formats.md` became `reference/formats/`: one file per
+format plus `matches.md`, each with a header recording the CR and MTR versions it was checked against. Every fact
+was re-checked against the local CR and MTR, Oathbreaker's site and Wizards' format pages, which corrected:
+
+- Limited decks returning to their registered form: the old file's MTR 3.16 exception is now MTR 7.3, and only
+  without decklists, never at Competitive REL;
+- the "any number of basic lands" in Limited: only the five regular basics, not snow basics or Wastes (MTR 7.2);
+- a claim that "CR 906 is something else": the CR's variant sections stop at 905.
+
+It also added the rule that nobody may sideboard after a pre-game loss of game 1 (MTR 3.16), and a warning that
+the MTR's pointer to "rule 103.4" for mulligans is out of date (it's 103.5).
+
+One case was added, for 30 in all: `draft-snow-basics` (snow basics and Wastes at a draft, MTR 7.2). The four
+format cases were rerun with the skill; the new one with and without it.
+
+| Case                                 | Iteration 4                | Iteration 8                |
+| ------------------------------------ | -------------------------- | -------------------------- |
+| `three-player-first-draw`            | 3 / 3, 78.5k, 43.8 s       | 3 / 3, 75.9k, 35.7 s       |
+| `two-player-commander-free-mulligan` | 4 / 4, 82.2k, 62.8 s       | 4 / 4, 78.8k, 43.1 s       |
+| `oathbreaker-signature-spell`        | 4 / 4, 79.8k, 62.3 s       | 4 / 4, 77.3k, 49.9 s       |
+| `commander-relentless-rats-sol-ring` | 5 / 5, 82.3k, 73.8 s       | 5 / 5, 78.6k, 61.6 s       |
+| `draft-snow-basics`                  | new                        | 5 / 5 (without: 3 / 5)     |
+
+### What it shows
+
+- **Scores held, cost fell.** The four format cases kept 16 / 16 with 3.0k fewer tokens (80.7k to 77.7k), 13 s
+  less time (60.7 s to 47.6 s) and answers 37% shorter. Each run read only the format file it needed.
+- **The new case:** without the skill Claude had the answer from memory but cited nothing, said it should be
+  checked, and claimed Wastes is the only basic that makes colorless mana (Snow-Covered Wastes does too). With
+  the skill it quoted MTR 7.2 and found official card rulings saying the same.
+- **All four drafted rulings passed `judge.py record`**, including Oathbreaker's, which cites the community
+  site's 906.x numbers.
+- **A test now guards the format files:** every CR, MTR and IPG number they cite must exist in the installed
+  documents. It caught the "CR 906" claim.
+
+## Iteration 7: checking side remarks
 
 Run on 2026-10-25 after one line was added to SKILL.md's step 3: every side remark gets the same check as the main
 answer (look up its rule and cite it), or is left out. Only the two cases that slipped in iteration 6 were rerun.
