@@ -1,0 +1,150 @@
+{
+  "v": 1,
+  "seq": 9,
+  "prev": "a28cb58b13355997d7031c6a84fff51558e29bbf330fdc65d09cfd39a12af288",
+  "actor": "user",
+  "device": "eval",
+  "time": "2026-10-27T17:06:38Z",
+  "type": "answer",
+  "round": 1,
+  "words": "I fix the rule for the real contradictions: draws, team games, Archenemy and simultaneous losses are now carved out or settled in the rule's own text. I rebut the 800.4h point, because it concerns a different game.",
+  "replies": [
+    {
+      "judge": 1,
+      "index": 1,
+      "kind": "rebut",
+      "words": "The choice under 103.1 is made at the start of the next game by the loser of the previous game, who is a player in the new game. That player has not left the game in which the choice is made. A rule about a player who has left the game does not reach a player who is in it. I am not contradicting 800.4h; it governs choices owed by a player who has left the game being played.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "F1"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "The chooser under 103.1 makes the choice for the new game, as a player of that game, not as a player who has left the game being played. The loser of the previous game is that chooser, and my rule only says which loser it is when there are several."
+        }
+      ]
+    },
+    {
+      "judge": 2,
+      "index": 1,
+      "kind": "fix",
+      "words": "Fixed: the rule now applies only when the previous game was not a draw, so a drawn game always goes by the draw sentence of 103.1."
+    },
+    {
+      "judge": 3,
+      "index": 1,
+      "kind": "fix",
+      "words": "Fixed in the same way: a game that ends as a draw, whoever left earlier, is outside the rule and 103.1's draw sentence governs it."
+    },
+    {
+      "judge": 3,
+      "index": 2,
+      "kind": "fix",
+      "words": "Conceded on the sourcing. Step 2 now claims only that players can be out at different times before the game ends; that they lost is fact F2, not a claim drawn from 800.4. Team games are carved out."
+    },
+    {
+      "judge": 4,
+      "index": 1,
+      "kind": "fix",
+      "words": "Fixed: team games are outside the rule, so a first loser on the winning team never becomes the chooser."
+    },
+    {
+      "judge": 4,
+      "index": 2,
+      "kind": "fix",
+      "words": "Fixed: Archenemy games are outside the rule; 103.1b stays as it is."
+    },
+    {
+      "judge": 4,
+      "index": 3,
+      "kind": "fix",
+      "words": "Fixed: the rule applies only when the game was won by one player, so draws never reach it and there is no second answer."
+    },
+    {
+      "judge": 4,
+      "index": 4,
+      "kind": "fix",
+      "words": "Fixed: the rule now states the tie-break itself. If several players lost at the same moment and none lost earlier, they decide among themselves who chooses, and if they cannot agree it is chosen at random from them."
+    }
+  ],
+  "case": {
+    "facts": [
+      {
+        "id": 1,
+        "text": "A Commander match of several games with three players"
+      },
+      {
+        "id": 2,
+        "text": "In the previous game, two of the three players lost (at different times) and the third player won"
+      }
+    ],
+    "rule": "In a free-for-all multiplayer match of several games (not a team game and not an Archenemy game), if the previous game was won by one player and more than one player lost it, the player who lost first in that game is the loser who chooses who takes the first turn. If several players lost first at the same moment, those players decide among themselves which of them chooses, and if they cannot agree the chooser is picked at random from them. If the previous game was a draw, the draw sentence of 103.1 applies unchanged and this rule does not apply. Team games and Archenemy games are not affected (103.1b stays as it is).",
+    "applies_when": [
+      "a free-for-all multiplayer match of several games (such as a three-player Commander match), not a team game and not an Archenemy game, where the previous game was won by one player and more than one player lost it"
+    ],
+    "challenges": "none: a gap",
+    "steps": [
+      {
+        "id": 1,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+      },
+      {
+        "id": 2,
+        "premises": [
+          "F1",
+          "F2"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "Unlike two-player games, multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        },
+        "assumption": false,
+        "conclusion": "A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+      },
+      {
+        "id": 3,
+        "premises": [
+          "S1",
+          "S2"
+        ],
+        "stipulation": true,
+        "conclusion": "In a free-for-all game with one winner and more than one loser, the player who lost first is the loser of the previous game for the purposes of 103.1 and chooses who takes the first turn; players who lost first at the same moment decide among themselves who chooses, else it is random among them. Draws, team games and Archenemy games are outside this stipulation."
+      },
+      {
+        "id": 4,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is."
+      }
+    ],
+    "open_questions": []
+  },
+  "open_questions": []
+}

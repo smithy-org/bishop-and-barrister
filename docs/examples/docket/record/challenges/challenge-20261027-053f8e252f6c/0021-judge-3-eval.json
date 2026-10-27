@@ -1,0 +1,49 @@
+{
+  "v": 1,
+  "seq": 21,
+  "prev": "b6a0dd1060ebe2e3b8cc212d42d3cdeb07e2db6a196b2b374656b97a44ce42b1",
+  "actor": "judge-3",
+  "device": "eval",
+  "time": "2026-10-27T17:12:20Z",
+  "type": "file",
+  "round": 3,
+  "refutations": [
+    {
+      "target": 3,
+      "ground": "counterexample",
+      "argument": "Simulation in a free-for-all game using the limited range of influence option (which the rule's scope, 'free-for-all multiplayer match', does not exclude). Player A controls a spell whose effect states the game is a draw; by 104.4e the game is a draw for A and for the players in A's range of influence, and only those players leave. The game continues. Later B loses to a state-based action and C wins when the last opponent has left (104.2a). The previous game was won by one player, so the rule applies, and the rule says every other player counts as a loser, and a player who left earlier 'lost at the moment they left'. That makes A, who left because the game was a draw for A, the first loser, so A chooses who takes the first turn. But 104.5 treats leaving by losing and leaving because the game is a draw for the player as two different things, and 103.1 gives a draw its own answer (the previous chooser chooses). The rule's blanket deeming of every early leaver as a loser overrides the CR's distinction and gives a different chooser from the draw sentence for a player the CR says drew, not lost. The rule's carve-out covers only a game that 'was a draw', and this game was won by one player, so the carve-out does not catch it; the fix to the 'still in the game' point therefore overreaches onto players who left by drawing.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.4e",
+            "excerpt": "causes the game to be a draw for that spell or ability’s controller and all players within their range of influence. Only those players leave the game; the game continues for all other players.",
+            "text_sha256": "60713f6fd8bd3d49863e74354e11a412a43a6802319674dd188c29a5edb7292f"
+          },
+          "assumption": false,
+          "conclusion": "In a limited-range-of-influence free-for-all game a player can leave early because the game is a draw for that player while the game continues and another player later wins, so C3's 'a player who left the game earlier lost at the moment they left' is applied to a player who drew, not lost."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.5",
+            "excerpt": "If a player loses the game, that player leaves the game. If the game is a draw for a player, that player leaves the game.",
+            "text_sha256": "a24fd6993d82c078f0cda33e8882474b51647fd435608bdaaf26004b468f19ef"
+          },
+          "assumption": false,
+          "conclusion": "The CR separates leaving because of a loss from leaving because the game is a draw for that player, so C3 deeming the drawing player a loser, and making them the first loser who chooses, contradicts how the CR classifies that player's departure."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

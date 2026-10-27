@@ -1,0 +1,38 @@
+{
+  "v": 1,
+  "seq": 19,
+  "prev": "1d2d4618f78eebb3a9600b5df2c44c5fda9993926d9b36d1aa07ee4388f98f98",
+  "actor": "judge-1",
+  "device": "eval",
+  "time": "2026-10-27T17:12:18Z",
+  "type": "file",
+  "round": 3,
+  "refutations": [],
+  "concedes": "Lens 1 (CR text), round 3. I re-read 103.1 with 103.1a-c and looked for any CR rule that fixes a starting player or the chooser for a game the revised rule reaches (search 'starting player' and 'first turn'): 103.1a (shared team turns) and 805.3 are team games, 103.1b is Archenemy, 904.12c is Supervillain Rumble, and 727.1a concerns restarted games; the round-2 fix carves out team games and every game type whose start the CR settles, so none contradicts the stipulation. Draws are excluded, leaving the 103.1 draw sentence untouched. The round-2 'won by an effect' gap is closed because every other player now counts as a loser at the moment the game ended (104.2b makes the winner, 104.2a the last remaining player). 800.4h does not apply because the 103.1 chooser acts at the start of the next game, as the user showed and I accepted in round 2. Remaining unsourced edges are not refutations: a game under the limited range of influence option (801.14, 104.3h) where a win does not end the game, and a player who drew under 801.16 and is counted as a loser by the stipulation; 103.1 and the CR give no competing answer for who chooses in those games, so the stipulation contradicts no rule text there. 103.1 says only 'the loser', which leaves several losers open; the stipulation fills exactly that.",
+  "concede_evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1b",
+      "excerpt": "In an Archenemy game, these methods aren’t used to determine who takes the first turn.",
+      "text_sha256": "9397a605d20b5d43ef09bd283335bb34354401790b0e2b7455bfefc5d183097d"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.2a",
+      "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09",
+      "excerpt": "A player still in the game wins the game if that player’s opponents have all left the game. This happens immediately and overrides all effects that would preclude that player from winning the game."
+    },
+    {
+      "doc": "cr",
+      "ref": "801.14",
+      "excerpt": "If an effect states that a player wins the game, all of that player’s opponents within that player’s range of influence lose the game instead.",
+      "text_sha256": "41ad21f023cf593d5ca1246a989931ebb7c957a04e2f94feefdf8839c0920fff"
+    }
+  ]
+}

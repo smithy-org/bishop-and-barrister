@@ -1,0 +1,62 @@
+{
+  "v": 1,
+  "seq": 4,
+  "prev": "5800d9e4259693d45121af9e8cde5a072ae48e153c0296e4ef7ffd5414309296",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T17:04:18Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [
+    {
+      "target": 3,
+      "ground": "counterexample",
+      "argument": "The stipulation (and the rule's applies_when) triggers whenever more than one player lost the previous game, without excluding drawn games. Official sources settle a three-player game in which one player concedes (104.3a: that player loses) and the two remaining players then lose simultaneously: 104.4a makes that game a draw. More than one player 'lost', so the stipulation says the first loser (the conceder) chooses; but 103.1 says that after a draw the player who made the choice in that game chooses. The case's own rule text leaves both answers applying to the same game, so it gives a result the official draw sentence contradicts, and step 4 ('leaves this as it is') cannot be true for this draw. The draw sentence is the specific, official provision and prevails over a stipulation; the proposed rule never says the draw clause takes priority, so as worded it overbroadly captures drawn multiplayer games.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.3a",
+            "excerpt": "A player who concedes leaves the game immediately. That player loses the game.",
+            "text_sha256": "0288b7513abce421beaf1c8f93e0f8a49f187601b21010061fe1c6f1e9450b56"
+          },
+          "assumption": false,
+          "conclusion": "In a three-player game where one player concedes, that player lost the game, so C3's condition 'more than one player lost' can be met by a game that later ends in a draw."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.4a",
+            "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+            "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+          },
+          "assumption": false,
+          "conclusion": "If the two remaining players lose simultaneously, the game is a draw although a player lost earlier."
+        },
+        {
+          "id": 3,
+          "premises": [
+            "S2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "For that drawn game 103.1 gives the choice to the player who chose in it, while C3 gives it to the first loser (the conceder): the proposed rule conflicts with 103.1 on a game the official sources settle."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

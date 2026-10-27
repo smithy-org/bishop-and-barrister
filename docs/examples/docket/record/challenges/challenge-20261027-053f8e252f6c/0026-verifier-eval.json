@@ -1,0 +1,15 @@
+{
+  "v": 1,
+  "seq": 26,
+  "prev": "3ddd1c84aa32a55dacbf88a224f73f3da6ef25e207ac5d4924be93e7edaa6f47",
+  "actor": "verifier",
+  "device": "eval",
+  "time": "2026-10-27T17:13:57Z",
+  "type": "report",
+  "round": 3,
+  "stage": "answers",
+  "passed": true,
+  "level1_conflict": false,
+  "standing": [],
+  "notes": []
+}

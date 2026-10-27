@@ -1,0 +1,47 @@
+{
+  "v": 1,
+  "seq": 23,
+  "prev": "3187daa1dd531d5fc362806e7842f2a606152909285172a07c7ec20790071b8d",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T17:12:21Z",
+  "type": "file",
+  "round": 3,
+  "refutations": [],
+  "concedes": "Lens 5 (tournament documents and formats), round 3. The user's latest revision counts every other player as a loser of a one-winner free-for-all game and carves out draws, team games and any game type whose starting player the CR already settles (103.1b, 904.12c). I re-checked the tournament documents and formats against that wording. MTR 2.2 gives the choice to 'the loser of that game' in a two-player match and has no multiplayer wording, so it does not address several losers. MTR 9.3 (Two-Headed Giant) is a team game and is carved out. A search of the MTR finds 'multiplayer' only in 7.2 (Conspiracy boosters), which is irrelevant, and the JAR has no section mentioning Commander. reference/formats/matches.md says no official rule says who starts a later game of a multiplayer match, and its only answer (random first player) is level 4, which cannot override a level 1 or 2 text and does not contradict a gap-filling stipulation. commander.md defers to matches.md and sets no different start rule. MTR 2.5 allows concession and intentional draws, but draws are outside the rule and nothing in the rule rewards a concession. No tournament rule or REL settles the gap or changes the stipulation, and the rule contradicts no MTR, IPG or format text. Residual weaknesses that are not refutations: 'cannot agree' in the tie-break is undefined, and the Game Loss penalty in a multiplayer game is not spelled out.",
+  "concede_evidence": [
+    {
+      "doc": "mtr",
+      "ref": "2.2",
+      "heading": "Play/Draw Rule",
+      "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)\nduring Swiss rounds, or the player ranked higher at the end of Swiss rounds during playoff matches - chooses\neither to play first or to play second. They must state this choice before"
+    },
+    {
+      "doc": "mtr",
+      "ref": "9.3",
+      "heading": "Play-Draw Rule",
+      "text_sha256": "150a7fab369c8830f9e3999a38621075435c347e13731886c2c75e9fd75d3054",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "A team determined at random chooses either to play first or to play second. The choice must be made before\neither player on that team looks at their hand. If either player on that team looks at their hand before their choice\nis made, that team plays first. The team who plays first skips the draw ste"
+    },
+    {
+      "doc": "mtr",
+      "ref": "2.5",
+      "heading": "Conceding or Intentionally Drawing Games or Matches",
+      "text_sha256": "d0c3774e67e6dc47d8ad4efaa2f9efb274ca66da591c2ba31984a26f1b1f2c09",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "Until the result of a match has been recorded, players may concede or mutually agree to a draw in that game or\nmatch. If the conceding player won a game in the match, the match must be reported as 2-1. Intentional draws\nwhere no games were played are always reported as 0-0-3 in EventLink.\nPlayers ma"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    }
+  ]
+}

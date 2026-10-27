@@ -1,0 +1,98 @@
+{
+  "v": 1,
+  "seq": 17,
+  "prev": "85c3b226e9b82d97f4018c6abe194ea0780627c6ec69aab888fc07a529ebd7fe",
+  "actor": "user",
+  "device": "eval",
+  "time": "2026-10-27T17:10:24Z",
+  "type": "answer",
+  "round": 2,
+  "words": "Both remaining points show real gaps in my wording, so I fix the rule: game types whose starting player the CR fixes are carved out, and players still in the game when another player wins count as having lost it.",
+  "replies": [
+    {
+      "judge": 2,
+      "index": 1,
+      "kind": "fix",
+      "words": "Fixed: the rule now excludes every game type whose starting player the Comprehensive Rules already settle, Supervillain Rumble (904.12c) and Archenemy (103.1b) among them, so those are untouched."
+    },
+    {
+      "judge": 3,
+      "index": 1,
+      "kind": "fix",
+      "words": "Fixed: for this rule, a player still in the game when another player wins counts as having lost it, at the moment the game ended. So a game won by an effect has losers, and the first loser is whoever left earlier, or all of them tied if nobody left earlier."
+    }
+  ],
+  "case": {
+    "facts": [
+      {
+        "id": 1,
+        "text": "A Commander match of several games with three players"
+      },
+      {
+        "id": 2,
+        "text": "In the previous game, two of the three players lost (at different times) and the third player won"
+      }
+    ],
+    "rule": "In a free-for-all multiplayer match of several games, if the previous game was won by one player, every other player counts as a loser of that game for this rule: a player who left the game earlier lost at the moment they left, and a player still in the game when the winner won lost at the moment the game ended. If there is more than one loser, the player who lost first is the loser who chooses who takes the first turn. If several players lost first at the same moment, those players decide among themselves which of them chooses, and if they cannot agree the chooser is picked at random from them. If the previous game was a draw, the draw sentence of 103.1 applies unchanged and this rule does not apply. The rule does not apply to team games, or to any game type whose starting player the Comprehensive Rules already settle by their own rule, such as Archenemy games (103.1b) and Supervillain Rumble (904.12c); those stay as they are.",
+    "applies_when": [
+      "a free-for-all multiplayer match of several games (such as a three-player Commander match), not a team game and not a game type whose starting player the CR already settles (such as Archenemy or Supervillain Rumble), where the previous game was won by one player and there was more than one loser"
+    ],
+    "challenges": "none: a gap",
+    "steps": [
+      {
+        "id": 1,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+      },
+      {
+        "id": 2,
+        "premises": [
+          "F1",
+          "F2"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "Unlike two-player games, multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        },
+        "assumption": false,
+        "conclusion": "A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+      },
+      {
+        "id": 3,
+        "premises": [
+          "S1",
+          "S2"
+        ],
+        "stipulation": true,
+        "conclusion": "In a free-for-all game with one winner, every other player counts as a loser for 103.1 (one who left earlier lost when leaving, one still in the game lost when the game ended). Where there is more than one loser, the player who lost first chooses who takes the first turn; players who lost first at the same moment decide among themselves who chooses, else it is random among them. Draws, team games and game types whose starting player the CR already settles (Archenemy, Supervillain Rumble) are outside this stipulation."
+      },
+      {
+        "id": 4,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is."
+      }
+    ],
+    "open_questions": []
+  },
+  "open_questions": []
+}
