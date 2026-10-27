@@ -191,11 +191,12 @@ class SyncTest(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def device(self, name, setup=True):
+    def device(self, name, setup=True, **extra):
         home = self.root / name
         env = {k: v for k, v in os.environ.items() if not k.startswith("BISHOP_AND_BARRISTER_")}
         env.update(self.keys, BISHOP_AND_BARRISTER_HOME=str(home), BISHOP_AND_BARRISTER_CR=str(self.root / "cr.txt"),
-                   BISHOP_AND_BARRISTER_OFFLINE="1")
+                   BISHOP_AND_BARRISTER_OFFLINE="1", BISHOP_AND_BARRISTER_SYNC_INTERVAL="0")
+        env.update(extra)
 
         def run(*args, ok=True):
             result = subprocess.run([sys.executable, str(SCRIPTS / "judge.py"), *args], capture_output=True,
@@ -213,7 +214,9 @@ class SyncTest(unittest.TestCase):
     def record(self, run, question, answer):
         path = run.home.parent / f"{uuid.uuid4().hex}.json"
         path.write_text(json.dumps(ruling(question, answer)), encoding="utf-8")
-        return run("record", str(path)).stdout.split()[1]
+        result = run("record", str(path))
+        self.record_stderr = result.stderr
+        return result.stdout.split()[1]
 
     def test_local_only_by_default(self):
         a = self.device("a", setup=False)
@@ -230,19 +233,41 @@ class SyncTest(unittest.TestCase):
     def test_two_devices_share_rulings_and_history(self):
         a, b = self.device("a"), self.device("b")
         rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
-        self.assertIn("uploaded this device", a("sync").stdout)
-        out = b("sync").stdout
-        self.assertIn("merged a", out)
+        self.assertIn("nothing new to upload", a("sync").stdout)  # recording already uploaded it
+        self.assertIn("merged a", b("sync").stdout)
         self.assertIn(rid, b("search", "Urborg").stdout)
         log = subprocess.run(["git", "-C", str(b.home), "log", "--format=%B"], capture_output=True, text=True,
                              encoding="utf-8").stdout
         self.assertIn(f"Record unreviewed ruling {rid}", log)  # A's commit, with its trailers, not a copy
         self.assertIn("Drafted-by: model", log)
         rid2 = self.record(b, "Humility and Opalescence?", "Timestamp order (CR 613.8).")
-        b("sync")
         self.assertIn("merged b", a("sync").stdout)
         self.assertIn(rid2, a("search", "Opalescence").stdout)
         self.assertIn("nothing new", a("sync").stdout)
+
+    def test_syncs_by_itself_on_use(self):
+        a, b = self.device("a"), self.device("b")
+        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")  # pushed on write
+        search = b("search", "Urborg")  # pulled on read, no `sync` run
+        self.assertIn(rid, search.stdout)
+        self.assertIn("merged rulings from a", search.stderr)
+
+    def test_reads_pull_at_most_once_per_interval(self):
+        a, b = self.device("a"), self.device("b", BISHOP_AND_BARRISTER_SYNC_INTERVAL="3600")
+        b("search", "anything", ok=False)  # the first read pulls (nothing there yet)
+        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
+        self.assertNotIn(rid, b("search", "Urborg", ok=False).stdout)  # within the interval: no pull
+        b("sync")  # forcing it
+        self.assertIn(rid, b("search", "Urborg").stdout)
+
+    def test_unreachable_store_never_blocks(self):
+        a = self.device("a", BISHOP_AND_BARRISTER_S3_ENDPOINT="http://127.0.0.1:9")
+        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
+        first = a("search", "Urborg")
+        self.assertIn(rid, first.stdout)
+        self.assertIn("Working from the local record", first.stderr + self.record_stderr)
+        self.assertNotIn("sync paused", a("search", "Urborg").stderr)  # said once, not on every read
+        self.assertNotEqual(a("sync", ok=False).returncode, 0)  # forcing it reports the failure
 
     def test_same_ruling_changed_on_both_devices_stops(self):
         a, b = self.device("a"), self.device("b")
@@ -251,12 +276,12 @@ class SyncTest(unittest.TestCase):
         b("sync")
         a("review", rid, "--user-said", "Agreed.")
         b("review", rid, "--user-said", "Agreed, as a house rule.", "--house-rule")
-        a("sync")
         result = b("sync", ok=False)
         self.assertEqual(result.returncode, 1)
         self.assertIn(f"rulings/{rid}.json", result.stderr)
         status = subprocess.run(["git", "-C", str(b.home), "status", "--porcelain"], capture_output=True, text=True).stdout
         self.assertEqual(status.strip(), "")  # nothing half-merged left behind
+        self.assertIn(rid, b("search", "Urborg").stdout)  # reads still work from the local record
 
     @unittest.skipIf(LIVE, "making a real bucket public isn't something a test should do")
     def test_public_bucket_is_refused(self):

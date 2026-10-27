@@ -43,7 +43,9 @@ python ~/.claude/skills/bishop-and-barrister/scripts/judge.py sync --setup --end
 python ~/.claude/skills/bishop-and-barrister/scripts/judge.py sync
 ```
 
-The local record stays the copy the skill works from; the bucket is a synced copy. A RustFS to try it with:
+After setup it syncs by itself: searches pull other devices' rulings in (at most every 10 minutes) and every
+change is uploaded straight away, without ever holding up an answer. `judge.py sync` forces it. The local record
+stays the copy the skill works from; the bucket is a synced copy. A RustFS to try it with:
 `docker run -d -p 127.0.0.1:9000:9000 -e RUSTFS_ACCESS_KEY=... -e RUSTFS_SECRET_KEY=... rustfs/rustfs:1.0.4`.
 
 ## What's here

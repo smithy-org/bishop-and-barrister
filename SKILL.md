@@ -16,8 +16,9 @@ and batch them: one Bash call can run several, and each script takes several car
 | `scripts/lookup.py`  | The Comprehensive Rules; with `--doc mtr`, `ipg` or `jar` the tournament documents |
 | `scripts/sources.py` | Downloads and updates all four documents (`pip install pypdf` for the PDFs)        |
 
-The record is local only unless the user has set up a remote RustFS store; `judge.py sync` keeps it in step
-with their other devices. `reference/recording.md` covers setting one up.
+The record is local only unless the user has set up a remote RustFS store. Then it syncs by itself as you use
+it; if `judge.py` prints `[sync paused: ...]`, tell the user once and carry on. `reference/recording.md` covers
+setting one up.
 
 Never read `reference/MagicCompRules.txt` or `reference/docs/` directly; they are large. If a script says a
 document or the record is missing, run `python scripts/sources.py update` or `python scripts/judge.py build`.

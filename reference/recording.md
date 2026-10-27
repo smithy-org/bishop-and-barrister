@@ -74,10 +74,16 @@ python scripts/judge.py sync
 ```
 
 `--setup` checks the endpoint before saving it: plain `http://` only for this machine or a private network, keys
-that work, a bucket that exists and refuses anonymous reads. `sync` merges the other devices' histories in and
-uploads this device's. If it stops on a conflict, two devices changed the same ruling: show the user both
-versions, settle it in their words, then sync again. If the store can't be reached, the local record still works;
-say so and carry on.
+that work, a bucket that exists and refuses anonymous reads.
+
+After that it **syncs by itself**: `search` and `show` first pull in other devices' rulings (at most once every 10
+minutes, `$BISHOP_AND_BARRISTER_SYNC_INTERVAL` seconds), and `build`, `record`, `discuss`, `review` and `recheck`
+upload this device's change straight after. Neither ever stops the command: a problem is noted once on stderr
+(`[sync paused: ...]`) and the local record carries on. `judge.py sync` forces a full sync now and reports any
+problem; `BISHOP_AND_BARRISTER_AUTO_SYNC=0` turns the automatic part off.
+
+If a sync stops on a conflict, two devices changed the same ruling: show the user both versions, settle it in
+their words, then run `judge.py sync`. If the store can't be reached, say so once and carry on.
 
 ## Keeping the documents current
 

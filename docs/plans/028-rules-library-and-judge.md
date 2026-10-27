@@ -390,6 +390,13 @@ RustFS is the one documented and tested.
 
 The device name defaults to the host name. Bundles are small: the record is text, a few kilobytes per ruling.
 
+**It syncs by itself; no separate step.** With a store set, `search` and `show` pull first, at most once per
+interval (10 minutes by default), and every write (`build`, `record`, `discuss`, `review`, `recheck`) uploads
+straight after. S3 is stateless HTTP, so there is no connection to open on start or close on exit. Neither
+direction ever blocks a command: a problem (unreachable store, public bucket, conflict) is noted once and the
+local record carries on. `judge.py sync` forces a full sync and reports problems. Measured against RustFS on the
+same machine: a pull that finds nothing new adds about 80 ms to a search; within the interval, nothing.
+
 **Settings and secrets.** The endpoint, bucket, region (default `us-east-1`, which RustFS accepts), addressing
 style and device name go in `~/.claude/bishop-and-barrister/config.json` (JSON, since `tomllib` needs Python
 3.11 and the skill supports 3.10). Environment variables override them

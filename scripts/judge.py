@@ -29,6 +29,7 @@ import sqlite3
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -781,13 +782,18 @@ def load_config() -> dict | None:
     return cfg if cfg.get("endpoint") and cfg.get("bucket") else None
 
 
-def store_client(cfg: dict) -> s3.S3:
+class SyncStop(Exception):
+    """Syncing can't go on until the user acts: no keys, a public bucket, or a conflict to settle."""
+
+
+def store_client(cfg: dict, timeout: float = 60) -> s3.S3:
     keys = s3.credentials(cfg.get("profile"))
     if not keys:
-        die("No keys for the store. Set BISHOP_AND_BARRISTER_S3_ACCESS_KEY and BISHOP_AND_BARRISTER_S3_SECRET_KEY, "
-            "or a profile in ~/.aws/credentials (--profile). Keys never go in config.json.")
+        raise SyncStop("No keys for the store. Set BISHOP_AND_BARRISTER_S3_ACCESS_KEY and "
+                       "BISHOP_AND_BARRISTER_S3_SECRET_KEY, or a profile in ~/.aws/credentials (--profile). "
+                       "Keys never go in config.json.")
     return s3.S3(cfg["endpoint"], cfg["bucket"], *keys, region=cfg.get("region", "us-east-1"),
-                 addressing=cfg.get("addressing", "path"))
+                 addressing=cfg.get("addressing", "path"), timeout=timeout)
 
 
 def device_name(name: str | None = None) -> str:
@@ -799,9 +805,9 @@ def refuse_if_public(client: s3.S3, key: str | None = None) -> None:
     """A public bucket would republish Scryfall's and Wizards' files and expose the user's rulings."""
     found = client.anonymous_access(key)
     if found:
-        die(f"Stopped: anyone without keys can {' and '.join(found)} in bucket {client.bucket!r}. Make the bucket "
-            "private (no anonymous access), then sync again. A public bucket would expose your rulings and "
-            "republish Scryfall's and Wizards' files, which their terms forbid.")
+        raise SyncStop(f"Stopped: anyone without keys can {' and '.join(found)} in bucket {client.bucket!r}. Make "
+                       "the bucket private (no anonymous access), then sync again. A public bucket would expose "
+                       "your rulings and republish Scryfall's and Wizards' files, which their terms forbid.")
 
 
 def cmd_sync(args) -> int:
@@ -820,19 +826,21 @@ def sync_setup(args) -> int:
            "device": device_name(args.device)}
     if args.profile:
         cfg["profile"] = args.profile
-    client = store_client(cfg)
     try:
+        client = store_client(cfg)
         if not client.bucket_exists():
             if not args.create:
                 die(f"Bucket {args.bucket!r} doesn't exist at {endpoint}. Add --create to create it.")
             client.create_bucket()
             print(f"Created bucket {args.bucket!r}.")
         others = client.keys("record/")  # proves the keys can list, not just reach the server
+        refuse_if_public(client)
+    except SyncStop as err:
+        die(f"Not saved. {err}")
     except s3.S3Error as err:
         die(f"Not saved: {endpoint} refused the request ({err}). Check the endpoint, bucket and keys.")
     except OSError as err:
         die(f"Not saved: couldn't reach {endpoint} ({err}).")
-    refuse_if_public(client)
     CONFIG.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
     devices = [o["key"][len("record/"):-len(".bundle")] for o in others if o["key"].endswith(".bundle")]
     print(f"Saved {CONFIG}: {endpoint}, bucket {args.bucket!r}, this device {cfg['device']!r}.")
@@ -840,7 +848,8 @@ def sync_setup(args) -> int:
     server = client.server()
     print(f"Server: {server}. Make sure it's RustFS 1.0.4 or later." if server else
           "The server doesn't report its version: make sure it's RustFS 1.0.4 or later.")
-    print("Mode: local plus a remote store. The local record stays the working copy; run `judge.py sync`.")
+    print("Mode: local plus a remote store. The local record stays the working copy. It syncs by itself as the "
+          "skill is used; `judge.py sync` forces one now.")
     return 0
 
 
@@ -875,63 +884,138 @@ def merge_device(device: str, ref: str) -> bool:
         subprocess.run(["git", "-C", str(HOME), "commit", "-q", "--no-edit"], check=True, capture_output=True)
         return True
     git("merge", "--abort", check=False)
-    print(f"Sync stopped: {device} changed the same ruling(s) as this device: {', '.join(conflicted)}.\n"
-          f"Nothing was merged or uploaded. Settle it with the user: compare `git -C {HOME} diff HEAD {ref}`, "
-          "edit the ruling to the version they choose, then run `judge.py sync` again.", file=sys.stderr)
-    return False
+    raise SyncStop(f"Sync stopped: {device} changed the same ruling(s) as this device: {', '.join(conflicted)}. "
+                   f"Nothing was merged or uploaded. Settle it with the user: compare `git -C {HOME} diff HEAD {ref}`, "
+                   "edit the ruling to the version they choose, then run `judge.py sync` again.")
+
+
+def load_state() -> dict:
+    return json.loads(SYNC_STATE.read_text(encoding="utf-8")) if SYNC_STATE.exists() else {"fetched": {}}
+
+
+def save_state(state: dict) -> None:
+    SYNC_STATE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
+def remote_bundles(client: s3.S3) -> dict:
+    """Each device syncing through the store, with its bundle's ETag."""
+    return {o["key"][len("record/"):-len(".bundle")]: o["etag"] for o in client.keys("record/")
+            if o["key"].endswith(".bundle")}
+
+
+def pull(client: s3.S3, device: str, state: dict, remote: dict) -> list[str]:
+    """Merge in every other device whose bundle changed since the last pull. Returns the devices merged."""
+    ensure_identity()
+    merged = []
+    for other, etag in sorted(remote.items()):
+        if other == device or state["fetched"].get(other) == etag:
+            continue  # our own copy, or nothing new since the last sync
+        data = client.get(f"record/{other}.bundle")
+        with tempfile.TemporaryDirectory() as tmp:
+            bundle = Path(tmp) / f"{other}.bundle"
+            bundle.write_bytes(data)
+            git("fetch", "-q", "--no-tags", str(bundle), f"+refs/heads/*:refs/remotes/{other}/*")
+            git("fetch", "-q", "--no-tags", str(bundle), f"+refs/tags/*:refs/remotes/{other}/tags/*", check=False)
+        for ref in git("for-each-ref", "--format=%(refname)", f"refs/remotes/{other}/").stdout.split():
+            if "/tags/" in ref:
+                tag = ref.rsplit("/tags/", 1)[1]
+                if not git("tag", "--list", tag).stdout.strip():
+                    git("tag", tag, ref)  # each device tags its own CR installs; keep only names we lack
+            else:
+                merge_device(other, ref)
+        merged.append(other)
+        state["fetched"][other] = etag
+    if merged:
+        rebuild_index()
+    return merged
+
+
+def push(client: s3.S3, device: str, state: dict, remote: dict | None = None) -> bool:
+    """Upload this device's bundle if its history moved since the last upload. Returns whether it did."""
+    head = git("rev-parse", "HEAD").stdout.strip()
+    if state.get("uploaded_head") == head and (remote is None or device in remote):
+        return False
+    with tempfile.TemporaryDirectory() as tmp:
+        bundle = Path(tmp) / "record.bundle"
+        git("bundle", "create", "-q", str(bundle), "--all")
+        client.put(f"record/{device}.bundle", bundle.read_bytes())
+    state["uploaded_head"] = head
+    return True
 
 
 def sync_now() -> int:
+    """`judge.py sync`: a full sync now, whatever the throttle says, reporting every problem."""
     cfg = load_config()
     if not cfg:
         print("Local only: no remote store is set. To add one: judge.py sync --setup --endpoint <url> --bucket <name>")
         return 0
-    client, device = store_client(cfg), cfg.get("device") or device_name()
-    state = json.loads(SYNC_STATE.read_text(encoding="utf-8")) if SYNC_STATE.exists() else {"fetched": {}}
-    ensure_identity()
+    device, state = cfg.get("device") or device_name(), load_state()
     try:
+        client = store_client(cfg)
         refuse_if_public(client)
-        remote = {o["key"][len("record/"):-len(".bundle")]: o["etag"] for o in client.keys("record/")
-                  if o["key"].endswith(".bundle")}
-        merged = []
-        for other, etag in sorted(remote.items()):
-            if other == device or state["fetched"].get(other) == etag:
-                continue  # our own copy, or nothing new since the last sync
-            data = client.get(f"record/{other}.bundle")
-            with tempfile.TemporaryDirectory() as tmp:
-                bundle = Path(tmp) / f"{other}.bundle"
-                bundle.write_bytes(data)
-                git("fetch", "-q", "--no-tags", str(bundle), f"+refs/heads/*:refs/remotes/{other}/*")
-                git("fetch", "-q", "--no-tags", str(bundle), f"+refs/tags/*:refs/remotes/{other}/tags/*", check=False)
-            for ref in git("for-each-ref", "--format=%(refname)", f"refs/remotes/{other}/").stdout.split():
-                if "/tags/" in ref:
-                    tag = ref.rsplit("/tags/", 1)[1]
-                    if not git("tag", "--list", tag).stdout.strip():
-                        git("tag", tag, ref)  # each device tags its own CR installs; keep only names we lack
-                elif not merge_device(other, ref):
-                    return 1
-            merged.append(other)
-            state["fetched"][other] = etag
-        head = git("rev-parse", "HEAD").stdout.strip()
-        uploaded = False
-        if state.get("uploaded_head") != head or device not in remote:
-            with tempfile.TemporaryDirectory() as tmp:
-                bundle = Path(tmp) / "record.bundle"
-                git("bundle", "create", "-q", str(bundle), "--all")
-                client.put(f"record/{device}.bundle", bundle.read_bytes())
-            state["uploaded_head"], uploaded = head, True
+        remote = remote_bundles(client)
+        merged = pull(client, device, state, remote)
+        uploaded = push(client, device, state, remote)
+        if uploaded:
             refuse_if_public(client, f"record/{device}.bundle")
+    except SyncStop as err:
+        save_state(state)
+        print(err, file=sys.stderr)
+        return 1
     except s3.S3Error as err:
         die(f"Sync failed: {err}. The local record is unchanged and still works; try again later.")
     except OSError as err:
         die(f"Sync failed: couldn't reach {cfg['endpoint']} ({err}). The local record still works offline.")
-    SYNC_STATE.write_text(json.dumps(state, indent=2), encoding="utf-8")
-    if merged:
-        rebuild_index()
+    state["pulled_at"] = time.time()
+    state.pop("notice", None)
+    save_state(state)
     print(f"Synced with {cfg['endpoint']} as {device!r}: "
           f"{'merged ' + ', '.join(merged) if merged else 'nothing new from other devices'}; "
           f"{'uploaded this device' if uploaded else 'nothing new to upload'}.")
     return 0
+
+
+# Automatic sync: with a store set, reads pull first (at most once per interval) and writes push after.
+# Neither ever stops the command: a problem is noted once on stderr, and the local record carries on.
+SYNC_INTERVAL = float(os.environ.get("BISHOP_AND_BARRISTER_SYNC_INTERVAL") or 600)
+AUTO_TIMEOUT = 5
+READS = {"search", "show"}
+WRITES = {"build", "record", "discuss", "review", "recheck"}
+
+
+def auto_sync(command: str) -> None:
+    if command not in READS | WRITES or os.environ.get("BISHOP_AND_BARRISTER_AUTO_SYNC") == "0":
+        return
+    try:
+        cfg = load_config()
+    except (OSError, ValueError):
+        return
+    if not cfg or cfg.get("auto_sync") is False or not (HOME / ".git").exists():
+        return
+    state = load_state()
+    if command in READS and time.time() - state.get("pulled_at", 0) < SYNC_INTERVAL:
+        return
+    device = cfg.get("device") or device_name()
+    try:
+        client = store_client(cfg, timeout=AUTO_TIMEOUT)
+        refuse_if_public(client)
+        remote = remote_bundles(client)
+        if command in READS:
+            state["pulled_at"] = time.time()
+            merged = pull(client, device, state, remote)
+            if merged:
+                print(f"[synced: merged rulings from {', '.join(merged)}]", file=sys.stderr)
+        else:
+            push(client, device, state, remote)
+        state.pop("notice", None)
+    except (SyncStop, s3.S3Error, OSError, subprocess.CalledProcessError) as err:
+        notice = str(err) if isinstance(err, SyncStop) else f"couldn't reach the store at {cfg['endpoint']} ({err})"
+        if command in READS:
+            state["pulled_at"] = time.time()  # don't retry on every search; `judge.py sync` forces it
+        if state.get("notice") != notice:
+            print(f"[sync paused: {notice}. Working from the local record.]", file=sys.stderr)
+            state["notice"] = notice
+    save_state(state)
 
 
 def main() -> int:
@@ -996,7 +1080,12 @@ def main() -> int:
     p.set_defaults(func=cmd_sync)
 
     args = parser.parse_args()
-    return args.func(args)
+    if args.command in READS:
+        auto_sync(args.command)  # bring other devices' rulings in before reading
+    status = args.func(args)
+    if args.command in WRITES and status == 0:
+        auto_sync(args.command)  # send this device's change out
+    return status
 
 
 if __name__ == "__main__":
