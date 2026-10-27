@@ -1,6 +1,7 @@
 ---
 name: bishop-and-barrister
-description: Answer Magic&#58; the Gathering rules questions from the official Comprehensive Rules and current Oracle card text instead of memory. Use this skill whenever the user asks how cards interact, whether a play is legal, what happens when two effects conflict, how the stack/priority/layers/state-based actions resolve, or anything involving a specific card's wording — even for questions that seem simple or that you think you already know the answer to. Also use it when the user quotes card text, describes a board state, asks "does X work with Y", or mentions rules numbers, judge calls, or format legality. Use it too for format rules (deck size, starting life, mulligans, who plays first, best-of-one or best-of-three matches, sideboarding between games, multiplayer) for any format the skill covers.
+description: "Answers Magic: the Gathering rules questions from the Comprehensive Rules, current Oracle text and the tournament documents, with rule citations, instead of from memory."
+when_to_use: "Use whenever the user asks how cards interact, whether a play is legal, what happens when two effects conflict, how the stack, priority, layers or state-based actions resolve, or anything involving a specific card's wording, even for questions that seem simple. Also when the user quotes card text, describes a board state, asks \"does X work with Y\", or mentions rule numbers, judge calls, tournament penalties or format legality, and for format rules: deck size, starting life, mulligans, who plays first, best-of-three matches, sideboarding and multiplayer."
 ---
 
 # Bishop & Barrister: Magic: the Gathering rules
@@ -20,7 +21,8 @@ The record is local only unless the user has set up a remote RustFS store. Then 
 it; if `judge.py` prints `[sync paused: ...]`, tell the user once and carry on. `reference/upkeep.md` covers
 setting one up.
 
-Never read `reference/MagicCompRules.txt` or `reference/docs/` directly; they are large. If a script says a
+Never read the downloaded documents directly (`documents/` in the skill's home, `~/.claude/bishop-and-barrister/`);
+they are large. If a script says a
 document or the record is missing, run `python scripts/sources.py update` or `python scripts/judge.py build`.
 
 ## Answering a rules question

@@ -44,7 +44,7 @@ class UpdateRulesTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         ref = Path(self.tmp.name) / "reference"
-        for name, value in (("REFERENCE_DIR", ref), ("RULES_FILE", ref / "MagicCompRules.txt"),
+        for name, value in (("DATA_DIR", ref), ("RULES_FILE", ref / "MagicCompRules.txt"),
                             ("META_FILE", ref / "version.json")):
             p = mock.patch.object(update_rules, name, value)
             p.start()
@@ -110,7 +110,7 @@ class UpdateRulesTest(unittest.TestCase):
 
     def test_local_state_without_or_with_stale_metadata(self):
         self.assertIsNone(update_rules.local_state())
-        update_rules.REFERENCE_DIR.mkdir(parents=True)
+        update_rules.DATA_DIR.mkdir(parents=True)
         update_rules.RULES_FILE.write_text(CR, encoding="utf-8")
         state = update_rules.local_state()
         self.assertEqual(state["source"], "reconstructed from local file")

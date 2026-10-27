@@ -2,7 +2,7 @@ name: challenge
 
 # The Lean challenge core. On every change: build (which checks every proof; Audit.lean fails the build if a
 # theorem is missing or uses sorry) and run the tests. On a release tag: build bab-challenge for five platforms
-# and attach the binaries, with their SHA-256s, to the release.
+# and attach the binaries, with their SHA-256s, to the release, then the claude.ai zip of the skill.
 
 on:
   push:
@@ -48,6 +48,11 @@ jobs:
           built=$(.lake/build/bin/bab-challenge version | awk '{print $2}')
           if [ "v$built" != "$GITHUB_REF_NAME" ]; then
             echo "::error::the tag is $GITHUB_REF_NAME but bab-challenge says $built; bump the version in challenge/Main.lean first"
+            exit 1
+          fi
+          plugin=$(python3 -c "import json; print(json.load(open('../.claude-plugin/plugin.json'))['version'])")
+          if [ "v$plugin" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::the tag is $GITHUB_REF_NAME but .claude-plugin/plugin.json says $plugin; Claude Code only updates installs when it changes"
             exit 1
           fi
       - name: No sorry or admit in the sources
@@ -151,3 +156,21 @@ jobs:
           print(json.dumps(pins, indent=2))
           PY
           gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" pins.json --clobber
+
+  # The skill for claude.ai's skills settings: one bishop-and-barrister/ folder with only the runtime files,
+  # shipping this release's own pins, attached to the release as bishop-and-barrister.zip.
+  skill-zip:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: pins
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and attach the zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" -p pins.json -D release
+          python3 tools/package_skill.py --pins release/pins.json --out bishop-and-barrister.zip
+          gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" bishop-and-barrister.zip --clobber

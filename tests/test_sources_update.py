@@ -70,6 +70,7 @@ class SourcesUpdateTest(unittest.TestCase):
         (ref / "formats").mkdir(parents=True)
         patches = [
             mock.patch.object(lookup, "REFERENCE_DIR", ref),
+            mock.patch.object(lookup, "DATA_DIR", ref),
             mock.patch.object(lookup, "DOCS_DIR", ref / "docs"),
             mock.patch.object(lookup, "RULES_FILE", ref / "MagicCompRules.txt"),
             mock.patch.object(sources, "REGISTRY", ref / "sources.json"),

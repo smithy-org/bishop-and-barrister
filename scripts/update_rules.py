@@ -26,11 +26,14 @@ import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import lookup  # noqa: E402  (where the downloaded documents live)
+
 RULES_PAGE = "https://magic.wizards.com/en/rules"
-SKILL_DIR = Path(__file__).resolve().parent.parent
-REFERENCE_DIR = SKILL_DIR / "reference"
-RULES_FILE = REFERENCE_DIR / "MagicCompRules.txt"
-META_FILE = REFERENCE_DIR / "version.json"
+# Outside the skill's folder (see lookup.DATA_DIR), so a plugin update keeps the download.
+DATA_DIR = lookup.DATA_DIR
+RULES_FILE = lookup.RULES_FILE
+META_FILE = DATA_DIR / "version.json"
 
 UA = "Mozilla/5.0 (compatible; bishop-and-barrister/1.0)"
 TXT_LINK = re.compile(
@@ -215,6 +218,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="report status without downloading")
     args = parser.parse_args()
 
+    lookup.adopt_legacy_documents()  # a copy downloaded into the skill folder by an earlier version
     url = find_txt_url()
     local = local_state()
     describe(local)
@@ -257,7 +261,7 @@ def main() -> int:
         print("Run without --check to install it.")
         return 0
 
-    REFERENCE_DIR.mkdir(parents=True, exist_ok=True)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
     RULES_FILE.write_text(text, encoding="utf-8")
     write_meta(text, url, probe)
 

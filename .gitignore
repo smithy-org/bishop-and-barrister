@@ -3,3 +3,4 @@ challenge/.lake/
 .coverage
 .coverage.*
 htmlcov/
+dist/
