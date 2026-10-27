@@ -122,6 +122,7 @@ def checkVote (v : Vote) : List String :=
   (if v.evidence.isEmpty then ["a vote needs evidence: the pinned sources it relied on or checked"] else []) ++
   v.evidence.flatMap (checkSource "the vote")
 
+/-- The conclusions of the case's stipulations: the rule's new content. -/
 def Case.stipulations (c : Case) : List String := (c.steps.filter (·.stipulation)).map (·.conclusion)
 
 /-- A draft of the Opinion of the Court: the holding is the case's rule, the reasoning is sourced step by step, and

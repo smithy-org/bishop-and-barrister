@@ -17,69 +17,114 @@ can break them:
 
 namespace Challenge
 
+/-- Judge `k` has filed this round. -/
 def filedBy (fs : List Filing) (k : Nat) : Bool := fs.any (fun f => f.judge == k)
 /-- The convened judges who haven't filed yet. -/
 def missingJudges (convened : List Nat) (fs : List Filing) : List Nat := convened.filter (fun k => !filedBy fs k)
+/-- Judge `k` has a position on record. -/
 def votedBy (vs : List Vote) (k : Nat) : Bool := vs.any (fun v => v.judge == k)
+/-- The judges with no position on record yet. -/
 def missingVoters (vs : List Vote) : List Nat := judges.filter (fun k => !votedBy vs k)
+/-- Judge `k` has answered the draft opinion. -/
 def respondedBy (rs : List Response) (k : Nat) : Bool := rs.any (fun r => r.judge == k)
+/-- The judges who haven't answered the draft opinion yet. -/
 def missingResponders (rs : List Response) : List Nat := judges.filter (fun k => !respondedBy rs k)
 
+/-- At the start of an attack round with all five convened, someone has yet to file. The phase needs this proof to
+exist, which is how guarantee 5, progress, is carried by the types. -/
 theorem noneFiled : missingJudges judges [] ≠ [] := by decide
+/-- Before any vote, someone has yet to vote. The voting phase needs this proof to start empty. -/
 theorem noneVoted : missingVoters [] ≠ [] := by decide
+/-- Before any response to a draft, someone has yet to answer it. The joining phase needs this proof to start empty. -/
 theorem noneResponded : missingResponders [] ≠ [] := by decide
 
 /-- Five convinced, evidenced positions on a case that passed the verifier: the judges are settled, and the rule
 still needs its opinion. -/
 structure Settled where
+  /-- The case the judges settled on. -/
   claim : Case
+  /-- The verifier's last report on it. -/
   report : Report
+  /-- Every judge's settled position. -/
   votes : List Vote
+  /-- The panel that heard it. -/
   panel : Panel
+  /-- No judge's position is missing. -/
   full : missingVoters votes = []
+  /-- Every judge is convinced. -/
   allConvinced : votes.all (fun v => v.convinced) = true
+  /-- Every position names its evidence. -/
   evidenced : votes.all (fun v => !v.evidence.isEmpty) = true
+  /-- The verifier passed the case. -/
   passed : report.passed = true
+  /-- The case contradicts no level 1 source. -/
   noConflict : report.level1Conflict = false
+  /-- No verified refutation stands. -/
   noStanding : report.standing.isEmpty = true
+  /-- Every step quotes a pinned source or is a stipulation. No step is a bare assumption. -/
   grounded : claim.steps.all (fun st => st.source.isSome || st.stipulation) = true
+  /-- Stipulations appear only in a case that fills a gap. -/
   gapOnly : claim.steps.all (fun st => !st.stipulation || isGap claim.challenges) = true
+  /-- The panel is independent, not a single agent. -/
   independent : panel = Panel.independent
 
 /-- The only way to build an introduced challenge: a `Settled` and an opinion that all five judges joined. -/
 structure Earned extends Settled where
+  /-- The opinion of the court. -/
   opinion : Opinion
+  /-- Every judge's answer to it. -/
   joins : List Response
+  /-- No judge's answer is missing. -/
   fullJoins : missingResponders joins = []
+  /-- Every judge joined. A concurrence is not a join. -/
   allJoin : joins.all (fun r => r.stance == Stance.join) = true
+  /-- The author is one of the convinced judges. -/
   authorConvinced : votes.any (fun v => v.judge == opinion.author && v.convinced) = true
+  /-- The holding is the case's rule, word for word. -/
   holdsRule : (opinion.holding == claim.rule) = true
+  /-- Every step of the opinion quotes a pinned source or is a stipulation. -/
   opinionGrounded : opinion.steps.all (fun st => st.source.isSome || st.stipulation) = true
+  /-- Every stipulation in the opinion is one the case made: the opinion adds nothing. -/
   nothingNew : opinion.steps.all (fun st => !st.stipulation ||
     claim.steps.any (fun cs => cs.stipulation && cs.conclusion == st.conclusion)) = true
 
+/-- Where a challenge stands. Each phase holds what the next step needs, and the waiting phases hold a proof that
+someone has yet to act. -/
 inductive Phase where
   /-- Before the opening event. -/
   | unopened
+  /-- Opened: the clerk writes the brief next. -/
   | draft
+  /-- The brief is written: the user confirms or corrects it. -/
   | briefed (c : Case)
   /-- `convened` are the judges who attack this round (all five in the first). `looks` are every judge's latest. -/
   | attack (n : Nat) (c : Case) (convened : List Nat) (looks : List Look) (filed : List Filing)
       (waiting : missingJudges convened filed ≠ [])
+  /-- Attack round `n` is filed: the verifier checks the refutations. -/
   | verify (n : Nat) (c : Case) (looks : List Look) (filed : List Filing)
+  /-- Some refutations stood: the user answers them. -/
   | answer (n : Nat) (c : Case) (looks : List Look) (filed : List Filing) (r : Report)
+  /-- The user answered: the verifier checks the answers. -/
   | verifyAnswers (n : Nat) (c : Case) (looks : List Look) (filed : List Filing) (a : Answer)
+  /-- The judges not yet settled on the final case vote. -/
   | voting (c : Case) (r : Report) (votes : List Vote) (waiting : missingVoters votes ≠ [])
   /-- The judges are settled and convinced; one of them drafts (or revises) the opinion. -/
   | drafting (st : Settled) (revision : Nat)
+  /-- The draft opinion is out: each judge joins, concurs, or dissents. -/
   | joining (st : Settled) (op : Opinion) (revision : Nat) (responses : List Response)
       (waiting : missingResponders responses ≠ [])
+  /-- The rule is introduced. This is final. -/
   | introduced (e : Earned)
+  /-- The case was refuted, and why. Only a house rule can follow. -/
   | refuted (c : Case) (why : String)
+  /-- The case is unproven, and why. The user can reopen it, keep it as a house rule, or withdraw it. -/
   | open_ (c : Case) (why : String)
+  /-- The user withdrew the challenge. This is final. -/
   | withdrawn
+  /-- The user kept the case as a house rule. This is final. -/
   | houseRule (c : Case)
 
+/-- The phase's name, as the JSON interface writes it. -/
 def Phase.name : Phase → String
   | .unopened => "unopened"
   | .draft => "draft"
@@ -97,6 +142,7 @@ def Phase.name : Phase → String
   | .withdrawn => "withdrawn"
   | .houseRule _ => "house-rule"
 
+/-- The round number, in the phases that belong to a round. -/
 def Phase.round : Phase → Option Nat
   | .attack n _ _ _ _ _ | .verify n _ _ _ | .answer n _ _ _ _ | .verifyAnswers n _ _ _ _ => some n
   | _ => none
@@ -131,8 +177,11 @@ def owed : Phase → List Actor
   | .open_ _ _ => [.user]
   | .introduced _ | .refuted _ _ | .withdrawn | .houseRule _ => []
 
+/-- The replay's state: the phase, the panel, and the bookkeeping that blindness and the hash chain need. -/
 structure State where
+  /-- Where the challenge stands. -/
   phase : Phase
+  /-- Which kind of panel is hearing it. -/
   panel : Panel
   /-- The position of the event that started the current phase: filings, votes and responses made since then are
   hidden from the other judges. -/
@@ -142,11 +191,14 @@ structure State where
   /-- The hash of the last event. -/
   head : Option String
 
+/-- The state before the opening event. -/
 def State.init : State :=
   { phase := .unopened, panel := .independent, since := 0, caseSeq := 0, head := none }
 
+/-- Puts a check's problems on one line each. -/
 def joinErrors (errs : List String) : String := String.intercalate "\n" errs
 
+/-- The user withdraws the challenge, in their own words; anyone else is refused. -/
 def withdrawBy (s : State) (x : Entry) (words : String) : Except String State :=
   if x.actor = Actor.user ∧ words ≠ "" then .ok { s with phase := .withdrawn }
   else .error "only the user withdraws a challenge, in their own words"
@@ -176,6 +228,7 @@ def earn? (st : Settled) (op : Opinion) (rs : List Response) (full : missingResp
            holdsRule := h3, opinionGrounded := h4, nothingNew := h5 }
   else none
 
+/-- How many votes are not convinced. -/
 def notConvinced (vs : List Vote) : Nat := (vs.filter (fun v => !v.convinced)).length
 
 /-- A concession is that judge's settled position, if the case hasn't changed since: convinced, with its evidence. -/
@@ -238,6 +291,7 @@ def closeOpinion (st : Settled) (op : Opinion) (revision : Nat) (rs : List Respo
     else .open_ st.claim
       s!"no opinion won all {panelSize} joins after {opinionRevisions} revisions: every judge must join the same opinion"
 
+/-- Before the opening: only the user's opening event is accepted. -/
 def onUnopened (s : State) (x : Entry) : Except String State :=
   match x.event with
   | .start statement panel =>
@@ -246,6 +300,7 @@ def onUnopened (s : State) (x : Entry) : Except String State :=
     else .ok { s with phase := .draft, panel := panel }
   | _ => .error "a challenge starts with an \"open\" event"
 
+/-- A draft: the clerk writes the brief, or the user withdraws. -/
 def onDraft (s : State) (x : Entry) : Except String State :=
   match x.event with
   | .brief c =>
@@ -256,6 +311,7 @@ def onDraft (s : State) (x : Entry) : Except String State :=
   | .withdraw w => withdrawBy s x w
   | _ => .error "the challenge is a draft: the clerk writes the brief next"
 
+/-- A brief: the user confirms it, which starts round 1, or it is edited, or the user withdraws. -/
 def onBriefed (s : State) (c : Case) (x : Entry) : Except String State :=
   match x.event with
   | .confirm w =>
@@ -270,6 +326,7 @@ def onBriefed (s : State) (c : Case) (x : Entry) : Except String State :=
   | .withdraw w => withdrawBy s x w
   | _ => .error "the brief is waiting for the user to confirm or correct it"
 
+/-- An attack round: each convened judge files once; the last filing sends the round to the verifier. -/
 def onAttack (s : State) (n : Nat) (c : Case) (cv : List Nat) (looks : List Look) (fs : List Filing) (x : Entry) :
     Except String State :=
   match x.event, x.actor with
@@ -290,6 +347,7 @@ def onAttack (s : State) (n : Nat) (c : Case) (cv : List Nat) (looks : List Look
   | .file _, _ => .error "only a judge files in an attack round"
   | _, _ => .error s!"round {n} is an attack round: each convened judge files refutations or concedes"
 
+/-- The verifier reports on a round's refutations. If none stands, the judges settle; otherwise the user answers. -/
 def onVerify (s : State) (n : Nat) (c : Case) (looks : List Look) (fs : List Filing) (x : Entry) :
     Except String State :=
   match x.event with
@@ -306,6 +364,7 @@ def onVerify (s : State) (n : Nat) (c : Case) (looks : List Look) (fs : List Fil
       | errs => .error (joinErrors errs)
   | _ => .error s!"round {n}'s refutations are waiting for the verifier"
 
+/-- The user answers the refutations that stood, or withdraws. -/
 def onAnswer (s : State) (n : Nat) (c : Case) (looks : List Look) (fs : List Filing) (r : Report) (x : Entry) :
     Except String State :=
   match x.event with
@@ -317,6 +376,8 @@ def onAnswer (s : State) (n : Nat) (c : Case) (looks : List Look) (fs : List Fil
   | .withdraw w => withdrawBy s x w
   | _ => .error s!"round {n}'s verified refutations are waiting for the user's answer"
 
+/-- The verifier reports on the user's answers. A revised case goes back to the judges whose refutation it answered;
+otherwise the judges settle. -/
 def onVerifyAnswers (s : State) (n : Nat) (c : Case) (looks : List Look) (fs : List Filing) (a : Answer)
     (x : Entry) : Except String State :=
   match x.event with
@@ -336,6 +397,7 @@ def onVerifyAnswers (s : State) (n : Nat) (c : Case) (looks : List Look) (fs : L
       | errs => .error (joinErrors errs)
   | _ => .error s!"the user's answers to round {n} are waiting for the verifier"
 
+/-- Voting: each judge votes once; the last vote closes the case. -/
 def onVoting (s : State) (c : Case) (r : Report) (vs : List Vote) (x : Entry) : Except String State :=
   match x.event, x.actor with
   | .vote v, .judge k =>
@@ -350,6 +412,7 @@ def onVoting (s : State) (c : Case) (r : Report) (vs : List Vote) (x : Entry) : 
   | .vote _, _ => .error "only a judge votes"
   | _, _ => .error "the panel is voting"
 
+/-- Drafting: the lowest-numbered convinced judge writes the opinion of the court. -/
 def onDrafting (s : State) (st : Settled) (revision : Nat) (x : Entry) : Except String State :=
   match x.event, x.actor with
   | .opinion o, .judge k =>
@@ -362,6 +425,7 @@ def onDrafting (s : State) (st : Settled) (revision : Nat) (x : Entry) : Except 
   | .opinion _, _ => .error "only a judge writes the opinion"
   | _, _ => .error "the judges are settled: the opinion of the court is drafted next"
 
+/-- Joining: each judge answers the draft once; the last answer closes the opinion. -/
 def onJoining (s : State) (st : Settled) (op : Opinion) (revision : Nat) (rs : List Response) (x : Entry) :
     Except String State :=
   match x.event, x.actor with
@@ -377,6 +441,7 @@ def onJoining (s : State) (st : Settled) (op : Opinion) (revision : Nat) (rs : L
   | .respond _, _ => .error "only a judge answers the draft opinion"
   | _, _ => .error "the judges are answering the draft opinion: each joins, concurs, or dissents"
 
+/-- Open: the user keeps it as a house rule, reopens it with a new case, or withdraws it. -/
 def onOpen (s : State) (c : Case) (x : Entry) : Except String State :=
   match x.event with
   | .houseRule w =>
@@ -390,6 +455,7 @@ def onOpen (s : State) (c : Case) (x : Entry) : Except String State :=
   | .withdraw w => withdrawBy s x w
   | _ => .error "the challenge is open: the user can return with new facts or sources, keep it as a house rule, or withdraw it"
 
+/-- Refuted: the user can only keep it as a house rule. -/
 def onRefuted (s : State) (c : Case) (x : Entry) : Except String State :=
   match x.event with
   | .houseRule w =>
@@ -416,10 +482,12 @@ def step (s : State) (x : Entry) : Except String State :=
   | .joining st op rev rs _ => onJoining s st op rev rs x
   | .open_ c _ => onOpen s c x
 
+/-- Whether a step was accepted. -/
 def accepted {α : Type} : Except String α → Bool
   | .ok _ => true
   | .error _ => false
 
+/-- The event sets a new case: a brief, an edit, a reopening, or an answer with a revised case. -/
 def setsCase : Event → Bool
   | .brief _ | .edit _ _ | .reopen _ _ _ => true
   | .answer a => a.revised.isSome
@@ -428,11 +496,17 @@ def setsCase : Event → Bool
 /-- The result of replaying a challenge's events. `tags` pairs each event with the `since` of the phase it was
 filed in. -/
 inductive Outcome where
+  /-- The events replayed to a state, each tagged with the phase it was filed in. -/
   | state (s : State) (tags : List (Nat × Entry))
+  /-- Two events name the same predecessor. -/
   | fork
+  /-- Some event isn't reachable from the opening, and why. -/
   | broken (why : String)
+  /-- The state machine refused event `seq`, and why. -/
   | refused (seq : Nat) (why : String)
 
+/-- Runs the machine from state `s` over the events, expecting the next to be event `i`. Keeps `since` and `caseSeq`
+current and tags each event as it goes. -/
 def runFrom : State → Nat → List Entry → List (Nat × Entry) → Outcome
   | s, _, [], acc => .state s acc.reverse
   | s, i, x :: xs, acc =>

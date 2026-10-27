@@ -59,6 +59,8 @@ theorem stipulations_only_in_gaps {evs : List Entry} {s : State} {tags : List (N
     e.claim.steps.all (fun st => !st.stipulation || isGap e.claim.challenges) = true :=
   e.gapOnly
 
+/-- Every judge on the panel joined the opinion. A step toward guarantee 1: `Earned` stores that no judge's answer is
+missing and that every answer is a join, and this puts the two together. -/
 theorem every_judge_joined (e : Earned) :
     ∀ k ∈ judges, ∃ r ∈ e.joins, r.judge = k ∧ r.stance = Stance.join := by
   intro k hk
@@ -73,6 +75,8 @@ theorem every_judge_joined (e : Earned) :
   rw [List.all_eq_true] at hall
   exact ⟨r, hmem, by simpa using hj, by simpa using hall r hmem⟩
 
+/-- The opinion's author is one of the convinced judges. A step toward guarantee 1: a judge who wasn't convinced can't
+write the court's opinion. -/
 theorem author_was_convinced (e : Earned) :
     ∃ v ∈ e.votes, v.judge = e.opinion.author ∧ v.convinced = true := by
   have h := e.authorConvinced
@@ -82,6 +86,8 @@ theorem author_was_convinced (e : Earned) :
   simp only [Bool.and_eq_true, beq_iff_eq] at hv'
   exact ⟨v, hmem, hv'.1, hv'.2⟩
 
+/-- There are five judges and no two share a number. A step toward guarantee 1: five joins from the panel really are
+five different judges. -/
 theorem five_distinct_judges : judges.length = 5 ∧ judges.Nodup := ⟨by decide, by decide⟩
 
 /-- An introduced rule has an opinion of the court: written by one of the convinced judges, stating the case's

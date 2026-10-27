@@ -61,12 +61,14 @@ class Unavailable(Exception):
 
 
 def platform_key() -> str | None:
+    """Name this platform as challenge/binaries.json does ("linux-x64", "macos-arm64"...), or None if unknown."""
     system = {"linux": "linux", "darwin": "macos", "win32": "windows"}.get(sys.platform)
     arch = {"x86_64": "x64", "amd64": "x64", "arm64": "arm64", "aarch64": "arm64"}.get(platform.machine().lower())
     return f"{system}-{arch}" if system and arch else None
 
 
 def sha256_file(path: Path) -> str:
+    """Return the hex SHA-256 of a file's bytes, read a megabyte at a time."""
     digest = hashlib.sha256()
     with path.open("rb") as f:
         for block in iter(lambda: f.read(1 << 20), b""):
@@ -75,8 +77,18 @@ def sha256_file(path: Path) -> str:
 
 
 def find_binary() -> Path:
-    """The core for this platform: downloaded once from the pinned release, and refused unless its SHA-256
-    matches challenge/binaries.json."""
+    """Find the core for this platform, downloading it once from the pinned release.
+
+    The download is refused unless its SHA-256 matches challenge/binaries.json, so a tampered or
+    mismatched release never runs. A core named by BISHOP_AND_BARRISTER_CHALLENGE_BIN is used as it is,
+    unchecked: that is for working on the core itself.
+
+    Returns:
+        The path to the core binary.
+
+    Raises:
+        Unavailable: When there is no core for this platform, or it can't be downloaded, or its hash doesn't match.
+    """
     if DEV_BIN:
         return Path(DEV_BIN)
     pins = json.loads(BINARIES.read_text(encoding="utf-8"))
@@ -106,7 +118,18 @@ def find_binary() -> Path:
 
 
 def core(command: list[str], payload: dict) -> dict:
-    """Run bab-challenge: JSON in, JSON out."""
+    """Run bab-challenge: JSON in, JSON out.
+
+    Args:
+        command: The core's arguments, such as ["replay"] or ["view", "--judge", "3"].
+        payload: The JSON sent on its standard input.
+
+    Returns:
+        The core's JSON answer.
+
+    Raises:
+        SystemExit: Via judge.die() when the core is unavailable or fails.
+    """
     try:
         binary = find_binary()
     except Unavailable as err:
@@ -122,6 +145,11 @@ def core(command: list[str], payload: dict) -> dict:
 
 
 def ensure_store() -> None:
+    """Set up the record for challenges: the challenges/ folder, bin/ ignored, and event files kept byte for byte.
+
+    An event's hash is over its exact bytes, so .gitattributes marks challenges/ as -text and git never
+    rewrites their line endings.
+    """
     judge.ensure_home()
     CHALLENGES_DIR.mkdir(exist_ok=True)
     ignore = judge.HOME / ".gitignore"
@@ -136,6 +164,17 @@ def ensure_store() -> None:
 
 
 def challenge_dir(cid: str) -> Path:
+    """Return a challenge's folder.
+
+    Args:
+        cid: The challenge id, challenge-<YYYYMMDD>-<12 hex>.
+
+    Returns:
+        The challenge's folder under challenges/.
+
+    Raises:
+        SystemExit: Via judge.die() when cid isn't a challenge id or no such challenge is in the record.
+    """
     if not ID.fullmatch(cid):
         judge.die(f"{cid!r} isn't a challenge id (challenge-<YYYYMMDD>-<12 hex>).")
     path = CHALLENGES_DIR / cid
@@ -145,36 +184,64 @@ def challenge_dir(cid: str) -> Path:
 
 
 def event_files(cid: str) -> list[Path]:
+    """List a challenge's event files, sorted by name; discarded/ and record/ are left out.
+
+    Raises:
+        SystemExit: Via judge.die() when there's no such challenge.
+    """
     return sorted(challenge_dir(cid).glob("*.json"))
 
 
 def read_raw(path: Path) -> str:
+    """Read an event file's exact text, untouched by newline translation, since its hash is over those bytes."""
     return path.read_bytes().decode("utf-8")
 
 
 def raws(cid: str) -> list[str]:
+    """Read the exact text of every event in a challenge, as the core takes them."""
     return [read_raw(p) for p in event_files(cid)]
 
 
 def events_in_order(cid: str) -> list[dict]:
-    """The parsed events, by their place in the chain (only meaningful once replay is ok)."""
+    """Return the parsed events, by their place in the chain (only meaningful once replay is ok)."""
     return sorted((json.loads(r) for r in raws(cid)), key=lambda e: e["seq"])
 
 
 def replay(cid: str) -> dict:
+    """Ask the core for a challenge's state: where it stands and who acts next, or why it can't be read.
+
+    Args:
+        cid: The challenge.
+
+    Returns:
+        The core's state; its "ok" is false for a fork, a broken chain or a refused event.
+
+    Raises:
+        SystemExit: Via judge.die() when there's no such challenge, or the core is unavailable or fails.
+    """
     return core(["replay"], {"events": raws(cid)})
 
 
 def device() -> str:
+    """Name this device for event file names: BISHOP_AND_BARRISTER_DEVICE or the host name, as a short slug."""
     name = os.environ.get("BISHOP_AND_BARRISTER_DEVICE") or socket.gethostname() or "device"
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:32] or "device"
 
 
 def event_text(event: dict) -> str:
+    """Serialize an event exactly as it is written to its file and hashed."""
     return json.dumps(event, ensure_ascii=False, indent=2) + "\n"
 
 
 def describe_failure(state: dict) -> str:
+    """Explain a replay that isn't ok: a fork, a broken chain, a refused event, or an unreadable challenge.
+
+    Args:
+        state: The core's state, with "ok" false.
+
+    Returns:
+        A message for the user, saying how to settle a fork when there is one.
+    """
     if "fork" in state:
         lines = ["Two devices acted in the same state, so the challenge is paused until the user picks one:"]
         for fork in state["fork"]:
@@ -190,7 +257,25 @@ def describe_failure(state: dict) -> str:
 
 
 def propose(cid: str | None, actor: str, fields: dict, message: str, words: str | None = None) -> tuple[str, dict]:
-    """Add one event, if the core accepts it, and commit it. Returns the id and the new state."""
+    """Add one event, if the core accepts it, and commit it.
+
+    The core checks the event against the chain before anything is written, so a refused event leaves
+    no trace. When the event closes the challenge, or leaves it open, what it leaves behind is written
+    too (settle()).
+
+    Args:
+        cid: The challenge, or None to open a new one.
+        actor: Who is acting: user, clerk, verifier or judge-<k>.
+        fields: The event's own fields; the chain fields (seq, prev, actor, device, time) are added here.
+        message: The commit message, after the challenge id.
+        words: The user's own words, when the user decided this event; recorded in the commit.
+
+    Returns:
+        (the challenge id, the state after the event).
+
+    Raises:
+        SystemExit: Via judge.die() when the challenge can't be replayed or the core refuses the event.
+    """
     ensure_store()
     events = raws(cid) if cid else []
     state = core(["replay"], {"events": events})
@@ -223,7 +308,18 @@ def propose(cid: str | None, actor: str, fields: dict, message: str, words: str 
 
 
 def rule_step(state: str, event: str) -> str:
-    """One transition of the rule state machine, decided by the core."""
+    """Make one transition of the rule state machine, decided by the core.
+
+    Args:
+        state: The rule's state now, such as "current".
+        event: What happened, such as "source-changed".
+
+    Returns:
+        The rule's new state.
+
+    Raises:
+        SystemExit: Via judge.die() when the core refuses the transition.
+    """
     result = core(["rule"], {"state": state, "event": event})
     if not result.get("accepted"):
         judge.die(f"The rule can't move: {'; '.join(result.get('reasons', [str(result)]))}")
@@ -231,22 +327,36 @@ def rule_step(state: str, event: str) -> str:
 
 
 def load_rule(path: Path) -> dict:
+    """Read a rule file."""
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def save_rule(rule: dict, path: Path) -> None:
+    """Write a rule file, creating rules/ if needed."""
     RULES_DIR.mkdir(exist_ok=True)
     path.write_text(json.dumps(rule, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def judge_of(event: dict) -> int:
+    """Return the number k of the judge who made an event, from its actor judge-<k>."""
     return int(event["actor"].removeprefix("judge-"))
 
 
 def positions(events: list[dict], responses: bool = False) -> list[dict]:
-    """Each judge's settled position, with its reasoning and evidence: their last vote, or their last filing (a
-    concession is a convinced position, a refutation not). With `responses`, a judge's answer to the draft opinion
-    is a later position: a dissent is not convinced; a join or a concurrence is."""
+    """Find each judge's settled position, with its reasoning and evidence.
+
+    A judge's position is their last vote, or their last filing: a concession is a convinced position,
+    a refutation not. With `responses`, a judge's answer to the draft opinion is a later position: a
+    dissent is not convinced; a join or a concurrence is.
+
+    Args:
+        events: The challenge's events, in chain order.
+        responses: Count answers to the draft opinion as positions too.
+
+    Returns:
+        One dict per judge who acted, by judge number: judge, convinced, reason, evidence, and how
+        ("vote", "filing", or the stance of a response).
+    """
     latest = {}
     for e in events:
         if not e.get("actor", "").startswith("judge-"):
@@ -272,8 +382,19 @@ def positions(events: list[dict], responses: bool = False) -> list[dict]:
 
 
 def opinion_record(events: list[dict]) -> dict | None:
-    """The final Opinion of the Court: its holding, reasoning and stipulations, who joined it, and every
-    concurrence and dissent a draft drew along the way."""
+    """Assemble the final Opinion of the Court from a challenge's events.
+
+    The record holds the final draft's holding, reasoning and stipulations, who joined it, and every
+    concurrence and dissent a draft drew along the way. Only joins after the final draft count, since a
+    revised opinion must be joined again.
+
+    Args:
+        events: The challenge's events, in chain order.
+
+    Returns:
+        The opinion record: author, revision, revisions, holding, steps, stipulations, joined,
+        concurrences and dissents; None when no opinion was drafted.
+    """
     drafts = [e for e in events if e["type"] == "opinion"]
     if not drafts:
         return None
@@ -296,11 +417,24 @@ def opinion_record(events: list[dict]) -> dict | None:
 
 
 def cited(sources: list[dict]) -> str:
+    """List sources briefly for prose, such as "CR 702.19b; ORACLE Llanowar Elves", or "no sources"."""
     return "; ".join(f"{s.get('doc', 'cr').upper()} {s.get('ref')}" for s in sources) or "no sources"
 
 
 def per_curiam(cid: str, state: dict, events: list[dict]) -> dict:
-    """The short record of a refused case, assembled from the judges' settled positions: no agent writes it."""
+    """Assemble the short record of a refused or open case from the judges' settled positions.
+
+    No agent writes it: the text is built only from what each judge last said, so it can't claim more
+    than the judges did.
+
+    Args:
+        cid: The challenge.
+        state: Its state after the latest event.
+        events: The challenge's events, in chain order.
+
+    Returns:
+        The per curiam record: outcome, why, final hash, rule, positions and its text.
+    """
     case = events[state["case_seq"]]["case"]
     pos = positions(events, responses=True)
     against = [p for p in pos if not p["convinced"]]
@@ -316,6 +450,18 @@ def per_curiam(cid: str, state: dict, events: list[dict]) -> dict:
 
 
 def write_per_curiam(cid: str, state: dict) -> Path:
+    """Write a challenge's per curiam record to challenges/<id>/record/per-curiam.json.
+
+    Args:
+        cid: The challenge.
+        state: Its state after the latest event.
+
+    Returns:
+        The path written.
+
+    Raises:
+        SystemExit: Via judge.die() when there's no such challenge.
+    """
     folder = challenge_dir(cid) / "record"
     folder.mkdir(exist_ok=True)
     path = folder / "per-curiam.json"
@@ -325,8 +471,20 @@ def write_per_curiam(cid: str, state: dict) -> Path:
 
 
 def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
-    """The rule file for a closed challenge, with its provenance: the challenge, the hash of its final event,
-    the votes, the verifier's last report, the devices and dates, and the pinned sources."""
+    """Build the rule file for a closed challenge, with its provenance.
+
+    The provenance is the challenge, the hash of its final event, the votes, the Opinion of the Court,
+    the verifier's last report, the devices and dates, and the pinned sources. A house rule departs from
+    the court, so it carries no opinion.
+
+    Args:
+        cid: The challenge.
+        state: Its state after the closing event.
+        house_rule: Whether the user kept a refuted case as a house rule.
+
+    Returns:
+        The rule, ready to save.
+    """
     files = {json.loads(read_raw(p))["seq"]: p for p in event_files(cid)}
     events = events_in_order(cid)
     case = events[state["case_seq"]]["case"]
@@ -349,9 +507,23 @@ def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
 
 
 def settle(cid: str, state: dict) -> str | None:
-    """Write what a closed challenge leaves behind. An introduced challenge writes rules/challenge-<id>.json; a
-    house rule writes rules/house-challenge-<id>.json. A challenge that reopened a stale rule moves that rule
-    instead: introduced again, it is current with the new case; refuted, it is retired."""
+    """Write what a closed challenge leaves behind.
+
+    An introduced challenge writes rules/challenge-<id>.json; a house rule writes
+    rules/house-challenge-<id>.json; a refuted challenge, or one left open, writes a per curiam record of
+    the judges' positions. A challenge that reopened a stale rule moves that rule instead: introduced
+    again, it is current with the new case; refuted or withdrawn, it is retired.
+
+    Args:
+        cid: The challenge.
+        state: Its state after the latest event.
+
+    Returns:
+        A sentence for the commit message saying what changed, or None when nothing did.
+
+    Raises:
+        SystemExit: Via judge.die() when the core refuses a rule transition.
+    """
     reopens = events_in_order(cid)[0].get("reopens")
     if reopens and state["state"] in ("introduced", "refuted", "withdrawn"):
         path = RULES_DIR / f"{reopens}.json"
@@ -381,8 +553,20 @@ def settle(cid: str, state: dict) -> str | None:
 
 
 def recheck_rules(offline: bool = False) -> list[tuple[str, list[str], str]]:
-    """Every current rule whose sources changed goes stale, and a new challenge opens against the new text,
-    carrying the old case for the clerk. Returns (rule, reasons, the new challenge) for each."""
+    """Reopen every current rule whose sources changed.
+
+    The sources of both the case's steps and the opinion's steps are checked. Each rule that fails goes
+    stale, and a new challenge opens against the new text, carrying the old case for the clerk.
+
+    Args:
+        offline: Skip Oracle sources, which need Scryfall.
+
+    Returns:
+        (rule id, reasons, the new challenge id) for each rule reopened.
+
+    Raises:
+        SystemExit: Via judge.die() when the core refuses a transition or the new challenge.
+    """
     reopened = []
     for path in sorted(RULES_DIR.glob("challenge-*.json")):
         rule = load_rule(path)
@@ -419,10 +603,18 @@ def recheck_rules(offline: bool = False) -> list[tuple[str, list[str], str]]:
 
 
 def sources_in(fields: dict) -> list[tuple[str, dict]]:
-    """Every source in an event's case, refutations, replies, concessions and votes, with a label for messages."""
+    """Find every source in an event's case, opinion, refutations, replies, concessions, votes and responses.
+
+    Args:
+        fields: The event's fields.
+
+    Returns:
+        (label for messages, source) pairs. The sources are the event's own dicts, so pinning one changes the event.
+    """
     found = []
 
     def steps(label: str, items: list) -> None:
+        """Collect the sources of a list of proof steps under label."""
         for st in items or []:
             if isinstance(st.get("source"), dict):
                 found.append((f"{label} step {st.get('id')}", st["source"]))
@@ -445,7 +637,17 @@ def sources_in(fields: dict) -> list[tuple[str, dict]]:
 
 
 def oracle_text(name: str) -> tuple[str, str] | None:
-    """A card's exact name and current Oracle text, from Scryfall."""
+    """Fetch a card's exact name and current Oracle text from Scryfall.
+
+    Args:
+        name: The card's exact name.
+
+    Returns:
+        (name, Oracle text), or None when offline.
+
+    Raises:
+        urllib.error.URLError: When Scryfall can't be reached or has no such card.
+    """
     if judge.OFFLINE:
         return None
     card = judge.http_json(f"{judge.API}/cards/named?exact={urllib.parse.quote(name)}")
@@ -453,7 +655,17 @@ def oracle_text(name: str) -> tuple[str, str] | None:
 
 
 def official_ruling_with(excerpt: str) -> bool:
-    """Whether some official ruling in the index contains the excerpt."""
+    """Tell whether some official ruling in the index contains the excerpt, ignoring case and spacing.
+
+    The index is narrowed with SQL LIKE on the excerpt's longest run free of wildcard characters, then
+    each candidate is compared in full.
+
+    Args:
+        excerpt: The quoted words.
+
+    Returns:
+        True when an official ruling contains them; False when none does or there's no index.
+    """
     if not judge.INDEX.exists():
         return False
     needle = " ".join(excerpt.split()).lower()
@@ -469,7 +681,18 @@ def official_ruling_with(excerpt: str) -> bool:
 
 
 def source_text(src: dict) -> tuple[str | None, str | None]:
-    """The current text a source cites, or the reason it can't be found."""
+    """Find the current text a source cites.
+
+    Args:
+        src: The source: its doc (cr, mtr, ipg, jar, oracle...) and ref.
+
+    Returns:
+        (text, None) when found; (None, reason) when it can't be found; (None, None) for a source quoted
+        from elsewhere, such as a ruling or a format file, where the excerpt is the text.
+
+    Raises:
+        SystemExit: Via judge.die() when it cites the CR and the CR isn't downloaded.
+    """
     doc = src.get("doc", "cr")
     ref = str(src.get("ref", ""))
     if doc == "cr":
@@ -487,11 +710,22 @@ def source_text(src: dict) -> tuple[str | None, str | None]:
 
 
 def quoted(excerpt: str, text: str) -> bool:
+    """Tell whether the excerpt appears in the text, ignoring case and spacing."""
     return " ".join(excerpt.split()).lower() in " ".join(text.split()).lower()
 
 
 def pin(fields: dict) -> list[str]:
-    """Check and pin every source in an event, as judge.py pins a ruling's citations. Returns the problems."""
+    """Check and pin every source in an event, as judge.py pins a ruling's citations.
+
+    The sources are changed in place: each gains its doc, level and text_sha256, and an Oracle source
+    its exact card name.
+
+    Args:
+        fields: The event's fields.
+
+    Returns:
+        The problems found; empty when every source checks.
+    """
     problems = []
     for label, src in sources_in(fields):
         src.setdefault("doc", "cr")
@@ -521,7 +755,14 @@ def pin(fields: dict) -> list[str]:
 
 
 def verify_source(src: dict) -> str | None:
-    """None if the source still says what it was pinned to say; otherwise what's wrong."""
+    """Check that a pinned source still says what it was pinned to say.
+
+    Args:
+        src: A pinned source.
+
+    Returns:
+        None when it does; otherwise what's wrong.
+    """
     doc = src.get("doc", "cr")
     where = f"{doc.upper()} {src.get('ref')}"
     text, missing = source_text(src)
@@ -541,6 +782,17 @@ def verify_source(src: dict) -> str | None:
 
 
 def verify_steps(label: str, steps: list) -> list[str]:
+    """Verify each sourced step's source.
+
+    In the case itself, a step with no source must be a stipulation; anywhere else it is just unsourced.
+
+    Args:
+        label: Where the steps are, for messages; "case" for the case itself.
+        steps: The proof steps.
+
+    Returns:
+        The problems found; empty when every step checks.
+    """
     problems = []
     for st in steps or []:
         if isinstance(st.get("source"), dict):
@@ -553,21 +805,35 @@ def verify_steps(label: str, steps: list) -> list[str]:
 
 
 def overridden_by_level_1(refutation: dict) -> bool:
+    """Tell whether a refutation says the case is overridden, citing a level 1 source (CR, Oracle or a ruling)."""
     return refutation.get("ground") == "overridden" and any(
         (st.get("source") or {}).get("doc") in LEVEL_1_DOCS for st in refutation.get("steps") or [])
 
 
 def sets_case(e: dict) -> bool:
+    """Tell whether an event replaces the case: a brief, an edit, a reopen, or an answer that fixes it."""
     return e["type"] in ("brief", "edit", "reopen") or (e["type"] == "answer" and bool(e.get("case")))
 
 
 def case_before(events: list[dict], seq: int) -> dict:
+    """Return the case as it stood just before event seq."""
     return [e for e in events if e["seq"] < seq and sets_case(e)][-1]["case"]
 
 
 def round_filings(events: list[dict], n: int, before: int) -> dict[int, dict]:
-    """Judge -> their filing in the attack round that ended before event `before`. A round starts after the
-    user's confirm or the verifier's report on the answers (a reopened challenge starts again at round 1)."""
+    """Find each judge's filing in the attack round that ended before event `before`.
+
+    A round starts after the user's confirm or the verifier's report on the answers (a reopened
+    challenge starts again at round 1).
+
+    Args:
+        events: The challenge's events, in chain order.
+        n: The round number.
+        before: The seq of the event that ended the round.
+
+    Returns:
+        Judge number -> their filing.
+    """
     start = max(e["seq"] for e in events if e["seq"] < before and
                 (e["type"] == "confirm" or (e["type"] == "report" and e["stage"] == "answers")))
     return {int(e["actor"].removeprefix("judge-")): e for e in events
@@ -575,7 +841,20 @@ def round_filings(events: list[dict], n: int, before: int) -> dict[int, dict]:
 
 
 def build_report(cid: str, state: dict) -> dict:
-    """The verifier's report for the round in progress, from the event files."""
+    """Build the verifier's report for the round in progress, from the event files.
+
+    In the verify state it checks the judges' refutations; in verify-answers, the user's answers to
+    the refutations still standing. A standing refutation falls only to a reply that checks: a rebuttal
+    whose sources verify, or a fix that changes or removes the step it attacked. Either way it checks
+    the case's own sources too.
+
+    Args:
+        cid: The challenge.
+        state: Its state, which must be verify or verify-answers.
+
+    Returns:
+        A report event's fields: round, stage, passed, level1_conflict, standing and notes.
+    """
     events = events_in_order(cid)
     n = state["round"]
     case = events[state["case_seq"]]["case"]
@@ -609,6 +888,7 @@ def build_report(cid: str, state: dict) -> dict:
                 holds = not problems and any(isinstance(st.get("source"), dict) for st in rp.get("steps") or [])
             elif rp["kind"] == "fix" and answer.get("case"):
                 def step(c):
+                    """Return the step of case c that the refutation attacked, or None if it's gone."""
                     return next((st for st in c["steps"] if st["id"] == refutation["target"]), None)
                 holds = step(case) != step(old_case)
             if not holds:
@@ -649,6 +929,16 @@ NEXT = {
 
 
 def status_text(cid: str, state: dict) -> str:
+    """Describe a challenge's state for people: where it stands, what happens next, and who owes it.
+
+    Args:
+        cid: The challenge.
+        state: Its state from the core.
+
+    Returns:
+        Lines of text: the state, any reason, the opinion's revision, the per curiam record, and the next
+        step with who owes it.
+    """
     if not state.get("ok"):
         return f"{cid}\n{describe_failure(state)}"
     lines = [f"{cid}: {state['state']}" + (f", round {state['round']}" if state.get("round") else "") +
@@ -673,6 +963,17 @@ def status_text(cid: str, state: dict) -> str:
 
 
 def load_json(path: str) -> dict:
+    """Read a JSON file the caller supplied.
+
+    Args:
+        path: The file's path.
+
+    Returns:
+        The parsed JSON.
+
+    Raises:
+        SystemExit: Via judge.die() when it can't be read or isn't JSON.
+    """
     try:
         return json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as err:
@@ -680,6 +981,17 @@ def load_json(path: str) -> dict:
 
 
 def pinned(fields: dict) -> dict:
+    """Pin an event's sources and return its fields.
+
+    Args:
+        fields: The event's fields; its sources are pinned in place.
+
+    Returns:
+        The same fields, pinned.
+
+    Raises:
+        SystemExit: Via judge.die() when any source doesn't check.
+    """
     problems = pin(fields)
     if problems:
         judge.die("The sources don't check:\n" + "\n".join(f"- {p}" for p in problems))
@@ -687,6 +999,14 @@ def pinned(fields: dict) -> dict:
 
 
 def cmd_open(args) -> int:
+    """Run `open`: open a challenge with the user's case, in their own words, and print its id.
+
+    Args:
+        args: The parsed command line: statement and panel.
+
+    Returns:
+        The exit status.
+    """
     cid, state = propose(None, "user", {"type": "open", "statement": args.statement, "panel": args.panel},
                          f"Open a challenge: {args.statement[:60]}", words=args.statement)
     print(cid)
@@ -695,6 +1015,14 @@ def cmd_open(args) -> int:
 
 
 def cmd_brief(args) -> int:
+    """Run `brief`: file the clerk's brief, with its sources pinned.
+
+    Args:
+        args: The parsed command line: id and case (a JSON file).
+
+    Returns:
+        The exit status.
+    """
     fields = pinned({"type": "brief", "case": load_json(args.case)})
     _, state = propose(args.id, "clerk", fields, "The clerk's brief")
     print(status_text(args.id, state))
@@ -702,6 +1030,14 @@ def cmd_brief(args) -> int:
 
 
 def cmd_edit(args) -> int:
+    """Run `edit`: replace the brief with a corrected case, recording the user's words.
+
+    Args:
+        args: The parsed command line: id, case, user_said and actor.
+
+    Returns:
+        The exit status.
+    """
     fields = pinned({"type": "edit", "case": load_json(args.case), "words": args.user_said})
     _, state = propose(args.id, args.actor, fields, "Correct the brief", words=args.user_said)
     print(status_text(args.id, state))
@@ -709,6 +1045,14 @@ def cmd_edit(args) -> int:
 
 
 def cmd_confirm(args) -> int:
+    """Run `confirm`: the user confirms the brief, which starts the first attack round.
+
+    Args:
+        args: The parsed command line: id and user_said.
+
+    Returns:
+        The exit status.
+    """
     _, state = propose(args.id, "user", {"type": "confirm", "words": args.user_said}, "The user confirms the brief",
                        words=args.user_said)
     print(status_text(args.id, state))
@@ -716,6 +1060,19 @@ def cmd_confirm(args) -> int:
 
 
 def cmd_add(args) -> int:
+    """Run `add`: add an event from a JSON file, such as a filing, an answer, a vote or the opinion.
+
+    Any chain fields in the file are dropped; propose() sets them.
+
+    Args:
+        args: The parsed command line: id, event and actor.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via judge.die() when the event has no type.
+    """
     fields = pinned(load_json(args.event))
     for key in ("v", "seq", "prev", "actor", "device", "time"):
         fields.pop(key, None)
@@ -727,6 +1084,17 @@ def cmd_add(args) -> int:
 
 
 def cmd_verify(args) -> int:
+    """Run `verify`: check the round's citations and file the verifier's report.
+
+    Args:
+        args: The parsed command line: id.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via judge.die() when the challenge isn't waiting for the verifier.
+    """
     state = replay(args.id)
     if not state.get("ok") or state["state"] not in ("verify", "verify-answers"):
         judge.die(status_text(args.id, state) + "\nThere is nothing for the verifier to check now.")
@@ -741,12 +1109,28 @@ def cmd_verify(args) -> int:
 
 
 def cmd_status(args) -> int:
+    """Run `status`: print the state and who acts next, or the core's raw state with --json.
+
+    Args:
+        args: The parsed command line: id and json.
+
+    Returns:
+        The exit status.
+    """
     state = replay(args.id)
     print(json.dumps(state, indent=2) if args.json else status_text(args.id, state))
     return 0
 
 
 def cmd_show(args) -> int:
+    """Run `show`: print the events, or only what one judge may see, as the core decides.
+
+    Args:
+        args: The parsed command line: id and judge.
+
+    Returns:
+        The exit status.
+    """
     if args.judge is None:
         shown = [json.loads(r) for r in raws(args.id)]
     else:
@@ -759,6 +1143,14 @@ def cmd_show(args) -> int:
 
 
 def cmd_list(args) -> int:
+    """Run `list`: print every challenge and its state.
+
+    Args:
+        args: The parsed command line (unused).
+
+    Returns:
+        The exit status.
+    """
     if not CHALLENGES_DIR.exists():
         print("No challenges yet.")
         return 0
@@ -773,6 +1165,14 @@ def cmd_list(args) -> int:
 
 
 def cmd_withdraw(args) -> int:
+    """Run `withdraw`: the user withdraws the challenge.
+
+    Args:
+        args: The parsed command line: id and user_said.
+
+    Returns:
+        The exit status.
+    """
     _, state = propose(args.id, "user", {"type": "withdraw", "words": args.user_said}, "The user withdraws it",
                        words=args.user_said)
     print(status_text(args.id, state))
@@ -780,7 +1180,19 @@ def cmd_withdraw(args) -> int:
 
 
 def cmd_resolve(args) -> int:
-    """Keep one branch of a fork; move the other branch's files to discarded/, never deleting them."""
+    """Run `resolve`: keep one branch of a fork, and move the other branch's files to discarded/.
+
+    The other branch is never deleted, and everything built on it moves with it.
+
+    Args:
+        args: The parsed command line: id, keep and user_said.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via judge.die() when the challenge isn't forked or keep isn't one of the forked events.
+    """
     state = replay(args.id)
     if "fork" not in state:
         judge.die("The challenge isn't forked; there's nothing to resolve.")
@@ -809,7 +1221,17 @@ def cmd_resolve(args) -> int:
 
 
 def cmd_trace(args) -> int:
-    """The id recomputes from the opening event, the chain is unbroken, and any rule file matches its challenge."""
+    """Run `trace`: check that a challenge can be traced end to end.
+
+    It traces when the id recomputes from the opening event, the chain is unbroken, and any rule file
+    matches its challenge.
+
+    Args:
+        args: The parsed command line: id.
+
+    Returns:
+        0 when it traces, 1 when it doesn't.
+    """
     files = event_files(args.id)
     problems = []
     for p in files:
@@ -854,6 +1276,11 @@ def cmd_trace(args) -> int:
 
 
 def main() -> int:
+    """Run the command line, syncing with the remote store before reads and after writes when one is set.
+
+    Returns:
+        The exit status of the chosen command.
+    """
     parser = argparse.ArgumentParser(description="Challenges: the only way a rule enters the record.")
     sub = parser.add_subparsers(dest="command", required=True)
 
