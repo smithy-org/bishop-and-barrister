@@ -110,7 +110,8 @@ structure State where
 def State.init : State :=
   { phase := .unopened, panel := .independent, since := 0, caseSeq := 0, head := none }
 
-def joinErrors (errs : List String) : String := String.intercalate "; " errs
+def joinErrors (errs : List String) : String := String.intercalate "
+" errs
 
 def withdrawBy (s : State) (x : Entry) (words : String) : Except String State :=
   if x.actor = Actor.user ∧ words ≠ "" then .ok { s with phase := .withdrawn }

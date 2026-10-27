@@ -79,7 +79,8 @@ def outcomeJson (evs : List Entry) : Outcome → Json
   | .fork => failJson "fork" (forkJson evs)
   | .broken why => failJson "broken" (toJson why)
   | .refused seq why =>
-    failJson "refused" (Json.mkObj [("seq", toJson seq), ("why", toJson (why.splitOn "; ").toArray)])
+    failJson "refused" (Json.mkObj [("seq", toJson seq), ("why", toJson (why.splitOn "
+").toArray)])
 
 /-- `bab-challenge replay`: the events → the state, the next action and who owes it. -/
 def replayJson (raws : List String) : Json :=
@@ -105,7 +106,8 @@ def checkJson (raws : List String) (proposed : String) : Json :=
         | .state s' tags' =>
           Json.mkObj [("ok", toJson true), ("accepted", toJson true), ("hash", toJson p.hash),
             ("state", stateJson s' tags')]
-        | .refused _ why => refuseJson (why.splitOn "; ")
+        | .refused _ why => refuseJson (why.splitOn "
+")
         | _ => refuseJson ["the proposed event doesn't extend the chain"]
     | other => failJson "replay" (outcomeJson evs other)
 
