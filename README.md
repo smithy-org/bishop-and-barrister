@@ -30,6 +30,24 @@ python ~/.claude/skills/bishop-and-barrister/scripts/judge.py build
 
 Needs Python 3.10 or later, git, and `pypdf` for the tournament documents.
 
+### Optional: sync across your devices
+
+By default everything stays on your machine. To share your rulings between devices, point the skill at a
+RustFS you control, on your own network or a remote server (1.0.4 or later; any S3-compatible store should
+work). The bucket must be private. Put the keys in the environment, never in a file the skill writes:
+
+```bash
+export BISHOP_AND_BARRISTER_S3_ACCESS_KEY=...   # or a profile in ~/.aws/credentials (--profile)
+export BISHOP_AND_BARRISTER_S3_SECRET_KEY=...
+python ~/.claude/skills/bishop-and-barrister/scripts/judge.py sync --setup --endpoint https://rustfs.example.net --bucket bishop-and-barrister --create
+python ~/.claude/skills/bishop-and-barrister/scripts/judge.py sync
+```
+
+After setup it syncs by itself: searches pull other devices' rulings in (at most every 10 minutes) and every
+change is uploaded straight away, without ever holding up an answer. `judge.py sync` forces it. The local record
+stays the copy the skill works from; the bucket is a synced copy. A RustFS to try it with:
+`docker run -d -p 127.0.0.1:9000:9000 -e RUSTFS_ACCESS_KEY=... -e RUSTFS_SECRET_KEY=... rustfs/rustfs:1.0.4`.
+
 ## What's here
 
 | Path                             | What                                                                  |
@@ -42,6 +60,7 @@ Needs Python 3.10 or later, git, and `pypdf` for the tournament documents.
 | `scripts/card.py`                | Oracle text, official rulings and format legality, from Scryfall      |
 | `scripts/lookup.py`              | Searches the Comprehensive Rules, or with `--doc` the MTR, IPG or JAR |
 | `scripts/sources.py`             | Downloads the rules documents and checks for new versions             |
+| `scripts/s3.py`                  | The optional remote store's client (standard library only)            |
 | `scripts/update_rules.py`        | Downloads the Comprehensive Rules (`sources.py` runs it)              |
 | `reference/trusted-sources.json` | The only web sources the judge may use, with their levels             |
 | `reference/formats/`             | One file per format the skill covers, with a source for every fact    |
