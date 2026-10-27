@@ -5,9 +5,8 @@
 | Path                    | What                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------- |
 | `formats/`              | One file per format, plus `matches.md`; every fact with its source. See its README    |
-| `recording.md`          | How to record, discuss and review rulings, and keep the documents current             |
-| `ruling-template.json`  | The shape of a recorded ruling                                                        |
 | `trusted-sources.json`  | The only web sources the judge may use, with their levels                             |
+| `upkeep.md`             | Keeping the documents current                                                         |
 
 ## Downloaded, never shipped
 

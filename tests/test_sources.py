@@ -155,10 +155,15 @@ class JudgeDocTest(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
         return result
 
-    def record(self, ref):
-        path = Path(self.tmp.name) / "r.json"
-        path.write_text(json.dumps(ruling(ref)), encoding="utf-8")
-        return self.judge("record", str(path), ok=False)
+    def pin(self, ref):
+        """Check and pin one IPG citation as challenge.py does, through judge.py's validate_citation/pin_citation."""
+        code = ("import json, sys; sys.path.insert(0, sys.argv[1]); import judge; c = {'id': 'c1', 'doc': 'ipg', 'ref': sys.argv[2]}; "
+                "errors = judge.validate_citation(c, 'citation c1'); errors or judge.pin_citation(c); "
+                "print(json.dumps({'errors': errors, 'citation': c}))")
+        result = subprocess.run([sys.executable, "-c", code, str(SCRIPTS), ref], capture_output=True, text=True,
+                                encoding="utf-8", env=self.env)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        return json.loads(result.stdout)
 
     def test_lookup_reads_a_document(self):
         out = subprocess.run([sys.executable, str(SCRIPTS / "lookup.py"), "--doc", "ipg", "rule", "hidden card"],
@@ -166,22 +171,21 @@ class JudgeDocTest(unittest.TestCase):
         self.assertIn("2.3  Game Play Error — Hidden Card Error Warning", out)
 
     def test_citation_by_heading_is_pinned_to_the_section(self):
-        result = self.record("Hidden Card Error")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        rid = result.stdout.split()[1]
-        saved = json.loads((Path(self.tmp.name) / "home" / "rulings" / f"{rid}.json").read_text(encoding="utf-8"))
-        c = saved["citations"][0]
+        c = self.pin("Hidden Card Error")["citation"]
         self.assertEqual((c["ref"], c["level"], c["version"]), ("2.3", 2, "September 23, 2024"))
         self.assertEqual(len(c["text_sha256"]), 64)
 
     def test_unknown_or_ambiguous_section_is_refused(self):
         for ref in ("9.9", "Game Play Error"):
-            result = self.record(ref)
-            self.assertEqual(result.returncode, 2, ref)
-            self.assertIn("doesn't name exactly one section", result.stderr)
+            self.assertIn("doesn't name exactly one section", " ".join(self.pin(ref)["errors"]), ref)
 
     def test_recheck_flags_a_changed_section_even_when_renumbered(self):
-        rid = self.record("2.3").stdout.split()[1]
+        # A house rule from before challenges, citing IPG 2.3.
+        home = Path(self.tmp.name) / "home"
+        rid = "dddd11112222"
+        r = {**ruling("2.3"), "id": rid, "kind": "reviewed", "level": 5, "status": "current", "house_rule": True}
+        r["citations"] = [self.pin("2.3")["citation"]]
+        (home / "rulings" / f"{rid}.json").write_text(json.dumps(r), encoding="utf-8")
         self.assertIn("still match", self.judge("recheck").stdout)
         changed = json.loads(json.dumps(IPG_JSON))
         changed["sections"].insert(1, {"key": "2.1", "heading": "Game Play Error — Missed Trigger", "text": "..."})
@@ -193,7 +197,6 @@ class JudgeDocTest(unittest.TestCase):
         out = self.judge("recheck").stdout
         self.assertIn(rid, out)
         self.assertIn("IPG 2.3 changed", out)
-
 
 if __name__ == "__main__":
     unittest.main()

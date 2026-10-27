@@ -10,6 +10,7 @@ a small fixture Comprehensive Rules file and BISHOP_AND_BARRISTER_OFFLINE, so no
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -289,23 +290,129 @@ class ChallengeTest(unittest.TestCase):
         files[0].write_bytes(original[files[0]])
         self.assertIn("traces", self.ok("trace", cid))
 
-    def test_trace_checks_a_rule_file_against_its_challenge(self):
-        cid = self.to_attack()
+    def introduce(self, cid=None, convinced=lambda k: True):
+        cid = cid or self.to_attack()
         for k in range(1, 8):
             self.file(cid, k)
         self.ok("verify", cid)
         for k in range(1, 8):
-            self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
-        head = self.status(cid)["head"]
-        rules = self.home / "rules"
-        rules.mkdir()
-        rule = rules / f"{cid}.json"
-        rule.write_text(json.dumps({"challenge": cid, "final_hash": head}), encoding="utf-8")
+            vote = {**VOTE, "convinced": convinced(k)}
+            self.ok("add", cid, self.write("vote.json", vote), "--as", f"judge-{k}")
+        return cid
+
+    def test_an_introduced_challenge_writes_its_rule(self):
+        cid = self.introduce()
+        state = self.status(cid)
+        rule = json.loads((self.home / "rules" / f"{cid}.json").read_text(encoding="utf-8"))
+        self.assertEqual((rule["kind"], rule["state"], rule["challenge"]), ("rule", "current", cid))
+        self.assertEqual(rule["final_hash"], state["head"])
+        self.assertEqual(len(rule["votes"]), 7)
+        self.assertEqual(len(rule["verifier_report_sha256"]), 64)
+        self.assertEqual(rule["rule"], case()["rule"])
+        self.assertIn("Decided-by: panel", self.git_log())
         self.assertIn("the rule file matches its final event", self.ok("trace", cid))
-        rule.write_text(json.dumps({"challenge": "challenge-20260101-000000000000", "final_hash": head}), encoding="utf-8")
+
+    def test_trace_catches_a_rule_file_swapped_onto_another_challenge(self):
+        cid = self.introduce()
+        path = self.home / "rules" / f"{cid}.json"
+        rule = json.loads(path.read_text(encoding="utf-8"))
+        path.write_text(json.dumps({**rule, "challenge": "challenge-20260101-000000000000"}), encoding="utf-8")
         self.assertIn("names the challenge challenge-20260101", self.run_cli("trace", cid).stdout)
-        rule.write_text(json.dumps({"challenge": cid, "final_hash": "0" * 64}), encoding="utf-8")
+        path.write_text(json.dumps({**rule, "final_hash": "0" * 64}), encoding="utf-8")
         self.assertIn("is pinned to", self.run_cli("trace", cid).stdout)
+
+    def test_a_rule_is_searched_as_its_own_kind(self):
+        judge_py = [sys.executable, str(CHALLENGE.parent / "judge.py")]
+        bulk = self.root / "rulings.json"
+        bulk.write_text("[]", encoding="utf-8")
+        subprocess.run([*judge_py, "build", "--rulings-file", str(bulk)], env=self.env, check=True, capture_output=True)
+        cid = self.introduce()
+        out = subprocess.run([*judge_py, "search", "loser previous game", "--agent"], env=self.env, capture_output=True,
+                             text=True, encoding="utf-8").stdout
+        self.assertIn(f'id="{cid}" kind="rule" level="5" state="current"', out)
+        self.assertIn("<rule>The player who lost game 1", out)
+        self.assertIn(f"challenge.py trace {cid}", out)
+        self.assertIn(cid, subprocess.run([*judge_py, "search", "--rule", "103.1a"], env=self.env, capture_output=True,
+                                          text=True, encoding="utf-8").stdout)
+
+    def test_a_refuted_challenge_can_be_kept_as_a_house_rule(self):
+        cid = self.introduce(convinced=lambda k: k != 5)
+        self.assertFalse((self.home / "rules" / f"{cid}.json").exists())
+        self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "We play it this way anyway"}),
+                "--as", "user")
+        rule = json.loads((self.home / "rules" / f"house-{cid}.json").read_text(encoding="utf-8"))
+        self.assertTrue(rule["house_rule"])
+        self.assertEqual(rule["id"], f"house-{cid}")
+
+    def recheck(self):
+        return subprocess.run([sys.executable, str(CHALLENGE.parent / "judge.py"), "recheck", "--offline"], env=self.env,
+                              capture_output=True, text=True, encoding="utf-8")
+
+    def test_a_rule_whose_source_changed_must_win_again(self):
+        cid = self.introduce()
+        self.assertIn("still match", self.recheck().stdout)
+        self.cr.write_text(CR.replace("chooses who takes the first turn.\n\nGlossary",
+                                      "chooses who takes the first turn, unless the match is multiplayer.\n\nGlossary"),
+                           encoding="utf-8")
+        out = self.recheck().stdout
+        self.assertIn(f"Rule {cid} is stale", out)
+        path = self.home / "rules" / f"{cid}.json"
+        rule = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(rule["state"], "reopened")
+        again = rule["reopened_by"]
+        opening = json.loads(sorted((self.home / "challenges" / again).glob("*.json"))[0].read_text(encoding="utf-8"))
+        self.assertEqual(opening["reopens"], cid)
+        self.assertEqual(opening["carried"]["case"]["rule"], case()["rule"])
+        self.assertEqual(self.status(again)["state"], "draft")
+        # A reopened rule isn't reopened twice, and recheck says it's waiting on its challenge.
+        self.assertIn(f"Rule {cid} is still unconfirmed: its challenge {again}", self.recheck().stdout)
+        self.assertEqual(len(list((self.home / "challenges").iterdir())), 2)
+
+        self.ok("brief", again, self.write("case.json", case()))
+        self.ok("confirm", again, "--user-said", "same case, new text")
+        self.introduce(again)
+        rule = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual(rule["state"], "current")
+        self.assertEqual(rule["renewals"][0]["challenge"], again)
+        self.assertFalse((self.home / "rules" / f"{again}.json").exists())
+
+    def test_a_reopened_rule_that_loses_is_retired(self):
+        cid = self.introduce()
+        self.cr.write_text(CR.replace("the loser of the previous game chooses", "the loser of the previous game "
+                                      "chooses, in two-player games"), encoding="utf-8")
+        self.recheck()
+        path = self.home / "rules" / f"{cid}.json"
+        again = json.loads(path.read_text(encoding="utf-8"))["reopened_by"]
+        self.ok("withdraw", again, "--user-said", "the new text settles it")
+        self.assertEqual(json.loads(path.read_text(encoding="utf-8"))["state"], "retired")
+
+    def test_migrate_turns_reviewed_rulings_into_challenges(self):
+        judge_py = [sys.executable, str(CHALLENGE.parent / "judge.py")]
+        subprocess.run([*judge_py, "index"], env=self.env, check=True, capture_output=True)
+        rulings = self.home / "rulings"
+        base = {"question": "Blood Moon and Urborg?", "ruling": "No Swamps.", "agent_summary": "No Swamps.",
+                "level": 5, "status": "current",
+                "citations": [], "cards": [], "steps": [], "question_type": "interaction"}
+        for rid, kind, house in (("aaaa", "reviewed", False), ("bbbb", "unreviewed", False), ("cccc", "reviewed", True)):
+            (rulings / f"{rid}.json").write_text(json.dumps({**base, "id": rid, "kind": kind, "house_rule": house}),
+                                                 encoding="utf-8")
+        (self.home / "deliberation" / "aaaa.jsonl").write_text(
+            json.dumps({"by": "user", "decision": "reviewed", "said": "That's right"}) + "\n", encoding="utf-8")
+        out = subprocess.run([*judge_py, "migrate"], env=self.env, capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertIn("aaaa: now challenge challenge-", out.stdout)
+        self.assertIn("bbbb: set aside (unreviewed)", out.stdout)
+        cid = re.search(r"challenge-\d{8}-[0-9a-f]{12}", out.stdout).group(0)
+        state = self.status(cid)
+        self.assertEqual(state["state"], "draft")
+        opening = json.loads(sorted((self.home / "challenges" / cid).glob("*.json"))[0].read_text(encoding="utf-8"))
+        self.assertTrue(opening["statement"].startswith("That's right"))
+        self.assertEqual(opening["migrated_from"]["deliberation"][0]["said"], "That's right")
+        self.assertTrue((self.home / "rulings-migrated" / "aaaa.json").exists())
+        self.assertTrue((self.home / "rulings-retired" / "bbbb.json").exists())
+        self.assertTrue((rulings / "cccc.json").exists())
+        self.assertIn("Nothing to migrate", subprocess.run([*judge_py, "migrate"], env=self.env, capture_output=True,
+                                                           text=True, encoding="utf-8").stdout)
 
     # --- blindness and resumability ----------------------------------------------------------
 
