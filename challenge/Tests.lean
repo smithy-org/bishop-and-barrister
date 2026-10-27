@@ -63,6 +63,13 @@ def answerS (n : Nat) (slots : List (Nat × Nat)) : Spec :=
     ("replies", Json.arr (slots.map fun (j, i) => Json.mkObj [("judge", jnat j), ("index", jnat i),
       ("kind", jstr "rebut"), ("words", jstr "that situation isn't a match"),
       ("steps", Json.arr #[stepJ 1 ["C1"] (some (source "103.4"))])]).toArray)])
+def replyS (kind : String) (n : Nat) (slots : List (Nat × Nat)) (revised : Option Json := none) : Spec :=
+  ("user", "answer", [("round", jnat n), ("words", jstr "my answers"),
+    ("replies", Json.arr (slots.map fun (j, i) => Json.mkObj [("judge", jnat j), ("index", jnat i),
+      ("kind", jstr kind), ("words", jstr "fair point")]).toArray)] ++
+    (match revised with
+     | some c => [("case", c)]
+     | none => []))
 def voteS (k : Nat) (convinced : Bool) : Spec :=
   (s!"judge-{k}", "vote", [("convinced", toJson convinced), ("reason", jstr "step 2 settled it")])
 def words (actor type_ : String) : Spec := (actor, type_, [("words", jstr "in my own words")])
@@ -155,6 +162,12 @@ def checks : List Check := [
   expect "answered: verify the answers" (stateOf (chain (toAnswer ++ [answerS 1 [(1, 1)]]))) "verify-answers",
   expect "answers verified: round 2"
     (stateOf (chain (toAnswer ++ [answerS 1 [(1, 1)], reportS 1 "answers" []]))) "attack",
+  expect "a refutation conceded without a fix: refuted"
+    (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)]]))) "refuted",
+  expect "conceded, but with the case revised: round 2"
+    (stateOf (chain (toAnswer ++ [replyS "fix" 1 [(1, 1)] (some goodCase), reportS 1 "answers" []]))) "attack",
+  expectRefused "nothing after a conceded refutation"
+    (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)], refute 1 2 1]))),
   expect "four rounds with a refutation standing: open"
     (stateOf (chain ([opening, briefS, confirmS] ++ (List.range' 1 4).flatMap roundSpecs))) "open",
   expect "open, reopened with new facts: briefed"

@@ -176,6 +176,20 @@ class ChallengeTest(unittest.TestCase):
         state = self.status(cid)
         self.assertEqual((state["state"], state["round"]), ("attack", 2))
 
+    def test_conceding_a_refutation_refutes_the_case(self):
+        cid = self.to_attack()
+        self.file(cid, 1, REFUTE)
+        for k in range(2, 8):
+            self.file(cid, k)
+        self.ok("verify", cid)
+        concede = {"type": "answer", "round": 1, "words": "Fair, it doesn't cover three players",
+                   "replies": [{"judge": 1, "index": 1, "kind": "concede", "words": "Fair point"}]}
+        self.ok("add", cid, self.write("answer.json", concede), "--as", "user")
+        self.ok("verify", cid)
+        state = self.status(cid)
+        self.assertEqual(state["state"], "refuted")
+        self.assertIn("the user conceded judge 1's refutation 1", state["why"])
+
     def test_a_single_agent_panel_cannot_introduce(self):
         cid = self.open_briefed(panel="single-agent")
         self.ok("confirm", cid, "--user-said", "yes")
@@ -449,12 +463,14 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn("The user confirms the brief", self.ok("status", cid))
         self.ok("confirm", cid, "--user-said", "yes")
         out = self.ok("status", cid)
-        self.assertIn("judges 1, 2, 3, 4, 5, 6, 7 each file", out)
-        for k in range(1, 8):
+        self.assertIn("Round 1: judges 1, 2, 3, 4, 5, 6 and 7 still to file", out)
+        for k in range(1, 7):
             self.file(cid, k)
+        self.assertIn("Round 1: judge 7 still to file", self.ok("status", cid))
+        self.file(cid, 7)
         self.assertIn(f"challenge.py verify {cid}", self.ok("status", cid))
         self.ok("verify", cid)
-        self.assertIn("vote, blind", self.ok("status", cid))
+        self.assertIn("The panel votes, blind", self.ok("status", cid))
         self.assertIn(f"{cid}  voting; next: judge-1", self.ok("list"))
 
     # --- the binary --------------------------------------------------------------------------
