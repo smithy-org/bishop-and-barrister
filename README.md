@@ -53,7 +53,10 @@ stays the copy the skill works from; the bucket is a synced copy. A RustFS to tr
 | Path                             | What                                                                  |
 | -------------------------------- | --------------------------------------------------------------------- |
 | `SKILL.md`                       | The skill's instructions for Claude                                   |
-| `scripts/judge.py`               | The rulings record: search, record, discuss, review, recheck          |
+| `CHALLENGE.md`                   | How a challenge runs: the clerk, seven judges, rounds and the vote    |
+| `scripts/judge.py`               | The rulings record: search, show, recheck                             |
+| `scripts/challenge.py`           | Challenges: the only way a rule enters the record (`CHALLENGE.md`)    |
+| `challenge/`                     | The challenge core in Lean 4, with its proofs, built to `bab-challenge` |
 | `scripts/card.py`                | Oracle text, official rulings and format legality, from Scryfall      |
 | `scripts/lookup.py`              | Searches the Comprehensive Rules, or with `--doc` the MTR, IPG or JAR |
 | `scripts/sources.py`             | Downloads the rules documents and checks for new versions             |
@@ -61,8 +64,7 @@ stays the copy the skill works from; the bucket is a synced copy. A RustFS to tr
 | `scripts/update_rules.py`        | Downloads the Comprehensive Rules (`sources.py` runs it)              |
 | `reference/trusted-sources.json` | The only web sources the judge may use, with their levels             |
 | `reference/formats/`             | One file per format the skill covers, with a source for every fact    |
-| `reference/ruling-template.json` | The shape of a recorded ruling                                        |
-| `reference/recording.md`         | Recording, discussing and reviewing rulings; keeping documents current |
+| `reference/upkeep.md`            | Keeping the documents current                                         |
 | `evals/`                         | Rules questions with known answers, and the baseline results          |
 | `tests/`                         | Tests: `python -m unittest discover -s tests`                         |
 | `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |

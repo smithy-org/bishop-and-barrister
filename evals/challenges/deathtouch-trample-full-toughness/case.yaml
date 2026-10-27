@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: deathtouch-trample-full-toughness
+expected_state: refuted
+kind: refuted by level 1 text
+expected_outcome: |
+  Refuted. With deathtouch, 1 damage counts as lethal for assignment (CR 702.2c, 702.19b), so the rest can be assigned to the player. The case contradicts the CR.
+  Deciding: CR 702.2c with 702.19b.

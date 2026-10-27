@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: extra-card-regular-rel-game-loss
+expected_state: refuted
+kind: refuted by the tournament documents
+expected_outcome: |
+  Refuted. At Regular REL the JAR applies: an extra card drawn is fixed, not penalised with a Game Loss: a known card goes back where it belongs; otherwise that many random cards from the hand go on top of the library, unshuffled (JAR section 4). Game Loss penalties come from the IPG at Competitive REL, and even there Hidden Card Error is a Warning.
+  Deciding: JAR section 4 (drawing more cards than supposed to) (and IPG 2.3 if Competitive is raised).

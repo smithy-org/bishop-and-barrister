@@ -32,6 +32,8 @@ sys.path.insert(0, str(SCRIPTS))
 import s3  # noqa: E402
 
 LIVE = os.environ.get("BISHOP_AND_BARRISTER_TEST_S3_ENDPOINT")
+CORE = os.environ.get("BISHOP_AND_BARRISTER_CHALLENGE_BIN")
+CORE = CORE if CORE and Path(CORE).exists() else None
 
 CR = """Magic: The Gathering Comprehensive Rules
 
@@ -211,12 +213,31 @@ class SyncTest(unittest.TestCase):
         run.home = home
         return run
 
-    def record(self, run, question, answer):
-        path = run.home.parent / f"{uuid.uuid4().hex}.json"
-        path.write_text(json.dumps(ruling(question, answer)), encoding="utf-8")
-        result = run("record", str(path))
+    def house_rule(self, run, question, answer):
+        """Put a house rule in the record and commit it, then run a write (recheck), which uploads it by itself."""
+        rid = uuid.uuid4().hex[:12]
+        text = "Within a layer or sublayer, determining which order effects are applied in is sometimes done using a dependency system."
+        r = {**ruling(question, answer), "id": rid, "kind": "reviewed", "level": 5, "status": "current", "house_rule": True}
+        r["citations"][0].update(text_sha256=hashlib.sha256(text.encode("utf-8")).hexdigest(), excerpt=text)
+        (run.home / "rulings" / f"{rid}.json").write_text(json.dumps(r, indent=2) + "\n", encoding="utf-8")
+        self.commit(run, f"House rule {rid}: {question}")
+        run("index")
+        result = run("recheck")
         self.record_stderr = result.stderr
-        return result.stdout.split()[1]
+        return rid
+
+    def commit(self, run, message):
+        git = ["git", "-C", str(run.home)]
+        subprocess.run([*git, "add", "-A"], check=True, capture_output=True)
+        subprocess.run([*git, "-c", "user.name=Test", "-c", "user.email=test@localhost", "commit", "-q", "-m",
+                        f"{message}\n\nDecided-by: user"], check=True, capture_output=True)
+
+    def edit_house_rule(self, run, rid, answer):
+        path = run.home / "rulings" / f"{rid}.json"
+        r = json.loads(path.read_text(encoding="utf-8"))
+        r["ruling"] = answer
+        path.write_text(json.dumps(r, indent=2) + "\n", encoding="utf-8")
+        self.commit(run, f"Edit house rule {rid}")
 
     def test_local_only_by_default(self):
         a = self.device("a", setup=False)
@@ -230,24 +251,24 @@ class SyncTest(unittest.TestCase):
         self.assertNotIn("config.json", tracked)
         self.assertNotIn("SECRET", (a.home / "config.json").read_text(encoding="utf-8").upper())
 
-    def test_two_devices_share_rulings_and_history(self):
+    def test_two_devices_share_the_record_and_history(self):
         a, b = self.device("a"), self.device("b")
-        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
-        self.assertIn("nothing new to upload", a("sync").stdout)  # recording already uploaded it
+        rid = self.house_rule(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
+        self.assertIn("nothing new to upload", a("sync").stdout)  # the write already uploaded it
         self.assertIn("merged a", b("sync").stdout)
         self.assertIn(rid, b("search", "Urborg").stdout)
         log = subprocess.run(["git", "-C", str(b.home), "log", "--format=%B"], capture_output=True, text=True,
                              encoding="utf-8").stdout
-        self.assertIn(f"Record unreviewed ruling {rid}", log)  # A's commit, with its trailers, not a copy
-        self.assertIn("Drafted-by: model", log)
-        rid2 = self.record(b, "Humility and Opalescence?", "Timestamp order (CR 613.8).")
+        self.assertIn(f"House rule {rid}", log)  # A's commit, with its trailers, not a copy
+        self.assertIn("Decided-by: user", log)
+        rid2 = self.house_rule(b, "Humility and Opalescence?", "Timestamp order (CR 613.8).")
         self.assertIn("merged b", a("sync").stdout)
         self.assertIn(rid2, a("search", "Opalescence").stdout)
         self.assertIn("nothing new", a("sync").stdout)
 
     def test_syncs_by_itself_on_use(self):
         a, b = self.device("a"), self.device("b")
-        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")  # pushed on write
+        rid = self.house_rule(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")  # pushed on write
         search = b("search", "Urborg")  # pulled on read, no `sync` run
         self.assertIn(rid, search.stdout)
         self.assertIn("merged rulings from a", search.stderr)
@@ -255,33 +276,54 @@ class SyncTest(unittest.TestCase):
     def test_reads_pull_at_most_once_per_interval(self):
         a, b = self.device("a"), self.device("b", BISHOP_AND_BARRISTER_SYNC_INTERVAL="3600")
         b("search", "anything", ok=False)  # the first read pulls (nothing there yet)
-        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
+        rid = self.house_rule(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
         self.assertNotIn(rid, b("search", "Urborg", ok=False).stdout)  # within the interval: no pull
         b("sync")  # forcing it
         self.assertIn(rid, b("search", "Urborg").stdout)
 
     def test_unreachable_store_never_blocks(self):
         a = self.device("a", BISHOP_AND_BARRISTER_S3_ENDPOINT="http://127.0.0.1:9")
-        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
+        rid = self.house_rule(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
         first = a("search", "Urborg")
         self.assertIn(rid, first.stdout)
         self.assertIn("Working from the local record", first.stderr + self.record_stderr)
         self.assertNotIn("sync paused", a("search", "Urborg").stderr)  # said once, not on every read
         self.assertNotEqual(a("sync", ok=False).returncode, 0)  # forcing it reports the failure
 
-    def test_same_ruling_changed_on_both_devices_stops(self):
+    def test_same_file_changed_on_both_devices_stops(self):
         a, b = self.device("a"), self.device("b")
-        rid = self.record(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
+        rid = self.house_rule(a, "Blood Moon and Urborg?", "No Swamps: dependency (CR 613.8).")
         a("sync")
         b("sync")
-        a("review", rid, "--user-said", "Agreed.")
-        b("review", rid, "--user-said", "Agreed, as a house rule.", "--house-rule")
+        self.edit_house_rule(a, rid, "No Swamps.")
+        a("sync")
+        self.edit_house_rule(b, rid, "No Swamps, whatever the timestamps.")
         result = b("sync", ok=False)
         self.assertEqual(result.returncode, 1)
         self.assertIn(f"rulings/{rid}.json", result.stderr)
         status = subprocess.run(["git", "-C", str(b.home), "status", "--porcelain"], capture_output=True, text=True).stdout
         self.assertEqual(status.strip(), "")  # nothing half-merged left behind
         self.assertIn(rid, b("search", "Urborg").stdout)  # reads still work from the local record
+
+    @unittest.skipUnless(CORE, "set BISHOP_AND_BARRISTER_CHALLENGE_BIN to a bab-challenge binary")
+    def test_a_challenge_syncs_like_the_rest_of_the_record(self):
+        core = {"BISHOP_AND_BARRISTER_CHALLENGE_BIN": str(Path(CORE).resolve())}
+        a, b = self.device("a", **core), self.device("b", **core)
+
+        def challenge(home, *args):
+            env = {k: v for k, v in os.environ.items() if not k.startswith("BISHOP_AND_BARRISTER_")}
+            env.update(self.keys)
+            env.update(core, BISHOP_AND_BARRISTER_HOME=str(home), BISHOP_AND_BARRISTER_OFFLINE="1",
+                       BISHOP_AND_BARRISTER_CR=str(self.root / "cr.txt"), BISHOP_AND_BARRISTER_SYNC_INTERVAL="0",
+                       BISHOP_AND_BARRISTER_DEVICE=home.name)
+            result = subprocess.run([sys.executable, str(SCRIPTS / "challenge.py"), *args], capture_output=True,
+                                    text=True, encoding="utf-8", env=env)
+            self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
+            return result
+
+        cid = challenge(a.home, "open", "--statement", "Who chooses in game 2 of a three-player match?").stdout.split()[0]
+        listed = challenge(b.home, "list")  # a read: it pulls A's challenge in first
+        self.assertIn(f"{cid}  draft", listed.stdout)
 
     @unittest.skipIf(LIVE, "making a real bucket public isn't something a test should do")
     def test_public_bucket_is_refused(self):

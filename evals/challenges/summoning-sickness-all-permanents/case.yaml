@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: summoning-sickness-all-permanents
+expected_state: refuted
+kind: refuted by counterexample
+expected_outcome: |
+  Refuted by counterexample. CR 302.6 applies to creatures only; a noncreature artifact like Sol Ring can tap for mana the turn it comes under your control. The proposed rule gives the wrong answer there.
+  Deciding: CR 302.6 and a noncreature counterexample.

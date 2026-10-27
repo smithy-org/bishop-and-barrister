@@ -1,0 +1,5 @@
+{
+  "comment": "The bab-challenge binaries challenge.py downloads, from this release of smithy-org/bishop-and-barrister, refused unless the SHA-256 matches. Filled in from a release's pins.json (the challenge workflow attaches it); null until the first release.",
+  "release": null,
+  "binaries": {}
+}

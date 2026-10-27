@@ -584,6 +584,10 @@ Constraints it would have to respect:
 - **It must stay free under the Fan Content Policy,** with donations or sponsors allowed, and Scryfall's terms
   apply to any card data it shows.
 
+**Superseded in part by [plan 029](029-challenges.md) (2026-10-26):** answers no longer enter the record, so
+`record` and `review` are retired; the only way a rule gets in is a challenge judged by a panel of seven agents,
+and a public site would build on those challenges.
+
 ## Questions for the user
 
 None open. The remaining choice, the tip service, is tracked in `docs/ROADMAP.md`.

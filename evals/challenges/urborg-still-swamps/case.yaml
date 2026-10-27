@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: urborg-still-swamps
+expected_state: refuted
+kind: refuted by level 1 text
+expected_outcome: |
+  Refuted. Blood Moon's effect applies first through dependency (CR 613.8): it removes Urborg's ability, so no land becomes a Swamp from Urborg, whatever the timestamps. Urborg's official ruling (2021-03-19) says the same, so the case contradicts level 1 text.
+  Deciding: dependency (CR 613.8) or Urborg's 2021-03-19 ruling.
