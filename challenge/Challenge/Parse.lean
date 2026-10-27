@@ -74,6 +74,11 @@ def parseSource (j : Json) : Except String Source := do
     doc := ← getStr j "doc", ref := ← getStr j "ref", excerpt := ← getStr j "excerpt",
     textSha256 := ← getStr j "text_sha256" }
 
+def parseSources (j : Json) (k : String) : Except String (List Source) :=
+  match getOpt j k with
+  | some _ => do (← getArr j k).mapM parseSource
+  | none => pure []
+
 def parseStep (j : Json) : Except String Step := do
   let premises ← (← getStrList j "premises").mapM parseRef
   let source ← match getOpt j "source" with
@@ -83,8 +88,12 @@ def parseStep (j : Json) : Except String Step := do
     | some (.bool b) => pure b
     | some _ => throw "\"assumption\" must be true or false"
     | none => pure false
+  let stipulation ← match getOpt j "stipulation" with
+    | some (.bool b) => pure b
+    | some _ => throw "\"stipulation\" must be true or false"
+    | none => pure false
   pure { id := ← getNat j "id", premises := premises, source := source, assumption := assumption,
-         conclusion := ← getStr j "conclusion" }
+         stipulation := stipulation, conclusion := ← getStr j "conclusion" }
 
 def parseSteps (j : Json) (k : String) : Except String (List Step) := do
   (← getArr j k).mapM parseStep
@@ -170,7 +179,7 @@ def parseEvent (actor : Actor) (j : Json) : Except String Event := do
   | "file" =>
     let refutations ← (← getArr j "refutations").mapM parseRefutation
     pure (.file { judge := judgeOf, round := ← getNat j "round", refutations := refutations,
-                  concedes := ← getStrOr j "concedes" "" })
+                  concedes := ← getStrOr j "concedes" "", concedeEvidence := ← parseSources j "concede_evidence" })
   | "report" =>
     let standing ← (← getArr j "standing").mapM parseSlot
     pure (.report { round := ← getNat j "round", stage := ← parseStage (← getStr j "stage"),
@@ -184,7 +193,8 @@ def parseEvent (actor : Actor) (j : Json) : Except String Event := do
     pure (.answer { round := ← getNat j "round", replies := replies, revised := revised,
                     words := ← getStr j "words" })
   | "vote" =>
-    pure (.vote { judge := judgeOf, convinced := ← getBool j "convinced", reason := ← getStr j "reason" })
+    pure (.vote { judge := judgeOf, convinced := ← getBool j "convinced", reason := ← getStr j "reason",
+                  evidence := ← parseSources j "evidence" })
   | "withdraw" => pure (.withdraw (← getStr j "words"))
   | "house-rule" => pure (.houseRule (← getStr j "words"))
   | "reopen" =>

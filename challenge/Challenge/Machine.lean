@@ -6,8 +6,9 @@ import Challenge.Check
 Every challenge is in exactly one `Phase`. Two guarantees are carried by the types themselves, so no code path
 can break them:
 
-* `Phase.introduced` holds an `Earned`, which can only be built from five convinced votes, a passing verifier
-  report with no level 1 conflict, a case with no unsupported step, and an independent panel.
+* `Phase.introduced` holds an `Earned`, which can only be built from five convinced, evidenced votes, a passing
+  verifier report with no level 1 conflict and no standing refutation, a case whose every step is sourced or a
+  stipulation in a gap, and an independent panel.
 * `Phase.attack` and `Phase.voting` hold a proof that some judge has yet to act; the round advances the moment
   the last one does.
 
@@ -32,9 +33,12 @@ structure Earned where
   panel : Panel
   full : missingVoters votes = []
   allConvinced : votes.all (fun v => v.convinced) = true
+  evidenced : votes.all (fun v => !v.evidence.isEmpty) = true
   passed : report.passed = true
   noConflict : report.level1Conflict = false
-  sourced : claim.steps.all (fun st => st.source.isSome) = true
+  noStanding : report.standing.isEmpty = true
+  grounded : claim.steps.all (fun st => st.source.isSome || st.stipulation) = true
+  gapOnly : claim.steps.all (fun st => !st.stipulation || isGap claim.challenges) = true
   independent : panel = Panel.independent
 
 inductive Phase where
@@ -116,18 +120,43 @@ def withdrawBy (s : State) (x : Entry) (words : String) : Except String State :=
   if x.actor = Actor.user ∧ words ≠ "" then .ok { s with phase := .withdrawn }
   else .error "only the user withdraws a challenge, in their own words"
 
-/-- The verdict once all five have voted. -/
+/-- The only way to build an `Earned`: every guard, checked together. -/
+def earn? (c : Case) (r : Report) (vs : List Vote) (full : missingVoters vs = []) (p : Panel) : Option Earned :=
+  if h : vs.all (fun v => v.convinced) = true ∧ vs.all (fun v => !v.evidence.isEmpty) = true ∧
+      r.passed = true ∧ r.level1Conflict = false ∧ r.standing.isEmpty = true ∧
+      c.steps.all (fun st => st.source.isSome || st.stipulation) = true ∧
+      c.steps.all (fun st => !st.stipulation || isGap c.challenges) = true ∧ p = Panel.independent then
+    some ⟨c, r, vs, p, full, h.1, h.2.1, h.2.2.1, h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1, h.2.2.2.2.2.2.1,
+      h.2.2.2.2.2.2.2⟩
+  else none
+
+def notConvinced (vs : List Vote) : Nat := (vs.filter (fun v => !v.convinced)).length
+
+/-- A concession on an unchanged case is that judge's settled position: convinced, with its evidence. -/
+def concessionVote (f : Filing) : Vote :=
+  { judge := f.judge, convinced := true, reason := f.concedes, evidence := f.concedeEvidence }
+
+/-- The consensus, once every judge has settled. All convinced, and every guard holds: the rule is introduced.
+Three or more not convinced: refused, as `refuted` if a verified refutation stands or the case contradicts a
+level 1 source, and as `open` if it is merely unproven. One or two not convinced: no consensus, so another round
+(the dissenters' reasons are visible to all), until the round limit, when it stays `open`. -/
 def close (c : Case) (r : Report) (vs : List Vote) (full : missingVoters vs = []) (p : Panel) : Phase :=
-  if hc : vs.all (fun v => v.convinced) = true then
-    if hp : r.passed = true then
-      if hn : r.level1Conflict = false then
-        if hs : c.steps.all (fun st => st.source.isSome) = true then
-          if hi : p = Panel.independent then .introduced ⟨c, r, vs, p, full, hc, hp, hn, hs, hi⟩
-          else .open_ c "all five were convinced, but by a single-agent panel: only an independent panel can introduce a rule"
-        else .refuted c "the case relies on an assumption"
-      else .refuted c "the case contradicts a level 1 source"
-    else .refuted c "the final case didn't pass the verifier"
-  else .refuted c "not every judge was convinced"
+  match earn? c r vs full p with
+  | some e => .introduced e
+  | none =>
+    let defeated := !r.standing.isEmpty || r.level1Conflict
+    let dissent := notConvinced vs
+    if dissent = 0 then
+      if p = Panel.singleAgent then
+        .open_ c "all five were convinced, but by a single-agent panel: only an independent panel can introduce a rule"
+      else if defeated then
+        .refuted c "all five were convinced, but a verified refutation stands and a vote cannot override it"
+      else .open_ c "all five were convinced, but the case has an unsourced step or a position without evidence"
+    else if dissent ≥ refuseNeeds then
+      if defeated then .refuted c s!"{dissent} of {panelSize} judges were not convinced, and a verified refutation stands"
+      else .open_ c s!"{dissent} of {panelSize} judges were not convinced and no refutation stands: the case is unproven"
+    else if r.round + 1 ≤ roundCap then .attack (r.round + 1) c [] noneFiled
+    else .open_ c s!"no consensus after {roundCap} rounds: {dissent} of {panelSize} judges were not convinced"
 
 def onUnopened (s : State) (x : Entry) : Except String State :=
   match x.event with
@@ -184,7 +213,13 @@ def onVerify (s : State) (n : Nat) (c : Case) (fs : List Filing) (x : Entry) : E
     if x.actor ≠ Actor.verifier then .error "only the verifier files a report"
     else match checkReport n .attack fs r with
       | [] =>
-        if r.standing.isEmpty then .ok { s with phase := .voting c r [] noneVoted }
+        if r.standing.isEmpty then
+          -- Every judge conceded on the unchanged case: each concession is that judge's settled position.
+          if fs.all (fun f => f.refutations.isEmpty) then
+            let vs := fs.map concessionVote
+            if hf : missingVoters vs = [] then .ok { s with phase := close c r vs hf s.panel }
+            else .ok { s with phase := .voting c r [] noneVoted }
+          else .ok { s with phase := .voting c r [] noneVoted }
         else .ok { s with phase := .answer n c fs r }
       | errs => .error (joinErrors errs)
   | _ => .error s!"round {n}'s refutations are waiting for the verifier"
@@ -200,10 +235,6 @@ def onAnswer (s : State) (n : Nat) (c : Case) (fs : List Filing) (r : Report) (x
   | .withdraw w => withdrawBy s x w
   | _ => .error s!"round {n}'s verified refutations are waiting for the user's answer"
 
-/-- A refutation the user conceded without revising the case: it defeats the case. -/
-def concededWithoutFix (a : Answer) : Option Slot :=
-  if a.revised.isSome then none else (a.replies.find? (fun rp => rp.kind == ReplyKind.concede)).map (·.slot)
-
 def onVerifyAnswers (s : State) (n : Nat) (c : Case) (fs : List Filing) (a : Answer) (x : Entry) :
     Except String State :=
   match x.event with
@@ -211,13 +242,9 @@ def onVerifyAnswers (s : State) (n : Nat) (c : Case) (fs : List Filing) (a : Ans
     if x.actor ≠ Actor.verifier then .error "only the verifier files a report"
     else match checkReport n .answers fs r with
       | [] =>
-        match concededWithoutFix a with
-        | some sl =>
-          .ok { s with phase := .refuted c s!"the user conceded judge {sl.judge}'s refutation {sl.index} and didn't revise the case" }
-        | none =>
-          if n < roundCap then .ok { s with phase := .attack (n + 1) c [] noneFiled }
-          else if r.standing.isEmpty then .ok { s with phase := .voting c r [] noneVoted }
-          else .ok { s with phase := .open_ c s!"{roundCap} rounds, and refutations still stand" }
+        -- A revised case is attacked again. An unchanged one goes to the judges to settle: no script closes it.
+        if a.revised.isSome ∧ n < roundCap then .ok { s with phase := .attack (n + 1) c [] noneFiled }
+        else .ok { s with phase := .voting c r [] noneVoted }
       | errs => .error (joinErrors errs)
   | _ => .error s!"the user's answers to round {n} are waiting for the verifier"
 
@@ -226,24 +253,27 @@ def onVoting (s : State) (c : Case) (r : Report) (vs : List Vote) (x : Entry) : 
   | .vote v, .judge k =>
     if !judges.contains k then .error s!"there is no judge {k}; the judges are 1 to {panelSize}"
     else if votedBy vs k then .error s!"judge {k} has already voted"
-    else if v.reason = "" then
-      .error "a vote needs its reason: the step that settled it, or the refutation still standing"
-    else
-      let vs' := vs ++ [{ v with judge := k }]
-      if hw : missingVoters vs' = [] then .ok { s with phase := close c r vs' hw s.panel }
-      else .ok { s with phase := .voting c r vs' hw }
+    else match checkVote v with
+      | [] =>
+        let vs' := vs ++ [{ v with judge := k }]
+        if hw : missingVoters vs' = [] then .ok { s with phase := close c r vs' hw s.panel }
+        else .ok { s with phase := .voting c r vs' hw }
+      | errs => .error (joinErrors errs)
   | .vote _, _ => .error "only a judge votes"
   | _, _ => .error "the panel is voting"
 
-def onOpen (s : State) (_c : Case) (x : Entry) : Except String State :=
+def onOpen (s : State) (c : Case) (x : Entry) : Except String State :=
   match x.event with
+  | .houseRule w =>
+    if x.actor = Actor.user ∧ w ≠ "" then .ok { s with phase := .houseRule c }
+    else .error "only the user keeps a case as a house rule, in their own words"
   | .reopen c' p w =>
     if x.actor ≠ Actor.user ∨ w = "" then .error "the user reopens a challenge, in their own words"
     else match checkCase c' with
       | [] => .ok { s with phase := .briefed c', panel := p }
       | errs => .error (joinErrors errs)
   | .withdraw w => withdrawBy s x w
-  | _ => .error "the challenge is open: the user can return with new facts or sources, or withdraw it"
+  | _ => .error "the challenge is open: the user can return with new facts or sources, keep it as a house rule, or withdraw it"
 
 def onRefuted (s : State) (c : Case) (x : Entry) : Except String State :=
   match x.event with

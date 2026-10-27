@@ -239,6 +239,25 @@ def save_rule(rule: dict, path: Path) -> None:
     path.write_text(json.dumps(rule, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
+def positions(events: list[dict]) -> list[dict]:
+    """Each judge's settled position, with its reasoning and evidence: their last vote, or their last filing (a
+    concession is a convinced position, a refutation not)."""
+    latest = {}
+    for e in events:
+        if not e.get("actor", "").startswith("judge-"):
+            continue
+        k = int(e["actor"].removeprefix("judge-"))
+        if e["type"] == "vote":
+            latest[k] = {"judge": k, "convinced": e["convinced"], "reason": e["reason"], "evidence": e.get("evidence", []),
+                         "how": "vote"}
+        elif e["type"] == "file":
+            conceded = not e["refutations"]
+            latest[k] = {"judge": k, "convinced": conceded,
+                         "reason": e.get("concedes", "") if conceded else "filed refutations",
+                         "evidence": e.get("concede_evidence", []) if conceded else [], "how": "filing"}
+    return [latest[k] for k in sorted(latest)]
+
+
 def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
     """The rule file for a closed challenge, with its provenance: the challenge, the hash of its final event,
     the votes, the verifier's last report, the devices and dates, and the pinned sources."""
@@ -252,8 +271,8 @@ def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
         "state": "current", "challenge": cid, "final_hash": state["head"],
         "rule": case["rule"], "applies_when": case["applies_when"], "challenges": case["challenges"],
         "facts": case["facts"], "steps": case["steps"],
-        "votes": [{"judge": int(e["actor"].removeprefix("judge-")), "convinced": e["convinced"], "reason": e["reason"]}
-                  for e in events if e["type"] == "vote"],
+        "stipulations": [st["conclusion"] for st in case["steps"] if st.get("stipulation")],
+        "votes": positions(events),
         "verifier_report_sha256": sha256_file(files[reports[-1]["seq"]]) if reports else None,
         "opened": {"device": opening["device"], "time": opening["time"]},
         "introduced": {"device": last["device"], "time": last["time"]},
@@ -327,7 +346,7 @@ def recheck_rules(offline: bool = False) -> list[tuple[str, list[str], str]]:
 
 
 def sources_in(fields: dict) -> list[tuple[str, dict]]:
-    """Every source in an event's case, refutations and replies, with a label for messages."""
+    """Every source in an event's case, refutations, replies, concessions and votes, with a label for messages."""
     found = []
 
     def steps(label: str, items: list) -> None:
@@ -341,6 +360,11 @@ def sources_in(fields: dict) -> list[tuple[str, dict]]:
         steps(f"refutation {i}", r.get("steps"))
     for rp in fields.get("replies") or []:
         steps(f"reply to judge {rp.get('judge')}'s refutation {rp.get('index')}", rp.get("steps"))
+    # A concession and a vote each rest on the sources the judge checked.
+    for key, label in (("concede_evidence", "the concession"), ("evidence", "the vote")):
+        for i, src in enumerate(fields.get(key) or [], 1):
+            if isinstance(src, dict):
+                found.append((f"{label}'s evidence {i}", src))
     return found
 
 
@@ -447,7 +471,7 @@ def verify_steps(label: str, steps: list) -> list[str]:
             why = verify_source(st["source"])
             if why:
                 problems.append(f"{label} step {st.get('id')}: {why}")
-        elif label == "case":
+        elif label == "case" and not st.get("stipulation"):
             problems.append(f"case step {st.get('id')}: an assumption, with no source")
     return problems
 
@@ -533,8 +557,10 @@ NEXT = {
     "answer": "The user answers each verified refutation still standing ({standing}): concede, fix the case, or "
               "rebut (challenge.py add {id} answer.json --as user)",
     "verify-answers": "The verifier checks the user's answers to round {round}: challenge.py verify {id}",
-    "voting": "The panel votes, blind to each other's votes; {waiting} still to vote (challenge.py add {id} vote.json --as judge-<k>)",
-    "open": "Open: the user can return with new facts or sources (add a reopen event) or withdraw it",
+    "voting": "The judges settle, blind to each other's positions; {waiting} still to settle. Each vote needs its "
+              "reasoning and evidence (challenge.py add {id} vote.json --as judge-<k>)",
+    "open": "Open: the user can return with new facts or sources (a reopen event), keep it as a house rule, or "
+            "withdraw it",
 }
 
 
@@ -726,8 +752,9 @@ def cmd_trace(args) -> int:
             problems.append(f"{rule.name} names the challenge {data.get('challenge')}")
         if state.get("ok") and data.get("final_hash") != state.get("head"):
             problems.append(f"{rule.name} is pinned to {data.get('final_hash')}, but the challenge ends at {state.get('head')}")
-        if state.get("ok") and state.get("state") != "introduced":
-            problems.append(f"{rule.name} exists, but the challenge is {state.get('state')}, not introduced")
+        want = "house-rule" if rule.name.startswith("house-") else "introduced"
+        if state.get("ok") and state.get("state") != want:
+            problems.append(f"{rule.name} exists, but the challenge is {state.get('state')}, not {want}")
     if problems:
         print(f"{args.id}: doesn't trace")
         for p in problems:
