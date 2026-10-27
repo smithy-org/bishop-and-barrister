@@ -324,9 +324,32 @@ Lines, 5.4 MB on 2026-10-25) and loads it: rulings with `source: "wotc"` as offi
 `source: "scryfall"` as level 4. It refreshes when Scryfall publishes a new file (daily). The file is downloaded
 on each user's machine, never shipped with the skill: Scryfall's terms forbid republishing its data as is.
 
-**Sync across the user's own devices (optional).** One private store, the user's own RustFS bucket, holds both
-the record and the object store. No git host (GitHub, GitLab) and no remote database: the user runs one
-self-hosted service and nothing leaves it. (Decided 2026-10-26; this replaced a private git remote.)
+**Sync across the user's own devices (optional).** One private store, a RustFS bucket the user chooses, holds
+both the record and the object store. No git host (GitHub, GitLab) and no remote database. (Decided 2026-10-26;
+this replaced a private git remote.)
+
+**The RustFS is an endpoint the user configures, not part of the skill.** The skill ships no server and no
+default address. Each user points it at a RustFS they control: one on their own machine or network, or a
+remote one (a server they rent, or one run for them). Until an endpoint is set, `sync` is off and everything
+works locally as before. Setting one:
+
+```bash
+python scripts/judge.py sync --setup --endpoint https://rustfs.example.net --bucket bishop-and-barrister
+```
+
+`--setup` writes the settings, then checks the endpoint before saving: that it answers, that the credentials
+work, that the bucket exists (it offers to create it), and that it isn't publicly readable. It reports the
+server's version when the server says it, and warns below RustFS 1.0.4.
+
+A remote endpoint carries the user's rulings and their keys over the internet, so:
+
+- **HTTPS only for a remote endpoint.** Plain `http://` is refused unless the host is `localhost`, a loopback
+  address or a private network address (10.x, 172.16-31.x, 192.168.x).
+- **The bucket must stay private.** A public bucket would republish Scryfall's bulk file and Wizards' documents,
+  which their terms forbid, and expose the user's rulings. `--setup` and each `sync` check that anonymous reads
+  are refused, and stop if they aren't.
+- **Path-style addressing** (`https://host/bucket/key`), which RustFS and most self-hosted S3 servers expect;
+  `"addressing": "virtual"` in the settings switches to `https://bucket.host/key` for hosted S3 services.
 
 RustFS is a self-hosted, S3-compatible object store (Apache-2.0). Version 1.0.0 was released on 2026-09-16 and
 1.0.4 on 2026-10-25, with steady bug-fix releases; an authentication bypass in its internal RPC was reported and
@@ -352,9 +375,11 @@ RustFS is the one documented and tested.
 
 The device name defaults to the host name. Bundles are small: the record is text, a few kilobytes per ruling.
 
-**Settings and secrets.** The bucket's endpoint, name and the device name go in
-`~/.claude/bishop-and-barrister/config.json` (JSON, since `tomllib` needs Python 3.11 and the skill supports
-3.10). That file is gitignored, because every `judge.py` change runs `git add -A` in the record folder.
+**Settings and secrets.** The endpoint, bucket, region (default `us-east-1`, which RustFS accepts), addressing
+style and device name go in `~/.claude/bishop-and-barrister/config.json` (JSON, since `tomllib` needs Python
+3.11 and the skill supports 3.10). Environment variables override them
+(`BISHOP_AND_BARRISTER_S3_ENDPOINT`, `..._S3_BUCKET`), so a device can be pointed elsewhere without editing the
+file. That file is gitignored, because every `judge.py` change runs `git add -A` in the record folder.
 Credentials never go in it: they come from `BISHOP_AND_BARRISTER_S3_ACCESS_KEY` and
 `BISHOP_AND_BARRISTER_S3_SECRET_KEY`, or a named profile in `~/.aws/credentials`.
 
