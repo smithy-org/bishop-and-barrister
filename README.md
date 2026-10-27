@@ -1,4 +1,9 @@
-# Bishop & Barrister
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/bb-lockup-dark-bg.svg">
+    <img src="assets/bb-lockup-light-bg.svg" alt="Bishop &amp; Barrister" width="440">
+  </picture>
+</h1>
 
 A Claude skill that answers Magic: The Gathering rules questions from the official Comprehensive Rules and
 current Oracle card text instead of from memory, and cites the rules it relies on.
@@ -113,6 +118,7 @@ stays the copy the skill works from; the bucket is a synced copy. A RustFS to tr
 | `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |
 | `docs/ROADMAP.md`                | Everything planned but not done yet, and who or what it waits on      |
 | `docs/RELEASING.md`              | How a version is numbered and released                                |
+| `assets/`                        | The logo, mark and colours; `.claude-plugin/icon.png` is made from them |
 
 ## Status
 
