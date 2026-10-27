@@ -20,8 +20,9 @@ here with the skill's history on 2026-10-25. The number 028 is kept from there.
   the user's machine.
 - Git is the record, so every ruling, decision and source has a traceable history, much like an amended
   statute. SQLite is only a search index, rebuilt from the git files. Large files go in a local object store.
-- Sync across the user's own devices is optional, through one store: the user's own RustFS bucket holds both
-  the record (as git bundles) and the large files. No git host, no remote database. A server shared by several
+- Two storage modes: local only (the default), or local plus a remote RustFS store that the user's devices
+  sync with. The local record is always the working copy; the RustFS bucket is a synced copy holding the record
+  (as git bundles) and the large files. No git host, no remote database. A server shared by several
   users is out of scope.
 - `pypdf` is added, to read the tournament documents.
 - Tournament procedure and penalties are in scope.
@@ -328,10 +329,24 @@ on each user's machine, never shipped with the skill: Scryfall's terms forbid re
 both the record and the object store. No git host (GitHub, GitLab) and no remote database. (Decided 2026-10-26;
 this replaced a private git remote.)
 
+**Two storage modes.** Which one a user runs depends on whether they want a local-only rules repository or
+also an external store:
+
+| Mode                              | How it's chosen       | Where the rulings live                                                                                     |
+| --------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Local only** (the default)      | No endpoint set       | Only in `~/.claude/bishop-and-barrister/` on this machine. Nothing leaves it                               |
+| **Local plus a remote RustFS**    | An endpoint is set    | The same local record, plus a synced copy in a RustFS bucket that the user's other devices sync with too   |
+
+In both modes **the local record is the working copy.** Every search, lookup, `record`, `discuss` and `review`
+reads and writes the local git record and its index, so answers stay fast and work offline. The remote store
+is **a synced copy**, never read live while answering: `judge.py sync` brings the two into step (and the copy
+doubles as a backup). Losing the remote loses nothing the local record doesn't have; losing a device loses
+nothing that was synced.
+
 **The RustFS is an endpoint the user configures, not part of the skill.** The skill ships no server and no
 default address. Each user points it at a RustFS they control: one on their own machine or network, or a
-remote one (a server they rent, or one run for them). Until an endpoint is set, `sync` is off and everything
-works locally as before. Setting one:
+remote one (a server they rent, or one run for them). Until an endpoint is set, the skill runs local only.
+Setting one:
 
 ```bash
 python scripts/judge.py sync --setup --endpoint https://rustfs.example.net --bucket bishop-and-barrister
