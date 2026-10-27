@@ -13,6 +13,7 @@
   <a href="https://github.com/smithy-org/bishop-and-barrister/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/smithy-org/bishop-and-barrister"></a>
   <a href="https://github.com/smithy-org/bishop-and-barrister/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/smithy-org/bishop-and-barrister/actions/workflows/tests.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="Licence: Apache 2.0" src="https://img.shields.io/badge/licence-Apache%202.0-blue"></a>
+  <a href="https://ko-fi.com/pjderouen"><img alt="Tip on Ko-fi" src="https://img.shields.io/badge/Ko--fi-tip-FF5E5B?logo=kofi&amp;logoColor=white"></a>
 </p>
 
 Bishop & Barrister is a skill for Claude. When you ask a Magic rules question, Claude reads the current
@@ -33,6 +34,7 @@ Comprehensive Rules and Oracle card text instead of answering from memory, and c
 - [Usage](#usage)
 - [How it works](#how-it-works)
 - [Development](#development)
+- [Support](#support)
 - [Licence](#licence)
 - [Fan Content](#fan-content)
 
@@ -202,6 +204,14 @@ then `lake build` and `lake test` in `challenge/`.
 - [`evals/`](evals) holds rules questions with known answers.
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) lists what's planned; [`docs/plans/`](docs/plans) holds the designs.
 - [`docs/RELEASING.md`](docs/RELEASING.md) explains how a version is numbered and released.
+
+## Support
+
+Bishop & Barrister is free and always will be. If it settles an argument at your table and you'd like to say
+thanks, you can leave a tip of any amount on [Ko-fi](https://ko-fi.com/pjderouen). It's entirely optional
+and unlocks nothing.
+
+Bugs and wrong answers are welcome as [issues](https://github.com/smithy-org/bishop-and-barrister/issues).
 
 ## Licence
 
