@@ -312,6 +312,19 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn("Decided-by: panel", self.git_log())
         self.assertIn("the rule file matches its final event", self.ok("trace", cid))
 
+    def test_the_eval_grader_reads_a_finished_challenge(self):
+        cid = self.introduce()
+        grade = CHALLENGE.parent.parent / "evals" / "challenges" / "grade.py"
+        result = subprocess.run([sys.executable, str(grade), "multiplayer-match-who-chooses", "--home", str(self.home)],
+                                capture_output=True, text=True, encoding="utf-8", env=self.env)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        graded = json.loads(result.stdout)
+        self.assertEqual((graded["challenge"], graded["state"], graded["outcome_ok"]), (cid, "introduced", True))
+        self.assertEqual((graded["concessions"], len(graded["votes"]), graded["traces"]), (7, 7, True))
+        wrong = subprocess.run([sys.executable, str(grade), "urborg-still-swamps", "--home", str(self.home)],
+                               capture_output=True, text=True, encoding="utf-8", env=self.env)
+        self.assertEqual(wrong.returncode, 1)
+
     def test_trace_catches_a_rule_file_swapped_onto_another_challenge(self):
         cid = self.introduce()
         path = self.home / "rules" / f"{cid}.json"

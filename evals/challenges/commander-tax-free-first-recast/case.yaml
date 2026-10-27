@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: commander-tax-free-first-recast
+expected_state: house-rule
+kind: a house rule the user wants despite official text
+expected_outcome: |
+  Refuted, then kept as a house rule. CR 903.8 adds {2} for each previous time the commander was cast from the command zone, so the first recast costs {2} more; the case contradicts level 1 text. The user keeps it as a house rule, which is marked as departing from the official rules.
+  Deciding: CR 903.8.
