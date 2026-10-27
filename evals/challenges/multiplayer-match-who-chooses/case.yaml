@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: multiplayer-match-who-chooses
+expected_state: introduced
+kind: a gap: should be introduced
+expected_outcome: |
+  Introduced (a real gap). CR 103.1's 'the loser of the previous game' has no single meaning when several players lost, and no official source settles it (CR 100.6a: a multiplayer match usually has one game; the MTR's only multiplayer structure is Two-Headed Giant). A rule choosing the first player to lose extends 103.1 without contradicting it.
+  Deciding: the step showing 103.1 has no single meaning with several losers, and that nothing official settles it.

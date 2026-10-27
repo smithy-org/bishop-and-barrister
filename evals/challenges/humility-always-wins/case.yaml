@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: humility-always-wins
+expected_state: refuted
+kind: refuted by level 1 text
+expected_outcome: |
+  Refuted. The result depends on timestamps within layers 6 and 7b; Humility's official ruling walks through both orders and they differ. 'Always' contradicts level 1 text.
+  Deciding: Humility's official ruling on Opalescence, or CR 613.7 timestamps within a layer.

@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: magar-aftermath
+expected_state: open
+kind: both readings derivable: should stay open
+expected_outcome: |
+  Open. Dusk can be cast (CR 709.3). Whether the copy counts as being in a graveyard for aftermath (CR 702.127a) depends on where it's created (CR 707.12, 707.14), and no official ruling says. Both readings are derivable, so refutations keep standing for four rounds and the challenge stays open.
+  Deciding: no official source fixes the copy's zone for aftermath.
