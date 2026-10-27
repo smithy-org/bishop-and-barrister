@@ -13,15 +13,18 @@ current Oracle card text instead of from memory, and cites the rules it relies o
 ### Claude Code: as a plugin (recommended)
 
 ```
-/plugin install bishop-and-barrister --marketplace smithy-org/bishop-and-barrister
+/plugin install bishop-and-barrister --marketplace https://github.com/smithy-org/bishop-and-barrister.git
 ```
 
 On Claude Code before 2.1.275, add the marketplace first, then install:
 
 ```
-/plugin marketplace add smithy-org/bishop-and-barrister
+/plugin marketplace add https://github.com/smithy-org/bishop-and-barrister.git
 /plugin install bishop-and-barrister@smithy-org
 ```
+
+Use the full HTTPS address: the short `smithy-org/bishop-and-barrister` form clones over SSH, which fails
+with "Could not read from remote repository" unless you have an SSH key set up with GitHub.
 
 Updates arrive with each release. Third-party marketplaces don't update by themselves unless you turn it on:
 `/plugin`, Marketplaces, `smithy-org`, Enable auto-update.
