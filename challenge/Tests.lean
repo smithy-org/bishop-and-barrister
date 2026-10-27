@@ -11,18 +11,26 @@ def pin : String := hashString "pinned text"
 def source (ref : String) (sha := pin) : Json :=
   Json.mkObj [("doc", jstr "cr"), ("ref", jstr ref), ("excerpt", jstr "quoted text"), ("text_sha256", jstr sha)]
 
-def stepJ (id : Nat) (premises : List String) (src : Option Json) (assumption := src.isNone) : Json :=
+def stepJ (id : Nat) (premises : List String) (src : Option Json) (assumption := src.isNone) (stip := false) : Json :=
   Json.mkObj [("id", jnat id), ("premises", toJson premises.toArray), ("source", src.getD Json.null),
-    ("assumption", toJson assumption), ("conclusion", jstr s!"conclusion {id}")]
+    ("assumption", toJson assumption), ("stipulation", toJson stip), ("conclusion", jstr s!"conclusion {id}")]
 
-def caseJ (steps : List Json) : Json := Json.mkObj [
+/-- What a concession or a vote rests on: the pinned sources checked. -/
+def evidenceJ : Json := Json.arr #[source "103.1"]
+
+def caseJ (steps : List Json) (challenges : String := "none: a gap") : Json := Json.mkObj [
   ("facts", Json.arr #[Json.mkObj [("id", jnat 1), ("text", jstr "three players; game 2 of a match")]]),
   ("open_questions", Json.arr #[]), ("rule", jstr "the player who lost game 1 chooses who plays first"),
-  ("applies_when", Json.arr #[jstr "a three-player match"]), ("challenges", jstr "none: a gap"),
+  ("applies_when", Json.arr #[jstr "a three-player match"]), ("challenges", jstr challenges),
   ("steps", Json.arr steps.toArray)]
 
 def goodCase : Json :=
   caseJ [stepJ 1 ["F1"] (some (source "103.1")), stepJ 2 ["F1", "S1"] (some (source "103.2"))]
+
+/-- A gap rule: one sourced step, and the rule's own new content as a stipulation. -/
+def stipJ (id : Nat) (premises : List String) : Json := stepJ id premises none (assumption := false) (stip := true)
+def stipCase (challenges : String := "none: a gap") : Json :=
+  caseJ [stepJ 1 ["F1"] (some (source "103.1")), stipJ 2 ["F1", "S1"]] challenges
 
 def refutationJ (target : Nat) (steps : List Json := [stepJ 1 ["C1"] (some (source "103.3"))]) : Json :=
   Json.mkObj [("target", jnat target), ("ground", jstr "counterexample"),
@@ -50,7 +58,8 @@ def briefWith (c : Json) : Spec := ("clerk", "brief", [("case", c)])
 def briefS : Spec := briefWith goodCase
 def confirmS : Spec := ("user", "confirm", [("words", jstr "yes, that's my case")])
 def concede (k n : Nat) : Spec :=
-  (s!"judge-{k}", "file", [("round", jnat n), ("refutations", Json.arr #[]), ("concedes", jstr "I can't refute it")])
+  (s!"judge-{k}", "file", [("round", jnat n), ("refutations", Json.arr #[]), ("concedes", jstr "I can't refute it"),
+    ("concede_evidence", evidenceJ)])
 def refuteWith (k n : Nat) (r : Json) : Spec := (s!"judge-{k}", "file", [("round", jnat n), ("refutations", Json.arr #[r])])
 def refute (k n target : Nat) : Spec := refuteWith k n (refutationJ target)
 def slotsJ (slots : List (Nat × Nat)) : Json :=
@@ -71,14 +80,17 @@ def replyS (kind : String) (n : Nat) (slots : List (Nat × Nat)) (revised : Opti
      | some c => [("case", c)]
      | none => []))
 def voteS (k : Nat) (convinced : Bool) : Spec :=
-  (s!"judge-{k}", "vote", [("convinced", toJson convinced), ("reason", jstr "step 2 settled it")])
+  (s!"judge-{k}", "vote", [("convinced", toJson convinced), ("reason", jstr "step 2 settled it"),
+    ("evidence", evidenceJ)])
 def words (actor type_ : String) : Spec := (actor, type_, [("words", jstr "in my own words")])
 
 def panel : List Nat := List.range' 1 5
 def allConcede (n : Nat) : List Spec := panel.map (concede · n)
 def allVote (convinced : Nat → Bool) : List Spec := panel.map fun k => voteS k (convinced k)
 
-def toVoting : List Spec := [opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" []]
+/-- Judge 1's refutation fails verification, so nothing stands; not everyone conceded, so the judges vote. -/
+def toVoting : List Spec :=
+  [opening, briefS, confirmS, refute 1 1 1] ++ (List.range' 2 4).map (concede · 1) ++ [reportS 1 "attack" []]
 def toAnswer : List Spec :=
   [opening, briefS, confirmS, refute 1 1 1] ++ (List.range' 2 4).map (concede · 1) ++ [reportS 1 "attack" [(1, 1)]]
 
@@ -110,9 +122,14 @@ def expectRefused (name actual : String) : Check :=
 def expectNat (name : String) (actual expected : Nat) : Check :=
   (name, actual == expected, s!"got {actual}, expected {expected}")
 
+/-- The user revises the case; the judges attack it again. -/
 def roundSpecs (n : Nat) : List Spec :=
   [refute 1 n 1] ++ (List.range' 2 4).map (concede · n) ++
-  [reportS n "attack" [(1, 1)], answerS n [(1, 1)], reportS n "answers" [(1, 1)]]
+  [reportS n "attack" [(1, 1)], replyS "fix" n [(1, 1)] (some goodCase), reportS n "answers" [(1, 1)]]
+
+/-- The user concedes, so nothing is answered; the judges settle, and all five are not convinced. -/
+def toRefuted : List Spec :=
+  toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)]] ++ allVote (fun _ => false)
 
 def forked : List String :=
   let base := chain [opening, briefS, confirmS]
@@ -141,38 +158,54 @@ def checks : List Check := [
   expect "four of five filed: still attacking" (stateOf (chain ([opening, briefS, confirmS] ++ (allConcede 1).take 4)))
     "attack",
   expect "all five filed: verify" (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1))) "verify",
-  expect "nothing standing: voting" (stateOf (chain toVoting)) "voting",
+  expect "nothing standing, but not everyone conceded: the judges vote" (stateOf (chain toVoting)) "voting",
+  expect "everyone conceded on the unchanged case: introduced, with no separate vote"
+    (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" []]))) "introduced",
   expect "five convinced: introduced" (stateOf (chain (toVoting ++ allVote (fun _ => true)))) "introduced",
-  expect "one not convinced: refuted" (stateOf (chain (toVoting ++ allVote (· != 4)))) "refuted",
-  expect "a failed verifier report: refuted"
-    (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [] (passed := false)] ++
+  expect "one not convinced: no consensus, another round" (stateOf (chain (toVoting ++ allVote (· != 4)))) "attack",
+  expect "two not convinced: no consensus, another round" (stateOf (chain (toVoting ++ allVote (· ≤ 3)))) "attack",
+  expect "three not convinced and nothing stands: the case is unproven, so open"
+    (stateOf (chain (toVoting ++ allVote (· > 3)))) "open",
+  expect "five not convinced and nothing stands: open"
+    (stateOf (chain (toVoting ++ allVote (fun _ => false)))) "open",
+  expect "three not convinced and a refutation stands: refuted"
+    (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)]] ++ allVote (· > 3)))) "refuted",
+  expect "all convinced, but a verified refutation stands: refuted"
+    (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)]] ++
       allVote (fun _ => true)))) "refuted",
+  expect "a failed verifier report: open, the case is unproven"
+    (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [] (passed := false)]))) "open",
   expect "a level 1 conflict: refuted"
-    (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [] (conflict := true)] ++
-      allVote (fun _ => true)))) "refuted",
-  expect "a case resting on an assumption: refuted"
+    (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [] (conflict := true)]))) "refuted",
+  expect "a case resting on an assumption: open, it is unproven"
     (stateOf (chain ([opening, briefWith (caseJ [stepJ 1 ["F1"] none]), confirmS] ++ allConcede 1 ++
-      [reportS 1 "attack" []] ++ allVote (fun _ => true)))) "refuted",
+      [reportS 1 "attack" []]))) "open",
   expect "a single-agent panel can't introduce: open"
-    (stateOf (chain ([opening "single-agent", briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" []] ++
-      allVote (fun _ => true)))) "open",
-  expect "refuted, kept as a house rule"
-    (stateOf (chain (toVoting ++ allVote (· != 4) ++ [words "user" "house-rule"]))) "house-rule",
+    (stateOf (chain ([opening "single-agent", briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" []]))) "open",
+  expect "refuted, kept as a house rule" (stateOf (chain (toRefuted ++ [words "user" "house-rule"]))) "house-rule",
+  expect "open, kept as a house rule"
+    (stateOf (chain ([opening, briefWith (caseJ [stepJ 1 ["F1"] none]), confirmS] ++ allConcede 1 ++
+      [reportS 1 "attack" [], words "user" "house-rule"]))) "house-rule",
   expect "a verified refutation stands: answer" (stateOf (chain toAnswer)) "answer",
   expect "answered: verify the answers" (stateOf (chain (toAnswer ++ [answerS 1 [(1, 1)]]))) "verify-answers",
-  expect "answers verified: round 2"
-    (stateOf (chain (toAnswer ++ [answerS 1 [(1, 1)], reportS 1 "answers" []]))) "attack",
-  expect "a refutation conceded without a fix: refuted"
-    (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)]]))) "refuted",
-  expect "conceded, but with the case revised: round 2"
+  expect "answers verified, case unchanged: the judges settle"
+    (stateOf (chain (toAnswer ++ [answerS 1 [(1, 1)], reportS 1 "answers" []]))) "voting",
+  expect "a refutation conceded without a fix: the judges settle, nothing closes it for them"
+    (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)]]))) "voting",
+  expect "the case revised: the judges attack it again, round 2"
     (stateOf (chain (toAnswer ++ [replyS "fix" 1 [(1, 1)] (some goodCase), reportS 1 "answers" []]))) "attack",
-  expectRefused "nothing after a conceded refutation"
+  expectRefused "judges can't file once the panel is voting"
     (stateOf (chain (toAnswer ++ [replyS "concede" 1 [(1, 1)], reportS 1 "answers" [(1, 1)], refute 1 2 1]))),
-  expect "four rounds with a refutation standing: open"
-    (stateOf (chain ([opening, briefS, confirmS] ++ (List.range' 1 4).flatMap roundSpecs))) "open",
+  expect "three revised rounds: the judges settle"
+    (stateOf (chain ([opening, briefS, confirmS] ++ (List.range' 1 3).flatMap roundSpecs))) "voting",
+  expect "one still not convinced after the last round: no consensus, so open"
+    (stateOf (chain ([opening, briefS, confirmS] ++ (List.range' 1 3).flatMap roundSpecs ++ allVote (· ≤ 4)))) "open",
   expect "open, reopened with new facts: briefed"
-    (stateOf (chain ([opening, briefS, confirmS] ++ (List.range' 1 4).flatMap roundSpecs ++
+    (stateOf (chain ([opening, briefS, confirmS] ++ (List.range' 1 3).flatMap roundSpecs ++ allVote (· ≤ 4) ++
       [("user", "reopen", [("case", goodCase), ("words", jstr "a new ruling came out")])]))) "briefed",
+  expect "a stipulation in a gap case: briefed" (stateOf (chain [opening, briefWith (stipCase)])) "briefed",
+  expect "a gap rule with a stipulation can be introduced"
+    (stateOf (chain ([opening, briefWith (stipCase), confirmS] ++ allConcede 1 ++ [reportS 1 "attack" []]))) "introduced",
   expect "withdrawn while answering" (stateOf (chain (toAnswer ++ [words "user" "withdraw"]))) "withdrawn",
 
   -- terminal states take nothing
@@ -180,8 +213,8 @@ def checks : List Check := [
     (stateOf (chain (toVoting ++ allVote (fun _ => true) ++ [words "user" "withdraw"]))),
   expectRefused "nothing after withdrawn" (stateOf (chain (toAnswer ++ [words "user" "withdraw", answerS 1 [(1, 1)]]))),
   expectRefused "nothing after a house rule"
-    (stateOf (chain (toVoting ++ allVote (· != 4) ++ [words "user" "house-rule", words "user" "house-rule"]))),
-  expectRefused "refuted can't be withdrawn" (stateOf (chain (toVoting ++ allVote (· != 4) ++ [words "user" "withdraw"]))),
+    (stateOf (chain (toRefuted ++ [words "user" "house-rule", words "user" "house-rule"]))),
+  expectRefused "refuted can't be withdrawn" (stateOf (chain (toRefuted ++ [words "user" "withdraw"]))),
 
   -- refused events
   expectRefused "a vote during an attack round" (stateOf (chain [opening, briefS, confirmS, voteS 1 true])),
@@ -210,7 +243,28 @@ def checks : List Check := [
     (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [(3, 1)]]))),
   expectRefused "an answer that leaves a refutation unanswered" (stateOf (chain (toAnswer ++ [answerS 1 []]))),
   expectRefused "a vote with no reason"
-    (stateOf (chain (toVoting ++ [("judge-1", "vote", [("convinced", toJson true), ("reason", jstr "")])]))),
+    (stateOf (chain (toVoting ++ [("judge-1", "vote", [("convinced", toJson true), ("reason", jstr ""),
+      ("evidence", evidenceJ)])]))),
+  expectRefused "a vote with no evidence"
+    (stateOf (chain (toVoting ++ [("judge-1", "vote", [("convinced", toJson true), ("reason", jstr "settled")])]))),
+  expectRefused "a vote whose evidence isn't pinned"
+    (stateOf (chain (toVoting ++ [("judge-1", "vote", [("convinced", toJson true), ("reason", jstr "settled"),
+      ("evidence", Json.arr #[source "103.1" "abc"])])]))),
+  expectRefused "a concession with no evidence"
+    (stateOf (chain [opening, briefS, confirmS, ("judge-1", "file", [("round", jnat 1), ("refutations", Json.arr #[]),
+      ("concedes", jstr "I can't refute it")])])),
+  expectRefused "a concession with no reasoning"
+    (stateOf (chain [opening, briefS, confirmS, ("judge-1", "file", [("round", jnat 1), ("refutations", Json.arr #[]),
+      ("concedes", jstr ""), ("concede_evidence", evidenceJ)])])),
+  expectRefused "a stipulation in a case that challenges an official answer"
+    (stateOf (chain [opening, briefWith (stipCase "Official ruling on Urborg (2021-03-19)")])),
+  expectRefused "a stipulation that quotes a source"
+    (stateOf (chain [opening, briefWith (caseJ [stepJ 1 ["F1"] (some (source "103.1")) (stip := true)])])),
+  expectRefused "a step that is both a stipulation and an assumption"
+    (stateOf (chain [opening, briefWith (caseJ [stepJ 1 ["F1"] none (assumption := true) (stip := true)])])),
+  expectRefused "a refutation can't stipulate"
+    (stateOf (chain [opening, briefS, confirmS, refuteWith 1 1 (refutationJ 1 [stepJ 1 ["C1"] (some (source "103.3")),
+      stipJ 2 ["S1"]])])),
   expectRefused "a judge votes twice" (stateOf (chain (toVoting ++ [voteS 1 true, voteS 1 true]))),
   expectRefused "a challenge must start with open" (stateOf (chain [briefS])),
 
