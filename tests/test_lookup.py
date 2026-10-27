@@ -7,6 +7,7 @@ They run lookup's own command line in-process against a small fixture CR and fix
 
 import io
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -16,6 +17,7 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import lookup  # noqa: E402
+import paths  # noqa: E402
 
 LONG = "If a creature with deathtouch deals damage to another creature, " + "that creature is destroyed " * 20
 
@@ -82,15 +84,13 @@ class LookupTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         root = Path(self.tmp.name)
-        cr = root / "MagicCompRules.txt"
-        cr.write_text(CR, encoding="utf-8")
-        docs = root / "docs"
-        docs.mkdir()
-        (docs / "ipg.json").write_text(json.dumps(IPG), encoding="utf-8")
-        for p in (mock.patch.object(lookup, "RULES_FILE", cr), mock.patch.object(lookup, "DOCS_DIR", docs),
-                  mock.patch.object(lookup, "REFERENCE_DIR", root / "reference"), mock.patch.object(lookup, "DATA_DIR", root)):
+        for p in (mock.patch.dict(os.environ, {"BISHOP_AND_BARRISTER_HOME": str(root / "home")}),
+                  mock.patch.object(lookup, "REFERENCE_DIR", root / "reference")):
             p.start()
             self.addCleanup(p.stop)
+        paths.docs_dir().mkdir(parents=True)
+        paths.rules_file().write_text(CR, encoding="utf-8")
+        (paths.docs_dir() / "ipg.json").write_text(json.dumps(IPG), encoding="utf-8")
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -157,7 +157,7 @@ class LookupTest(unittest.TestCase):
         self.assertEqual(out.splitlines(), ["100. General", "702. Keyword Abilities"])
 
     def test_missing_rules_file(self):
-        lookup.RULES_FILE.unlink()
+        paths.rules_file().unlink()
         status, _, _ = self.run_lookup("rule", "100.1")
         self.assertIn("Rules file not found", str(status))
 
@@ -220,7 +220,8 @@ class LegacyDocumentsTest(unittest.TestCase):
             new.mkdir(parents=True)
             (new / "sources.json").write_text('{"newer": true}', encoding="utf-8")
             (old / "sources.json").write_text('{"older": true}', encoding="utf-8")
-            with mock.patch.object(lookup, "REFERENCE_DIR", old), mock.patch.object(lookup, "DATA_DIR", new):
+            with mock.patch.object(lookup, "REFERENCE_DIR", old), \
+                    mock.patch.dict(os.environ, {"BISHOP_AND_BARRISTER_HOME": str(new.parent)}):
                 self.assertEqual(sorted(lookup.adopt_legacy_documents()), ["MagicCompRules.txt", "docs"])
                 self.assertEqual(lookup.adopt_legacy_documents(), [])  # once only
             self.assertEqual((new / "MagicCompRules.txt").read_text(encoding="utf-8"), "old rules")

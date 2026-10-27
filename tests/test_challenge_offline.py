@@ -10,6 +10,7 @@ in the index. Everything runs offline against fixtures.
 import hashlib
 import io
 import json
+import os
 import sqlite3
 import sys
 import tempfile
@@ -20,7 +21,6 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import challenge  # noqa: E402
 import judge  # noqa: E402
-import lookup  # noqa: E402
 
 CR = """Magic: The Gathering Comprehensive Rules
 
@@ -55,7 +55,7 @@ class BinaryTest(unittest.TestCase):
         self.data = b"#!/bin/sh\necho core\n"
         self.pins = root / "binaries.json"
         self.pin(hashlib.sha256(self.data).hexdigest())
-        for p in (mock.patch.object(challenge, "BINARIES", self.pins), mock.patch.object(challenge, "BIN_DIR", root / "bin"),
+        for p in (mock.patch.object(challenge, "BINARIES", self.pins), mock.patch.dict(os.environ, {"BISHOP_AND_BARRISTER_HOME": str(root)}),
                   mock.patch.object(challenge, "DEV_BIN", None), mock.patch.object(challenge, "platform_key", lambda: "linux-x64")):
             p.start()
             self.addCleanup(p.stop)
@@ -135,8 +135,9 @@ class VerifierTest(unittest.TestCase):
                      (json.dumps({"comment": "Blood Moon's effect applies before Urborg's."}),))
         conn.commit()
         conn.close()
-        patches = [mock.patch.object(judge, "CR_FILE", cr), mock.patch.object(judge, "_RULES", None),
-                   mock.patch.object(judge, "INDEX", index), mock.patch.object(lookup, "DOCS_DIR", docs),
+        patches = [mock.patch.dict(os.environ, {"BISHOP_AND_BARRISTER_HOME": str(root), "BISHOP_AND_BARRISTER_CR": str(cr),
+                                                "BISHOP_AND_BARRISTER_DOCS": str(docs)}),
+                   mock.patch.object(judge, "_RULES", None),
                    mock.patch.object(judge, "OFFLINE", True)]
         for p in patches:
             p.start()

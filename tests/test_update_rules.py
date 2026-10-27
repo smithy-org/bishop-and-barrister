@@ -7,6 +7,7 @@ Wizards' site is replaced by fakes, so nothing touches the network.
 
 import io
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -15,6 +16,7 @@ from pathlib import Path
 from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+import paths  # noqa: E402
 import update_rules  # noqa: E402
 
 URL = "https://media.wizards.com/2026/downloads/MagicCompRules 20260925.txt"
@@ -43,12 +45,9 @@ class FakeSite:
 class UpdateRulesTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        ref = Path(self.tmp.name) / "reference"
-        for name, value in (("DATA_DIR", ref), ("RULES_FILE", ref / "MagicCompRules.txt"),
-                            ("META_FILE", ref / "version.json")):
-            p = mock.patch.object(update_rules, name, value)
-            p.start()
-            self.addCleanup(p.stop)
+        home = mock.patch.dict(os.environ, {"BISHOP_AND_BARRISTER_HOME": self.tmp.name})
+        home.start()
+        self.addCleanup(home.stop)
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -80,7 +79,7 @@ class UpdateRulesTest(unittest.TestCase):
         status, out = self.run_main(site)
         self.assertEqual(status, 0)
         self.assertIn("Saved", out)
-        meta = json.loads(update_rules.META_FILE.read_text())
+        meta = json.loads(paths.version_file().read_text())
         self.assertEqual((meta["effective_date"], meta["posted_date"]), ("September 25, 2026", "20260925"))
         _, out = self.run_main(site)
         self.assertIn("identical size and modification time", out)
@@ -97,7 +96,7 @@ class UpdateRulesTest(unittest.TestCase):
         site = FakeSite(text=NEWER, length="1001")
         _, out = self.run_main(site, "--check")
         self.assertIn("Update available: remote effective November 14, 2026", out)
-        self.assertEqual(update_rules.effective_date(update_rules.RULES_FILE.read_text(encoding="utf-8")),
+        self.assertEqual(update_rules.effective_date(paths.rules_file().read_text(encoding="utf-8")),
                          "September 25, 2026")
         _, out = self.run_main(site)
         self.assertIn("Effective November 14, 2026", out)
@@ -110,11 +109,11 @@ class UpdateRulesTest(unittest.TestCase):
 
     def test_local_state_without_or_with_stale_metadata(self):
         self.assertIsNone(update_rules.local_state())
-        update_rules.DATA_DIR.mkdir(parents=True)
-        update_rules.RULES_FILE.write_text(CR, encoding="utf-8")
+        paths.documents().mkdir(parents=True)
+        paths.rules_file().write_text(CR, encoding="utf-8")
         state = update_rules.local_state()
         self.assertEqual(state["source"], "reconstructed from local file")
-        update_rules.META_FILE.write_text(json.dumps({"sha256": "something else"}))
+        paths.version_file().write_text(json.dumps({"sha256": "something else"}))
         self.assertIn("stale", update_rules.local_state()["source"])
         out = io.StringIO()
         with redirect_stdout(out):

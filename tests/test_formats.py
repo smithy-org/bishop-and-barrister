@@ -16,6 +16,7 @@ SCRIPTS = Path(__file__).resolve().parent.parent / "scripts"
 FORMATS = SCRIPTS.parent / "reference" / "formats"
 sys.path.insert(0, str(SCRIPTS))
 import lookup  # noqa: E402
+import paths  # noqa: E402
 import sources  # noqa: E402
 
 DOC_CITE = re.compile(r"\b(CR|MTR|IPG)\s+((?:\d{3}\.\d+[a-z]?|\d+(?:\.\d+)?)(?:-[a-z])?(?:(?:,\s*|\s+and\s+)\d{3}\.\d+[a-z]?(?:-[a-z])?)*)")
@@ -57,7 +58,7 @@ class HeaderTest(unittest.TestCase):
         self.assertEqual(stale, [("a.md", ["MTR February 27, 2026 → June 1, 2026"])])
 
 
-@unittest.skipUnless(lookup.RULES_FILE.exists() and (lookup.DOCS_DIR / "mtr.json").exists(),
+@unittest.skipUnless(paths.rules_file().exists() and (paths.docs_dir() / "mtr.json").exists(),
                      "needs the downloaded CR and MTR (sources.py update)")
 class CitationTest(unittest.TestCase):
     def test_every_cited_number_exists(self):
