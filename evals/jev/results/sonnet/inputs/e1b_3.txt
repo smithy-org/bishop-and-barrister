@@ -1,0 +1,40 @@
+=== ITEM q401 ===
+A player asks a Magic: the Gathering rules question:
+"On my turn I cast Lightning Bolt at my opponent's creature, and in response they cast Divination to draw two cards. Is that legal?"
+
+Official source text:
+[CR 307.1] "307.1. A player who has priority may cast a sorcery card from their hand during a main phase of their turn when the stack is empty. Casting a sorcery as a spell uses the stack. (See rule 601, “Casting Spells.”)"
+[CR 117.1a] "117.1a A player may cast an instant spell any time they have priority. A player may cast a noninstant spell during their main phase any time they have priority and the stack is empty."
+
+=== ITEM q402 ===
+A player asks a Magic: the Gathering rules question:
+"Building Commander with Sheoldred, Whispering One as my commander. Can I run 30 copies of Relentless Rats and a Sol Ring?"
+
+Official source text:
+[CR 101.1] "101.1. Whenever a card’s text directly contradicts these rules, the card takes precedence. The card overrides only the rule that applies to that specific situation. The only exception is that a player can concede the game at any time (see rule 104.3a)."
+[CR 903.4] "903.4. The Commander variant uses color identity to determine what cards can be in a deck with a certain commander. The color identity of a card is the color or colors of any mana symbols in that card’s mana cost or rules text, plus any colors defined by its characteristic-defining abilities (see rule 604.3) or color indicator (see rule 204).
+Example: Bosh, Iron Golem is a legendary artifact creature with mana cost {8} and the ability “{3}{R}, Sacrifice an artifact: Bosh, Iron Golem deals damage equal to the sacrificed artifact’s mana value to any target.” Bosh’s color identity is red.
+903.4a ..."
+[CR 903.5b] "903.5b Other than basic lands, each card in a Commander deck must have a different English name. For the purposes of deck construction, cards with interchangeable names have the same English name (see rule 201.3)."
+
+=== ITEM q403 ===
+A player asks a Magic: the Gathering rules question:
+"Four-player game. I control Yuriko, Blade of the Mighty. I attack opponent B with two creatures and opponent C with one creature. Which of my creatures get double strike?"
+
+Official source text:
+[CR 506.6] "506.6. A creature attacks a player alone if it’s declared as an attacker attacking a player during the declare attackers step and no other creature is declared as an attacker attacking that player. A creature is attacking a player alone if it’s attacking a player and no other creatures are attacking that player."
+
+=== ITEM q404 ===
+A player asks a Magic: the Gathering rules question:
+"My Lake-town Lookout died and I recruited. Do I get a Human Soldier token?"
+
+Official source text:
+[CR 701.70a] "701.70a “Recruit” means “Draw a card, then discard a card. If you discarded a nonland card this way, create a 1/1 white Human Soldier creature token.”"
+
+=== ITEM q405 ===
+A player asks a Magic: the Gathering rules question:
+"I control Fíli the Pathfinder plus two artifacts, so I got an enduring story. My opponent just destroyed both artifacts. Do my creatures still get +1/+1 from Fíli?"
+
+Official source text:
+[CR 702.195a] "702.195a Storied is a static ability. It means “Any time you control three or more permanents that are artifacts, Sagas, and/or legendary and you don’t have an enduring story, you have an enduring story for the rest of the game.”"
+[CR 702.195b] "702.195b Enduring story is a designation that has no rules meaning other than to act as a marker that other rules and effects can identify. Any number of players may have the enduring story designation at the same time."

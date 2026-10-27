@@ -1,0 +1,1888 @@
+{
+ "steps": [
+  {
+   "case": "deathtouch-trample-full-toughness",
+   "run": "challenges-2",
+   "premises": [
+    "F1: An attacking creature has both trample and deathtouch",
+    "F2: It is blocked by one or more creatures, so it assigns combat damage to them"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "702.19b",
+    "excerpt": "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking."
+   },
+   "conclusion": "A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle",
+   "in_final_case": true,
+   "siblings": [
+    "Only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle"
+   ],
+   "id": "s000"
+  },
+  {
+   "case": "deathtouch-trample-full-toughness",
+   "run": "challenges-2",
+   "premises": [
+    "S1: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle",
+    "S2: The amount of damage that counts as lethal for a deathtouch trampler is still the blocker's toughness (less damage marked); deathtouch makes that damage lethal but does not change how much must be assigned. The user states this as the point of the case; no source is cited for it"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "702.19b",
+    "excerpt": "any excess damage is assigned as its controller chooses among those blocking creatures and the player"
+   },
+   "conclusion": "Only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle",
+   "in_final_case": true,
+   "siblings": [
+    "A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle"
+   ],
+   "id": "s001"
+  },
+  {
+   "case": "extra-card-regular-rel-game-loss",
+   "run": "challenges-2",
+   "premises": [
+    "F1: The game is played at a Friday Night Magic tournament."
+   ],
+   "source": {
+    "doc": "mtr",
+    "ref": "F",
+    "excerpt": "Friday Night Magic Regular"
+   },
+   "conclusion": "A Friday Night Magic is a Regular Rules Enforcement Level tournament.",
+   "in_final_case": false,
+   "siblings": [
+    "Infractions at this tournament are covered by the Judging at Regular REL document, not the Infraction Procedure Guide."
+   ],
+   "id": "s002"
+  },
+  {
+   "case": "extra-card-regular-rel-game-loss",
+   "run": "challenges-2",
+   "premises": [
+    "S1: A Friday Night Magic is a Regular Rules Enforcement Level tournament."
+   ],
+   "source": {
+    "doc": "mtr",
+    "ref": "1.12",
+    "excerpt": "Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document"
+   },
+   "conclusion": "Infractions at this tournament are covered by the Judging at Regular REL document, not the Infraction Procedure Guide.",
+   "in_final_case": false,
+   "siblings": [
+    "A Friday Night Magic is a Regular Rules Enforcement Level tournament."
+   ],
+   "id": "s003"
+  },
+  {
+   "case": "extra-card-regular-rel-game-loss",
+   "run": "challenges-2",
+   "premises": [
+    "F1: The game is played at a Friday Night Magic tournament."
+   ],
+   "source": {
+    "doc": "mtr",
+    "ref": "F",
+    "excerpt": "Friday Night Magic Regular"
+   },
+   "conclusion": "A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum.",
+   "in_final_case": false,
+   "siblings": [
+    "Infractions at this tournament are covered by the Judging at Regular REL document."
+   ],
+   "id": "s004"
+  },
+  {
+   "case": "extra-card-regular-rel-game-loss",
+   "run": "challenges-2",
+   "premises": [
+    "S1: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum."
+   ],
+   "source": {
+    "doc": "mtr",
+    "ref": "1.12",
+    "excerpt": "Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document"
+   },
+   "conclusion": "Infractions at this tournament are covered by the Judging at Regular REL document.",
+   "in_final_case": false,
+   "siblings": [
+    "A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum."
+   ],
+   "id": "s005"
+  },
+  {
+   "case": "extra-card-regular-rel-game-loss",
+   "run": "challenges-2",
+   "premises": [
+    "F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level."
+   ],
+   "source": {
+    "doc": "mtr",
+    "ref": "1.12",
+    "excerpt": "Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document"
+   },
+   "conclusion": "Infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document.",
+   "in_final_case": true,
+   "siblings": [],
+   "id": "s006"
+  },
+  {
+   "case": "humility-always-wins",
+   "run": "challenges-2",
+   "premises": [
+    "F1: Humility and Opalescence are both on the battlefield"
+   ],
+   "source": {
+    "doc": "oracle",
+    "ref": "Humility",
+    "excerpt": "All creatures lose all abilities and have base power and toughness 1/1."
+   },
+   "conclusion": "Humility's effect makes every creature lose all abilities and have base power and toughness 1/1",
+   "in_final_case": true,
+   "siblings": [],
+   "id": "s007"
+  },
+  {
+   "case": "summoning-sickness-all-permanents",
+   "run": "challenges-2",
+   "premises": [
+    "F1: A permanent came under a player's control this turn (the user's stated condition)",
+    "F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "302.6",
+    "excerpt": "This rule is informally called the “summoning sickness” rule."
+   },
+   "conclusion": "The rule restricting {T} abilities of recently-controlled permanents is what is called summoning sickness",
+   "in_final_case": true,
+   "siblings": [],
+   "id": "s008"
+  },
+  {
+   "case": "urborg-still-swamps",
+   "run": "challenges-2",
+   "premises": [
+    "F1: Blood Moon and Urborg, Tomb of Yawgmoth are both on the battlefield"
+   ],
+   "source": {
+    "doc": "oracle",
+    "ref": "Blood Moon",
+    "excerpt": "Nonbasic lands are Mountains."
+   },
+   "conclusion": "Blood Moon makes Urborg, a nonbasic land, a Mountain",
+   "in_final_case": true,
+   "siblings": [
+    "Each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps"
+   ],
+   "id": "s009"
+  },
+  {
+   "case": "urborg-still-swamps",
+   "run": "challenges-2",
+   "premises": [
+    "S2: Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain"
+   ],
+   "source": {
+    "doc": "oracle",
+    "ref": "Urborg, Tomb of Yawgmoth",
+    "excerpt": "Each land is a Swamp in addition to its other land types."
+   },
+   "conclusion": "Each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps",
+   "in_final_case": true,
+   "siblings": [
+    "Blood Moon makes Urborg, a nonbasic land, a Mountain"
+   ],
+   "id": "s010"
+  },
+  {
+   "case": "commander-tax-free-first-recast",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone",
+    "F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "903.8",
+    "excerpt": "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game."
+   },
+   "conclusion": "Under the established rule, the one previous cast from the command zone makes the first recast cost an additional {2}.",
+   "in_final_case": false,
+   "siblings": [],
+   "id": "s011"
+  },
+  {
+   "case": "commander-tax-free-first-recast",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone",
+    "F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "903.8",
+    "excerpt": "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game."
+   },
+   "conclusion": "Under the official rules, the one previous cast from the command zone makes the first recast cost an additional {2}, in every Commander game.",
+   "in_final_case": false,
+   "siblings": [],
+   "id": "s012"
+  },
+  {
+   "case": "commander-tax-free-first-recast",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone",
+    "F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "903.8",
+    "excerpt": "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game."
+   },
+   "conclusion": "Under the official rules, one previous cast makes the first recast cost an additional {2}, and with two previous casts the second recast costs an additional {4}, in every Commander game.",
+   "in_final_case": true,
+   "siblings": [],
+   "id": "s013"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-3",
+   "premises": [
+    "F1: Magar of the Magic Strings's ability was used and the name Dusk // Dawn was noted (Dusk // Dawn being a split card with aftermath, in the player's graveyard)",
+    "F2: The face-down creature made by Magar's ability gave me the chance to create a copy of the card with the noted name and cast it (Magar lets me cast a copy)"
+   ],
+   "source": {
+    "doc": "oracle",
+    "ref": "Magar of the Magic Strings",
+    "excerpt": "you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost"
+   },
+   "conclusion": "Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost",
+   "in_final_case": false,
+   "siblings": [
+    "The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard",
+    "The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+   ],
+   "id": "s014"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-3",
+   "premises": [
+    "S1: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "707.14",
+    "excerpt": "One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule "
+   },
+   "conclusion": "The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard",
+   "in_final_case": true,
+   "siblings": [
+    "Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost",
+    "The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+   ],
+   "id": "s015"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-3",
+   "premises": [
+    "S2: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "709.3c",
+    "excerpt": "That copy retains the characteristics of the two halves separated into the same two halves as the original card."
+   },
+   "conclusion": "The copy has the two halves Dusk and Dawn, with Dawn's aftermath",
+   "in_final_case": true,
+   "siblings": [
+    "Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost",
+    "The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+   ],
+   "id": "s016"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-3",
+   "premises": [
+    "F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name",
+    "F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it",
+    "F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name"
+   ],
+   "source": {
+    "doc": "oracle",
+    "ref": "Magar of the Magic Strings",
+    "excerpt": "you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost"
+   },
+   "conclusion": "Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost",
+   "in_final_case": true,
+   "siblings": [
+    "The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard",
+    "The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+   ],
+   "id": "s017"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A three-player Commander match of several games; the next game is not the first game of the match"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn."
+   },
+   "conclusion": "In a match of several games, the loser of the previous game chooses who takes the first turn",
+   "in_final_case": false,
+   "siblings": [
+    "If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+   ],
+   "id": "s018"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A three-player Commander match of several games; the next game is not the first game of the match"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+   },
+   "conclusion": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game",
+   "in_final_case": false,
+   "siblings": [
+    "In a match of several games, the loser of the previous game chooses who takes the first turn"
+   ],
+   "id": "s019"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn."
+   },
+   "conclusion": "In a match of several games, the loser of the previous game chooses who takes the first turn",
+   "in_final_case": false,
+   "siblings": [
+    "If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+   ],
+   "id": "s020"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+   },
+   "conclusion": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game",
+   "in_final_case": false,
+   "siblings": [
+    "In a match of several games, the loser of the previous game chooses who takes the first turn"
+   ],
+   "id": "s021"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn."
+   },
+   "conclusion": "In a match of several games, the loser of the previous game chooses who takes the first turn",
+   "in_final_case": true,
+   "siblings": [
+    "If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+   ],
+   "id": "s022"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-3",
+   "premises": [
+    "F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+   },
+   "conclusion": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game",
+   "in_final_case": true,
+   "siblings": [
+    "In a match of several games, the loser of the previous game chooses who takes the first turn"
+   ],
+   "id": "s023"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-4",
+   "premises": [
+    "F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard",
+    "F2: Magar's ability lets the user create a copy of the card with the noted name and cast that copy"
+   ],
+   "source": {
+    "doc": "oracle",
+    "ref": "Magar of the Magic Strings",
+    "excerpt": "you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost"
+   },
+   "conclusion": "Magar's ability allows the user to create a copy of the card with the noted name and cast that copy",
+   "in_final_case": true,
+   "siblings": [
+    "The copy is cast following the rules for casting spells, having been created in the zone the original card is in"
+   ],
+   "id": "s024"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-4",
+   "premises": [
+    "S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "707.12",
+    "excerpt": "An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving."
+   },
+   "conclusion": "The copy is cast following the rules for casting spells, having been created in the zone the original card is in",
+   "in_final_case": false,
+   "siblings": [
+    "Magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+   ],
+   "id": "s025"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-4",
+   "premises": [
+    "S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy",
+    "F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "707.12",
+    "excerpt": "An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving."
+   },
+   "conclusion": "The copy is cast following the rules for casting spells, while the trigger is resolving",
+   "in_final_case": true,
+   "siblings": [
+    "Magar's ability allows the user to create a copy of the card with the noted name and cast that copy",
+    "The copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard"
+   ],
+   "id": "s026"
+  },
+  {
+   "case": "magar-aftermath",
+   "run": "challenges-4",
+   "premises": [
+    "S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy",
+    "F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard",
+    "F3: The Dusk // Dawn card is in the user's graveyard when the copy is created; the copy is made per CR 707.14, not moved from a zone"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "707.14",
+    "excerpt": "use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy"
+   },
+   "conclusion": "The copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard",
+   "in_final_case": true,
+   "siblings": [
+    "Magar's ability allows the user to create a copy of the card with the noted name and cast that copy",
+    "The copy is cast following the rules for casting spells, while the trigger is resolving"
+   ],
+   "id": "s027"
+  },
+  {
+   "case": "multiplayer-match-ends-at-time",
+   "run": "challenges-4",
+   "premises": [
+    "F2: Each game of the match begins with four players"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "100.1b",
+    "excerpt": "A multiplayer game is a game that begins with more than two players."
+   },
+   "conclusion": "Each game of this match is a multiplayer game",
+   "in_final_case": true,
+   "siblings": [],
+   "id": "s028"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-4",
+   "premises": [
+    "F1: A Commander match of several games with three players"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn."
+   },
+   "conclusion": "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn.",
+   "in_final_case": true,
+   "siblings": [
+    "A multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states.",
+    "If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+   ],
+   "id": "s029"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-4",
+   "premises": [
+    "F1: A Commander match of several games with three players",
+    "F2: In the previous game, two of the three players lost (at different times) and the third player won"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "800.4",
+    "excerpt": "Unlike two-player games, multiplayer games can continue after one or more players have left the game."
+   },
+   "conclusion": "A multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states.",
+   "in_final_case": false,
+   "siblings": [
+    "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn.",
+    "If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+   ],
+   "id": "s030"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-4",
+   "premises": [
+    "F1: A Commander match of several games with three players"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+   },
+   "conclusion": "If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is.",
+   "in_final_case": false,
+   "siblings": [
+    "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn.",
+    "A multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states."
+   ],
+   "id": "s031"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-4",
+   "premises": [
+    "F1: A Commander match of several games with three players",
+    "F2: In the previous game, two of the three players lost (at different times) and the third player won"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "800.4",
+    "excerpt": "Unlike two-player games, multiplayer games can continue after one or more players have left the game."
+   },
+   "conclusion": "A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times.",
+   "in_final_case": true,
+   "siblings": [
+    "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn.",
+    "If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is."
+   ],
+   "id": "s032"
+  },
+  {
+   "case": "multiplayer-match-who-chooses",
+   "run": "challenges-4",
+   "premises": [
+    "F1: A Commander match of several games with three players"
+   ],
+   "source": {
+    "doc": "cr",
+    "ref": "103.1",
+    "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+   },
+   "conclusion": "If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is.",
+   "in_final_case": true,
+   "siblings": [
+    "In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn.",
+    "A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+   ],
+   "id": "s033"
+  }
+ ],
+ "items": [
+  {
+   "step": "s000",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s000/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: An attacking creature has both trample and deathtouch\n  F2: It is blocked by one or more creatures, so it assigns combat damage to them\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\nCLAIMED CONCLUSION: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle"
+  },
+  {
+   "step": "s000",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s000/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: An attacking creature has both trample and deathtouch\n  F2: It is blocked by one or more creatures, so it assigns combat damage to them\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\nCLAIMED CONCLUSION: It is not true that a trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle"
+  },
+  {
+   "step": "s000",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s000/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: An attacking creature has both trample and deathtouch\n  F2: It is blocked by one or more creatures, so it assigns combat damage to them\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\nCLAIMED CONCLUSION: Only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle"
+  },
+  {
+   "step": "s000",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s000/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: An attacking creature has both trample and deathtouch\n  F2: It is blocked by one or more creatures, so it assigns combat damage to them\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle"
+  },
+  {
+   "step": "s001",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s001/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle\n  S2: The amount of damage that counts as lethal for a deathtouch trampler is still the blocker's toughness (less damage marked); deathtouch makes that damage lethal but does not change how much must be assigned. The user states this as the point of the case; no source is cited for it\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"any excess damage is assigned as its controller chooses among those blocking creatures and the player\"\nCLAIMED CONCLUSION: Only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle"
+  },
+  {
+   "step": "s001",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s001/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle\n  S2: The amount of damage that counts as lethal for a deathtouch trampler is still the blocker's toughness (less damage marked); deathtouch makes that damage lethal but does not change how much must be assigned. The user states this as the point of the case; no source is cited for it\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"any excess damage is assigned as its controller chooses among those blocking creatures and the player\"\nCLAIMED CONCLUSION: It is not true that only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle"
+  },
+  {
+   "step": "s001",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s001/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle\n  S2: The amount of damage that counts as lethal for a deathtouch trampler is still the blocker's toughness (less damage marked); deathtouch makes that damage lethal but does not change how much must be assigned. The user states this as the point of the case; no source is cited for it\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"any excess damage is assigned as its controller chooses among those blocking creatures and the player\"\nCLAIMED CONCLUSION: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle"
+  },
+  {
+   "step": "s001",
+   "case": "deathtouch-trample-full-toughness",
+   "in_final_case": true,
+   "key": "s001/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle\n  S2: The amount of damage that counts as lethal for a deathtouch trampler is still the blocker's toughness (less damage marked); deathtouch makes that damage lethal but does not change how much must be assigned. The user states this as the point of the case; no source is cited for it\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: Only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle"
+  },
+  {
+   "step": "s002",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s002/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: A Friday Night Magic is a Regular Rules Enforcement Level tournament."
+  },
+  {
+   "step": "s002",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s002/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: It is not true that a Friday Night Magic is a Regular Rules Enforcement Level tournament."
+  },
+  {
+   "step": "s002",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s002/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: Infractions at this tournament are covered by the Judging at Regular REL document, not the Infraction Procedure Guide."
+  },
+  {
+   "step": "s002",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s002/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: A Friday Night Magic is a Regular Rules Enforcement Level tournament."
+  },
+  {
+   "step": "s003",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s003/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is a Regular Rules Enforcement Level tournament.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: Infractions at this tournament are covered by the Judging at Regular REL document, not the Infraction Procedure Guide."
+  },
+  {
+   "step": "s003",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s003/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is a Regular Rules Enforcement Level tournament.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: It is not true that infractions at this tournament are covered by the Judging at Regular REL document, not the Infraction Procedure Guide."
+  },
+  {
+   "step": "s003",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s003/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is a Regular Rules Enforcement Level tournament.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: A Friday Night Magic is a Regular Rules Enforcement Level tournament."
+  },
+  {
+   "step": "s003",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s003/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is a Regular Rules Enforcement Level tournament.\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: Infractions at this tournament are covered by the Judging at Regular REL document, not the Infraction Procedure Guide."
+  },
+  {
+   "step": "s004",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s004/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum."
+  },
+  {
+   "step": "s004",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s004/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: It is not true that a Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum."
+  },
+  {
+   "step": "s004",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s004/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: Infractions at this tournament are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s004",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s004/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament.\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\nCLAIMED CONCLUSION: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum."
+  },
+  {
+   "step": "s005",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s005/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: Infractions at this tournament are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s005",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s005/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: It is not true that infractions at this tournament are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s005",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s005/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum."
+  },
+  {
+   "step": "s005",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": false,
+   "key": "s005/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum.\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: Infractions at this tournament are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s006",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": true,
+   "key": "s006/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: Infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s006",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": true,
+   "key": "s006/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: It is not true that infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s006",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": true,
+   "key": "s006/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level.\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s006",
+   "case": "extra-card-regular-rel-game-loss",
+   "in_final_case": true,
+   "key": "s006/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level.\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: Infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s007",
+   "case": "humility-always-wins",
+   "in_final_case": true,
+   "key": "s007/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Humility and Opalescence are both on the battlefield\nQUOTED OFFICIAL SOURCE: [Oracle text of Humility] \"All creatures lose all abilities and have base power and toughness 1/1.\"\nCLAIMED CONCLUSION: Humility's effect makes every creature lose all abilities and have base power and toughness 1/1"
+  },
+  {
+   "step": "s007",
+   "case": "humility-always-wins",
+   "in_final_case": true,
+   "key": "s007/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Humility and Opalescence are both on the battlefield\nQUOTED OFFICIAL SOURCE: [Oracle text of Humility] \"All creatures lose all abilities and have base power and toughness 1/1.\"\nCLAIMED CONCLUSION: It is not true that humility's effect makes every creature lose all abilities and have base power and toughness 1/1"
+  },
+  {
+   "step": "s007",
+   "case": "humility-always-wins",
+   "in_final_case": true,
+   "key": "s007/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Humility and Opalescence are both on the battlefield\nQUOTED OFFICIAL SOURCE: [Oracle text of Humility] \"All creatures lose all abilities and have base power and toughness 1/1.\"\nCLAIMED CONCLUSION: A Friday Night Magic is a Regular Rules Enforcement Level tournament."
+  },
+  {
+   "step": "s007",
+   "case": "humility-always-wins",
+   "in_final_case": true,
+   "key": "s007/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Humility and Opalescence are both on the battlefield\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: Humility's effect makes every creature lose all abilities and have base power and toughness 1/1"
+  },
+  {
+   "step": "s008",
+   "case": "summoning-sickness-all-permanents",
+   "in_final_case": true,
+   "key": "s008/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A permanent came under a player's control this turn (the user's stated condition)\n  F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)\nQUOTED OFFICIAL SOURCE: [CR 302.6] \"This rule is informally called the “summoning sickness” rule.\"\nCLAIMED CONCLUSION: The rule restricting {T} abilities of recently-controlled permanents is what is called summoning sickness"
+  },
+  {
+   "step": "s008",
+   "case": "summoning-sickness-all-permanents",
+   "in_final_case": true,
+   "key": "s008/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A permanent came under a player's control this turn (the user's stated condition)\n  F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)\nQUOTED OFFICIAL SOURCE: [CR 302.6] \"This rule is informally called the “summoning sickness” rule.\"\nCLAIMED CONCLUSION: It is not true that the rule restricting {T} abilities of recently-controlled permanents is what is called summoning sickness"
+  },
+  {
+   "step": "s008",
+   "case": "summoning-sickness-all-permanents",
+   "in_final_case": true,
+   "key": "s008/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A permanent came under a player's control this turn (the user's stated condition)\n  F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)\nQUOTED OFFICIAL SOURCE: [CR 302.6] \"This rule is informally called the “summoning sickness” rule.\"\nCLAIMED CONCLUSION: Each game of this match is a multiplayer game"
+  },
+  {
+   "step": "s008",
+   "case": "summoning-sickness-all-permanents",
+   "in_final_case": true,
+   "key": "s008/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A permanent came under a player's control this turn (the user's stated condition)\n  F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule \"\nCLAIMED CONCLUSION: The rule restricting {T} abilities of recently-controlled permanents is what is called summoning sickness"
+  },
+  {
+   "step": "s009",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s009/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Blood Moon and Urborg, Tomb of Yawgmoth are both on the battlefield\nQUOTED OFFICIAL SOURCE: [Oracle text of Blood Moon] \"Nonbasic lands are Mountains.\"\nCLAIMED CONCLUSION: Blood Moon makes Urborg, a nonbasic land, a Mountain"
+  },
+  {
+   "step": "s009",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s009/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Blood Moon and Urborg, Tomb of Yawgmoth are both on the battlefield\nQUOTED OFFICIAL SOURCE: [Oracle text of Blood Moon] \"Nonbasic lands are Mountains.\"\nCLAIMED CONCLUSION: It is not true that blood Moon makes Urborg, a nonbasic land, a Mountain"
+  },
+  {
+   "step": "s009",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s009/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Blood Moon and Urborg, Tomb of Yawgmoth are both on the battlefield\nQUOTED OFFICIAL SOURCE: [Oracle text of Blood Moon] \"Nonbasic lands are Mountains.\"\nCLAIMED CONCLUSION: Each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps"
+  },
+  {
+   "step": "s009",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s009/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Blood Moon and Urborg, Tomb of Yawgmoth are both on the battlefield\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule \"\nCLAIMED CONCLUSION: Blood Moon makes Urborg, a nonbasic land, a Mountain"
+  },
+  {
+   "step": "s010",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s010/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain\nQUOTED OFFICIAL SOURCE: [Oracle text of Urborg, Tomb of Yawgmoth] \"Each land is a Swamp in addition to its other land types.\"\nCLAIMED CONCLUSION: Each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps"
+  },
+  {
+   "step": "s010",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s010/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain\nQUOTED OFFICIAL SOURCE: [Oracle text of Urborg, Tomb of Yawgmoth] \"Each land is a Swamp in addition to its other land types.\"\nCLAIMED CONCLUSION: It is not true that each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps"
+  },
+  {
+   "step": "s010",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s010/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain\nQUOTED OFFICIAL SOURCE: [Oracle text of Urborg, Tomb of Yawgmoth] \"Each land is a Swamp in addition to its other land types.\"\nCLAIMED CONCLUSION: Blood Moon makes Urborg, a nonbasic land, a Mountain"
+  },
+  {
+   "step": "s010",
+   "case": "urborg-still-swamps",
+   "in_final_case": true,
+   "key": "s010/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: Each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps"
+  },
+  {
+   "step": "s011",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s011/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: Under the established rule, the one previous cast from the command zone makes the first recast cost an additional {2}."
+  },
+  {
+   "step": "s011",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s011/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: It is not true that under the established rule, the one previous cast from the command zone makes the first recast cost an additional {2}."
+  },
+  {
+   "step": "s011",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s011/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+  },
+  {
+   "step": "s011",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s011/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\nCLAIMED CONCLUSION: Under the established rule, the one previous cast from the command zone makes the first recast cost an additional {2}."
+  },
+  {
+   "step": "s012",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s012/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: Under the official rules, the one previous cast from the command zone makes the first recast cost an additional {2}, in every Commander game."
+  },
+  {
+   "step": "s012",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s012/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: It is not true that under the official rules, the one previous cast from the command zone makes the first recast cost an additional {2}, in every Commander game."
+  },
+  {
+   "step": "s012",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s012/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: Infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document."
+  },
+  {
+   "step": "s012",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": false,
+   "key": "s012/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: Under the official rules, the one previous cast from the command zone makes the first recast cost an additional {2}, in every Commander game."
+  },
+  {
+   "step": "s013",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": true,
+   "key": "s013/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: Under the official rules, one previous cast makes the first recast cost an additional {2}, and with two previous casts the second recast costs an additional {4}, in every Commander game."
+  },
+  {
+   "step": "s013",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": true,
+   "key": "s013/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: It is not true that under the official rules, one previous cast makes the first recast cost an additional {2}, and with two previous casts the second recast costs an additional {4}, in every Commander game."
+  },
+  {
+   "step": "s013",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": true,
+   "key": "s013/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard"
+  },
+  {
+   "step": "s013",
+   "case": "commander-tax-free-first-recast",
+   "in_final_case": true,
+   "key": "s013/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone\n  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game\nQUOTED OFFICIAL SOURCE: [Oracle text of Urborg, Tomb of Yawgmoth] \"Each land is a Swamp in addition to its other land types.\"\nCLAIMED CONCLUSION: Under the official rules, one previous cast makes the first recast cost an additional {2}, and with two previous casts the second recast costs an additional {4}, in every Commander game."
+  },
+  {
+   "step": "s014",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s014/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability was used and the name Dusk // Dawn was noted (Dusk // Dawn being a split card with aftermath, in the player's graveyard)\n  F2: The face-down creature made by Magar's ability gave me the chance to create a copy of the card with the noted name and cast it (Magar lets me cast a copy)\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+  },
+  {
+   "step": "s014",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s014/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability was used and the name Dusk // Dawn was noted (Dusk // Dawn being a split card with aftermath, in the player's graveyard)\n  F2: The face-down creature made by Magar's ability gave me the chance to create a copy of the card with the noted name and cast it (Magar lets me cast a copy)\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: It is not true that magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+  },
+  {
+   "step": "s014",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s014/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability was used and the name Dusk // Dawn was noted (Dusk // Dawn being a split card with aftermath, in the player's graveyard)\n  F2: The face-down creature made by Magar's ability gave me the chance to create a copy of the card with the noted name and cast it (Magar lets me cast a copy)\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+  },
+  {
+   "step": "s014",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s014/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability was used and the name Dusk // Dawn was noted (Dusk // Dawn being a split card with aftermath, in the player's graveyard)\n  F2: The face-down creature made by Magar's ability gave me the chance to create a copy of the card with the noted name and cast it (Magar lets me cast a copy)\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+  },
+  {
+   "step": "s015",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s015/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule \"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+  },
+  {
+   "step": "s015",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s015/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule \"\nCLAIMED CONCLUSION: It is not true that the copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+  },
+  {
+   "step": "s015",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s015/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule \"\nCLAIMED CONCLUSION: The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+  },
+  {
+   "step": "s015",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s015/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+  },
+  {
+   "step": "s016",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s016/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard\nQUOTED OFFICIAL SOURCE: [CR 709.3c] \"That copy retains the characteristics of the two halves separated into the same two halves as the original card.\"\nCLAIMED CONCLUSION: The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+  },
+  {
+   "step": "s016",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s016/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard\nQUOTED OFFICIAL SOURCE: [CR 709.3c] \"That copy retains the characteristics of the two halves separated into the same two halves as the original card.\"\nCLAIMED CONCLUSION: It is not true that the copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+  },
+  {
+   "step": "s016",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s016/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard\nQUOTED OFFICIAL SOURCE: [CR 709.3c] \"That copy retains the characteristics of the two halves separated into the same two halves as the original card.\"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+  },
+  {
+   "step": "s016",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s016/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S2: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard\nQUOTED OFFICIAL SOURCE: [MTR F] \"Friday Night Magic Regular\"\nCLAIMED CONCLUSION: The copy has the two halves Dusk and Dawn, with Dawn's aftermath"
+  },
+  {
+   "step": "s017",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s017/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name\n  F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it\n  F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+  },
+  {
+   "step": "s017",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s017/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name\n  F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it\n  F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: It is not true that magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+  },
+  {
+   "step": "s017",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s017/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name\n  F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it\n  F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard"
+  },
+  {
+   "step": "s017",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s017/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name\n  F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it\n  F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost"
+  },
+  {
+   "step": "s018",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s018/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s018",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s018/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: It is not true that in a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s018",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s018/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s018",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s018/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s019",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s019/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s019",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s019/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: It is not true that if the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s019",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s019/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s019",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s019/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player Commander match of several games; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 302.6] \"This rule is informally called the “summoning sickness” rule.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s020",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s020/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s020",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s020/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: It is not true that in a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s020",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s020/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s020",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s020/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s021",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s021/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s021",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s021/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: It is not true that if the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s021",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s021/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s021",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s021/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 302.6] \"This rule is informally called the “summoning sickness” rule.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s022",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s022/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s022",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s022/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: It is not true that in a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s022",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s022/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s022",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s022/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [Oracle text of Blood Moon] \"Nonbasic lands are Mountains.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s023",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s023/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s023",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s023/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: It is not true that if the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s023",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s023/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s023",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s023/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match\nQUOTED OFFICIAL SOURCE: [CR 709.3c] \"That copy retains the characteristics of the two halves separated into the same two halves as the original card.\"\nCLAIMED CONCLUSION: If the previous game was a draw, the player who made the choice in that game makes the choice in this game"
+  },
+  {
+   "step": "s024",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s024/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F2: Magar's ability lets the user create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+  },
+  {
+   "step": "s024",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s024/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F2: Magar's ability lets the user create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: It is not true that magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+  },
+  {
+   "step": "s024",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s024/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F2: Magar's ability lets the user create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [Oracle text of Magar of the Magic Strings] \"you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost\"\nCLAIMED CONCLUSION: The copy is cast following the rules for casting spells, having been created in the zone the original card is in"
+  },
+  {
+   "step": "s024",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s024/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F2: Magar's ability lets the user create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [Oracle text of Urborg, Tomb of Yawgmoth] \"Each land is a Swamp in addition to its other land types.\"\nCLAIMED CONCLUSION: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+  },
+  {
+   "step": "s025",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s025/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: The copy is cast following the rules for casting spells, having been created in the zone the original card is in"
+  },
+  {
+   "step": "s025",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s025/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: It is not true that the copy is cast following the rules for casting spells, having been created in the zone the original card is in"
+  },
+  {
+   "step": "s025",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s025/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+  },
+  {
+   "step": "s025",
+   "case": "magar-aftermath",
+   "in_final_case": false,
+   "key": "s025/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: The copy is cast following the rules for casting spells, having been created in the zone the original card is in"
+  },
+  {
+   "step": "s026",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s026/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: The copy is cast following the rules for casting spells, while the trigger is resolving"
+  },
+  {
+   "step": "s026",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s026/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: It is not true that the copy is cast following the rules for casting spells, while the trigger is resolving"
+  },
+  {
+   "step": "s026",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s026/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy"
+  },
+  {
+   "step": "s026",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s026/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: The copy is cast following the rules for casting spells, while the trigger is resolving"
+  },
+  {
+   "step": "s027",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s027/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F3: The Dusk // Dawn card is in the user's graveyard when the copy is created; the copy is made per CR 707.14, not moved from a zone\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy\"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard"
+  },
+  {
+   "step": "s027",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s027/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F3: The Dusk // Dawn card is in the user's graveyard when the copy is created; the copy is made per CR 707.14, not moved from a zone\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy\"\nCLAIMED CONCLUSION: It is not true that the copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard"
+  },
+  {
+   "step": "s027",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s027/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F3: The Dusk // Dawn card is in the user's graveyard when the copy is created; the copy is made per CR 707.14, not moved from a zone\nQUOTED OFFICIAL SOURCE: [CR 707.14] \"use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy\"\nCLAIMED CONCLUSION: The copy is cast following the rules for casting spells, while the trigger is resolving"
+  },
+  {
+   "step": "s027",
+   "case": "magar-aftermath",
+   "in_final_case": true,
+   "key": "s027/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy\n  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard\n  F3: The Dusk // Dawn card is in the user's graveyard when the copy is created; the copy is made per CR 707.14, not moved from a zone\nQUOTED OFFICIAL SOURCE: [CR 100.1b] \"A multiplayer game is a game that begins with more than two players.\"\nCLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard"
+  },
+  {
+   "step": "s028",
+   "case": "multiplayer-match-ends-at-time",
+   "in_final_case": true,
+   "key": "s028/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F2: Each game of the match begins with four players\nQUOTED OFFICIAL SOURCE: [CR 100.1b] \"A multiplayer game is a game that begins with more than two players.\"\nCLAIMED CONCLUSION: Each game of this match is a multiplayer game"
+  },
+  {
+   "step": "s028",
+   "case": "multiplayer-match-ends-at-time",
+   "in_final_case": true,
+   "key": "s028/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F2: Each game of the match begins with four players\nQUOTED OFFICIAL SOURCE: [CR 100.1b] \"A multiplayer game is a game that begins with more than two players.\"\nCLAIMED CONCLUSION: It is not true that each game of this match is a multiplayer game"
+  },
+  {
+   "step": "s028",
+   "case": "multiplayer-match-ends-at-time",
+   "in_final_case": true,
+   "key": "s028/swap",
+   "variant": "swap",
+   "swap_kind": "other_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F2: Each game of the match begins with four players\nQUOTED OFFICIAL SOURCE: [CR 100.1b] \"A multiplayer game is a game that begins with more than two players.\"\nCLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn"
+  },
+  {
+   "step": "s028",
+   "case": "multiplayer-match-ends-at-time",
+   "in_final_case": true,
+   "key": "s028/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F2: Each game of the match begins with four players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: Each game of this match is a multiplayer game"
+  },
+  {
+   "step": "s029",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s029/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+  },
+  {
+   "step": "s029",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s029/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: It is not true that in a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+  },
+  {
+   "step": "s029",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s029/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\nCLAIMED CONCLUSION: If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+  },
+  {
+   "step": "s029",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s029/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+  },
+  {
+   "step": "s030",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s030/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states."
+  },
+  {
+   "step": "s030",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s030/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: It is not true that a multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states."
+  },
+  {
+   "step": "s030",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s030/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+  },
+  {
+   "step": "s030",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s030/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 707.12] \"An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving.\"\nCLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states."
+  },
+  {
+   "step": "s031",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s031/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+  },
+  {
+   "step": "s031",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s031/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: It is not true that if the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+  },
+  {
+   "step": "s031",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s031/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+  },
+  {
+   "step": "s031",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": false,
+   "key": "s031/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 702.19b] \"any excess damage is assigned as its controller chooses among those blocking creatures and the player\"\nCLAIMED CONCLUSION: If the previous game was a draw, 103.1 already has the player who made the choice in that game make the choice in this game, and the proposed rule leaves this as it is."
+  },
+  {
+   "step": "s032",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s032/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+  },
+  {
+   "step": "s032",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s032/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: It is not true that a multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+  },
+  {
+   "step": "s032",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s032/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\nCLAIMED CONCLUSION: In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn."
+  },
+  {
+   "step": "s032",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s032/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\n  F2: In the previous game, two of the three players lost (at different times) and the third player won\nQUOTED OFFICIAL SOURCE: [CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\nCLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+  },
+  {
+   "step": "s033",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s033/orig",
+   "variant": "orig",
+   "corrupted": false,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is."
+  },
+  {
+   "step": "s033",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s033/neg",
+   "variant": "neg",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: It is not true that if the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is."
+  },
+  {
+   "step": "s033",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s033/swap",
+   "variant": "swap",
+   "swap_kind": "same_case",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\nCLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times."
+  },
+  {
+   "step": "s033",
+   "case": "multiplayer-match-who-chooses",
+   "in_final_case": true,
+   "key": "s033/excerpt",
+   "variant": "excerpt",
+   "corrupted": true,
+   "text": "A step in a Magic: the Gathering rules argument.\nPREMISES:\n  F1: A Commander match of several games with three players\nQUOTED OFFICIAL SOURCE: [Oracle text of Blood Moon] \"Nonbasic lands are Mountains.\"\nCLAIMED CONCLUSION: If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is."
+  }
+ ]
+}

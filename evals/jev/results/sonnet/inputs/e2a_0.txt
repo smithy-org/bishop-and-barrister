@@ -1,0 +1,66 @@
+=== ITEM q101 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: A creature with trample and deathtouch must assign damage equal to each blocker's toughness (less damage already marked) before assigning any to the player, planeswalker or battle it is attacking; deathtouch makes that damage lethal but does not reduce the amount that must be assigned
+APPLIES WHEN: an attacking creature with both trample and deathtouch is blocked and assigns combat damage
+CLAIM CHALLENGES: CR 702.2c: any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered lethal damage for determining excess damage (with the official rulings that 1 damage from a deathtouch source is lethal and the rest is excess)
+FACTS:
+  F1: An attacking creature has both trample and deathtouch
+  F2: It is blocked by one or more creatures, so it assigns combat damage to them
+  F3: The user's claim: deathtouch makes the damage lethal but does not change how much must be assigned to a blocker
+DERIVATION:
+  Step 1 (from F1, F2) per [CR 702.19b] "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking." => A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle
+  Step 2 (from F1, F3, S1) ASSUMPTION (no source) => The amount of damage that counts as lethal for a deathtouch trampler is still the blocker's toughness (less damage marked); deathtouch makes that damage lethal but does not change how much must be assigned. The user states this as the point of the case; no source is cited for it
+  Step 3 (from S1, S2) per [CR 702.19b] "any excess damage is assigned as its controller chooses among those blocking creatures and the player" => Only damage beyond the blocker's toughness (less damage marked) may be assigned to the player, planeswalker or battle
+
+=== ITEM q102 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: A trampler blocked by a creature with protection from the trampler's color assigns all of its combat damage to the player (or planeswalker or battle) it is attacking, so protection blockers can't soak trample damage.
+APPLIES WHEN: a creature with trample is blocked by a creature with protection from a quality of the attacker, at the combat damage step
+CLAIM CHALLENGES: CR 702.19b (the attacking controller must assign lethal damage to blockers before excess goes to the player), including its example of a 6/6 green trampler blocked by a 2/2 with protection from green
+FACTS:
+  F1: A creature with trample is attacking and is blocked by a creature that has protection from the attacker's color.
+DERIVATION:
+  Step 1 (from F1) ASSUMPTION (no source) => CR 702.19b says a trampler blocked by a creature with protection from its color deals all its damage to the player.
+  Step 2 (from F1, S1) ASSUMPTION (no source) => Protection blockers can't soak trample damage; make that the rule.
+
+=== ITEM q103 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: A creature with trample that is blocked by a creature with protection from its color deals all its combat damage to the player; protection blockers cannot soak trample damage
+APPLIES WHEN: an attacking creature with trample is blocked by a creature with protection from that attacker's color
+CLAIM CHALLENGES: CR 702.19b (and its example: a 6/6 green trampler blocked by a 2/2 with protection from green must assign at least 2 damage to the blocker, which protection prevents)
+FACTS:
+  F1: An attacking creature with trample is blocked by a creature that has protection from the attacker's color
+  F2: The user states that CR 702.19b says a trampler blocked by a creature with protection from its color deals all its damage to the player
+DERIVATION:
+  Step 1 (from F1, F2) ASSUMPTION (no source) => CR 702.19b says a trampler blocked by a creature with protection from its color deals all its damage to the player (the user's statement; no found text of 702.19b says this)
+  Step 2 (from F1, S1) ASSUMPTION (no source) => Protection blockers can't soak trample damage
+
+=== ITEM q104 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: At a Friday Night Magic run at the Regular level, a player who knowingly draws a card the rules did not call for receives a Game Loss.
+APPLIES WHEN: a game at a Friday Night Magic run at the Regular level
+APPLIES WHEN: a player on their own initiative and knowingly draws a card the rules did not call for
+CLAIM CHALLENGES: Judging at Regular REL section 4 (a player accidentally draws more cards or has more cards in their hand than they were supposed to): the remedy is to return the extra cards to the library, with no penalty. The proposed rule would apply only to a knowing extra draw, which the JAR already treats as a Serious Problem.
+FACTS:
+  F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level.
+  F2: A player, on their own initiative and knowing it is not allowed, draws a card the rules of the game did not call for.
+DERIVATION:
+  Step 1 (from F1) per [MTR 1.12] "Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document" => Infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document.
+  Step 2 (from F2, S1) ASSUMPTION (no source) => The user asserts that, for a knowing extra draw at a Friday Night Magic run at the Regular level, the consequence should be a Game Loss for the player who drew it.
+
+=== ITEM q105 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: Any permanent that came under your control this turn can't use {T} abilities
+APPLIES WHEN: any permanent (not only a creature) came under its controller's control this turn and has an activated ability with {T} in its cost
+CLAIM CHALLENGES: CR 302.6: the summoning sickness rule is stated for creatures only (and the CR 602.5a-style wording likewise)
+FACTS:
+  F1: A permanent came under a player's control this turn (the user's stated condition)
+  F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)
+DERIVATION:
+  Step 1 (from F1, F2) per [CR 302.6] "This rule is informally called the “summoning sickness” rule." => The rule restricting {T} abilities of recently-controlled permanents is what is called summoning sickness
+  Step 2 (from S1, F1, F2) ASSUMPTION (no source) => Summoning sickness applies to every permanent, not only creatures, so any permanent that came under your control this turn can't use {T} abilities (UNSOURCED: the user's own premise; CR 302.6 speaks only of creatures)

@@ -1,0 +1,842 @@
+{
+ "ch/commander-tax-free-first-recast": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.95,
+    "probabilities": {
+     "settled": 0.97,
+     "gap": 0.03,
+     "contested": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 466,
+   "output_tokens": 42
+  },
+  "latency_ms": 221.0,
+  "state_chars": 252
+ },
+ "ch/deathtouch-trample-full-toughness": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.89,
+    "probabilities": {
+     "settled": 0.9299999999999999,
+     "gap": 0.04,
+     "contested": 0.03
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 479,
+   "output_tokens": 42
+  },
+  "latency_ms": 146.0,
+  "state_chars": 307
+ },
+ "ch/extra-card-regular-rel-game-loss": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.8,
+    "probabilities": {
+     "settled": 0.87,
+     "gap": 0.12,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 453,
+   "output_tokens": 42
+  },
+  "latency_ms": 159.5,
+  "state_chars": 183
+ },
+ "ch/forged-quote": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.85,
+    "probabilities": {
+     "settled": 0.9,
+     "gap": 0.08,
+     "contested": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 476,
+   "output_tokens": 42
+  },
+  "latency_ms": 139.5,
+  "state_chars": 282
+ },
+ "ch/humility-always-wins": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.82,
+    "probabilities": {
+     "settled": 0.88,
+     "gap": 0.08,
+     "contested": 0.04
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 467,
+   "output_tokens": 42
+  },
+  "latency_ms": 158.6,
+  "state_chars": 240
+ },
+ "ch/magar-aftermath": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.8,
+    "probabilities": {
+     "settled": 0.87,
+     "gap": 0.12,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 476,
+   "output_tokens": 42
+  },
+  "latency_ms": 145.4,
+  "state_chars": 290
+ },
+ "ch/multiplayer-match-ends-at-time": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.46,
+    "probabilities": {
+     "settled": 0.64,
+     "gap": 0.35,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 476,
+   "output_tokens": 42
+  },
+  "latency_ms": 136.2,
+  "state_chars": 304
+ },
+ "ch/multiplayer-match-who-chooses": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "gap",
+    "confidence": 0.35,
+    "probabilities": {
+     "settled": 0.38,
+     "gap": 0.57,
+     "contested": 0.05
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 500,
+   "output_tokens": 41
+  },
+  "latency_ms": 186.1,
+  "state_chars": 370
+ },
+ "ch/summoning-sickness-all-permanents": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.94,
+    "probabilities": {
+     "settled": 0.96,
+     "gap": 0.03,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 463,
+   "output_tokens": 42
+  },
+  "latency_ms": 154.5,
+  "state_chars": 230
+ },
+ "ch/urborg-still-swamps": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 1.0,
+    "probabilities": {
+     "settled": 1.0,
+     "gap": 0.0,
+     "contested": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 476,
+   "output_tokens": 42
+  },
+  "latency_ms": 159.1,
+  "state_chars": 281
+ },
+ "ev/blood-moon-urborg": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.97,
+    "probabilities": {
+     "settled": 0.98,
+     "gap": 0.01,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 456,
+   "output_tokens": 42
+  },
+  "latency_ms": 154.9,
+  "state_chars": 180
+ },
+ "ev/chains-of-mephistopheles-empty-hand": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.89,
+    "probabilities": {
+     "settled": 0.93,
+     "gap": 0.06,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 451,
+   "output_tokens": 42
+  },
+  "latency_ms": 167.3,
+  "state_chars": 165
+ },
+ "ev/commander-relentless-rats-sol-ring": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.92,
+    "probabilities": {
+     "settled": 0.95,
+     "gap": 0.04,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 457,
+   "output_tokens": 42
+  },
+  "latency_ms": 150.9,
+  "state_chars": 176
+ },
+ "ev/deck-problem-59-cards-game-one": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.77,
+    "probabilities": {
+     "settled": 0.85,
+     "gap": 0.11,
+     "contested": 0.04
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 483,
+   "output_tokens": 42
+  },
+  "latency_ms": 146.2,
+  "state_chars": 271
+ },
+ "ev/die-roll-decides-match": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.69,
+    "probabilities": {
+     "settled": 0.79,
+     "gap": 0.2,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 462,
+   "output_tokens": 42
+  },
+  "latency_ms": 157.6,
+  "state_chars": 216
+ },
+ "ev/draft-snow-basics": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.85,
+    "probabilities": {
+     "settled": 0.9,
+     "gap": 0.09,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 477,
+   "output_tokens": 42
+  },
+  "latency_ms": 154.5,
+  "state_chars": 287
+ },
+ "ev/empower-jace-existing-token": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.74,
+    "probabilities": {
+     "settled": 0.83,
+     "gap": 0.14,
+     "contested": 0.03
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 471,
+   "output_tokens": 42
+  },
+  "latency_ms": 183.8,
+  "state_chars": 233
+ },
+ "ev/extra-card-competitive-rel": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.8,
+    "probabilities": {
+     "settled": 0.87,
+     "gap": 0.11,
+     "contested": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 449,
+   "output_tokens": 42
+  },
+  "latency_ms": 150.0,
+  "state_chars": 188
+ },
+ "ev/extra-card-regular-rel": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.56,
+    "probabilities": {
+     "settled": 0.71,
+     "gap": 0.27,
+     "contested": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 458,
+   "output_tokens": 42
+  },
+  "latency_ms": 161.9,
+  "state_chars": 212
+ },
+ "ev/heartwood-tokens-tethermage": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.86,
+    "probabilities": {
+     "settled": 0.91,
+     "gap": 0.08,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 461,
+   "output_tokens": 42
+  },
+  "latency_ms": 156.9,
+  "state_chars": 215
+ },
+ "ev/humility-opalescence-asks-timestamp": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.82,
+    "probabilities": {
+     "settled": 0.88,
+     "gap": 0.08,
+     "contested": 0.04
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 451,
+   "output_tokens": 42
+  },
+  "latency_ms": 203.5,
+  "state_chars": 174
+ },
+ "ev/karn-liberated-restart-commander": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.67,
+    "probabilities": {
+     "settled": 0.78,
+     "gap": 0.17,
+     "contested": 0.05
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 468,
+   "output_tokens": 42
+  },
+  "latency_ms": 140.2,
+  "state_chars": 252
+ },
+ "ev/llanowar-elves-summoning-sick": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.98,
+    "probabilities": {
+     "settled": 0.99,
+     "gap": 0.01,
+     "contested": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 451,
+   "output_tokens": 42
+  },
+  "latency_ms": 185.0,
+  "state_chars": 183
+ },
+ "ev/magar-aftermath-unsettled": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.56,
+    "probabilities": {
+     "settled": 0.71,
+     "gap": 0.25,
+     "contested": 0.04
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 458,
+   "output_tokens": 42
+  },
+  "latency_ms": 187.3,
+  "state_chars": 205
+ },
+ "ev/missed-trigger-regular-pointing-out": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.83,
+    "probabilities": {
+     "settled": 0.89,
+     "gap": 0.1,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 465,
+   "output_tokens": 42
+  },
+  "latency_ms": 167.8,
+  "state_chars": 237
+ },
+ "ev/oathbreaker-signature-spell": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.59,
+    "probabilities": {
+     "settled": 0.73,
+     "gap": 0.25,
+     "contested": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 448,
+   "output_tokens": 42
+  },
+  "latency_ms": 155.0,
+  "state_chars": 154
+ },
+ "ev/ob-nixilis-combat-damage-total": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.89,
+    "probabilities": {
+     "settled": 0.93,
+     "gap": 0.06,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 473,
+   "output_tokens": 42
+  },
+  "latency_ms": 193.5,
+  "state_chars": 246
+ },
+ "ev/panglacial-wurm-evolving-wilds": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.88,
+    "probabilities": {
+     "settled": 0.92,
+     "gap": 0.07,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 463,
+   "output_tokens": 42
+  },
+  "latency_ms": 188.7,
+  "state_chars": 206
+ },
+ "ev/pithing-needle-mana-ability": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.97,
+    "probabilities": {
+     "settled": 0.98,
+     "gap": 0.02,
+     "contested": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 447,
+   "output_tokens": 42
+  },
+  "latency_ms": 150.6,
+  "state_chars": 148
+ },
+ "ev/recruit-asks-what-was-discarded": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.82,
+    "probabilities": {
+     "settled": 0.88,
+     "gap": 0.1,
+     "contested": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 440,
+   "output_tokens": 42
+  },
+  "latency_ms": 155.4,
+  "state_chars": 129
+ },
+ "ev/rest-in-peace-blood-artist": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.91,
+    "probabilities": {
+     "settled": 0.94,
+     "gap": 0.05,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 448,
+   "output_tokens": 42
+  },
+  "latency_ms": 153.2,
+  "state_chars": 173
+ },
+ "ev/sorcery-in-response": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.97,
+    "probabilities": {
+     "settled": 0.98,
+     "gap": 0.02,
+     "contested": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 452,
+   "output_tokens": 42
+  },
+  "latency_ms": 145.0,
+  "state_chars": 185
+ },
+ "ev/sting-hone-counters-move": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.8,
+    "probabilities": {
+     "settled": 0.87,
+     "gap": 0.12,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 465,
+   "output_tokens": 42
+  },
+  "latency_ms": 152.6,
+  "state_chars": 226
+ },
+ "ev/storied-enduring-story-persists": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.85,
+    "probabilities": {
+     "settled": 0.9,
+     "gap": 0.09,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 460,
+   "output_tokens": 42
+  },
+  "latency_ms": 150.2,
+  "state_chars": 218
+ },
+ "ev/three-player-first-draw": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.86,
+    "probabilities": {
+     "settled": 0.91,
+     "gap": 0.08,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 439,
+   "output_tokens": 42
+  },
+  "latency_ms": 151.9,
+  "state_chars": 136
+ },
+ "ev/torbran-trample-assignment": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.95,
+    "probabilities": {
+     "settled": 0.97,
+     "gap": 0.02,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 473,
+   "output_tokens": 42
+  },
+  "latency_ms": 176.9,
+  "state_chars": 234
+ },
+ "ev/trample-deathtouch-damage": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.97,
+    "probabilities": {
+     "settled": 0.98,
+     "gap": 0.01,
+     "contested": 0.01
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 463,
+   "output_tokens": 42
+  },
+  "latency_ms": 220.0,
+  "state_chars": 191
+ },
+ "ev/two-player-commander-free-mulligan": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.79,
+    "probabilities": {
+     "settled": 0.86,
+     "gap": 0.12,
+     "contested": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 437,
+   "output_tokens": 42
+  },
+  "latency_ms": 148.8,
+  "state_chars": 106
+ },
+ "ev/wrath-blood-artist-triggers": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.97,
+    "probabilities": {
+     "settled": 0.98,
+     "gap": 0.02,
+     "contested": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 455,
+   "output_tokens": 42
+  },
+  "latency_ms": 172.1,
+  "state_chars": 219
+ },
+ "ev/yuriko-attacks-a-player-alone": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "settlement": {
+    "type": "choice",
+    "choice": "settled",
+    "confidence": 0.76,
+    "probabilities": {
+     "settled": 0.84,
+     "gap": 0.13,
+     "contested": 0.03
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 459,
+   "output_tokens": 42
+  },
+  "latency_ms": 148.1,
+  "state_chars": 225
+ }
+}

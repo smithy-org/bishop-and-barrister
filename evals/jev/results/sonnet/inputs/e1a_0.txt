@@ -1,0 +1,39 @@
+=== ITEM q101 ===
+A player asks a Magic: the Gathering rules question:
+"Tenured Tethermage entered and I sacrificed a land for two Heartwood tokens. Are those lands? Can I tap them for mana or for the Tethermage's ability this turn?"
+
+=== ITEM q102 ===
+A player asks a Magic: the Gathering rules question:
+"I control Blood Artist and my opponent has Rest in Peace. If I sacrifice three creatures, do I still drain them for 3?"
+
+=== ITEM q103 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. CR 702.19b says a trampler that's blocked by a creature with protection from its color deals all its damage to the player. So protection blockers can't soak trample damage. Make that the rule."
+
+=== ITEM q104 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. Any permanent that came under your control this turn can't use {T} abilities: that's what summoning sickness is. I want it stated as a rule."
+
+=== ITEM q105 ===
+A player asks a Magic: the Gathering rules question:
+"If I name Llanowar Elves with Pithing Needle, can my opponent still tap their Elves for mana?"
+
+=== ITEM q106 ===
+A player asks a Magic: the Gathering rules question:
+"I control Fíli the Pathfinder plus two artifacts, so I got an enduring story. My opponent just destroyed both artifacts. Do my creatures still get +1/+1 from Fíli?"
+
+=== ITEM q107 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. Magar of the Magic Strings noted Dusk // Dawn. When Magar lets me cast a copy, I can cast Dawn because the copy uses the card's characteristics as it last existed in the graveyard. Make that the rule."
+
+=== ITEM q108 ===
+A player asks a Magic: the Gathering rules question:
+"I control Ob Nixilis, Captive Kingpin. Three unblocked 1/1s hit my opponent at the same time. How many times does Ob Nixilis trigger? What if instead a Blood Artist trigger makes them lose 1?"
+
+=== ITEM q109 ===
+A player asks a Magic: the Gathering rules question:
+"In a 1v1 Commander game, is my first mulligan free?"
+
+=== ITEM q110 ===
+A player asks a Magic: the Gathering rules question:
+"Competitive REL. Time was called in our match and we were heading for a draw, so my opponent and I rolled a die to decide who wins. A judge saw it. What happens?"

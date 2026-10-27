@@ -1,0 +1,6 @@
+[
+{"id":"q201","convinced":0.25,"verdict":"unproven"},
+{"id":"q202","convinced":0.55,"verdict":"introduce"},
+{"id":"q203","convinced":0.02,"verdict":"refuse"},
+{"id":"q204","convinced":0.02,"verdict":"refuse"}
+]

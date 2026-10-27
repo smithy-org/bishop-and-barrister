@@ -1,0 +1,51 @@
+=== ITEM q101 ===
+A player asks a Magic: the Gathering rules question:
+"I'm building my deck at a booster draft. The store has a box of Snow-Covered Forests and some Wastes next to the regular basic lands. Can I add those to my deck like normal basics? What about putting regular Forests in my sideboard?"
+
+Official source text:
+[CR 100.2b] "100.2b In limited play (a way of playing in which each player gets the same quantity of unopened Magic product such as booster packs and creates their own deck using only this product and basic land cards), each deck has a minimum deck size of 40 cards. A limited deck may contain as many duplicates of a card as are included with the product."
+[CR 100.4b] "100.4b In limited play involving individual players, all cards in a player’s card pool not included in their deck are in that player’s sideboard."
+[MTR 7.1] "[Magic Tournament Rules, effective February 27, 2026]
+
+7.1  Deck Construction Restrictions
+Limited decks must contain a minimum of forty cards. There is no maximum deck size. Any drafted or opened
+cards not used in a player’s Limited deck function as their sideboard.
+Players are not restricted to four of any one card in Limited tournament play."
+
+=== ITEM q102 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. Any permanent that came under your control this turn can't use {T} abilities: that's what summoning sickness is. I want it stated as a rule."
+
+Official source text the judges cited:
+[Oracle text of Sol Ring] "{T}: Add {C}{C}."
+[CR 302.6] "A creature’s activated ability with the tap symbol or the untap symbol in its activation cost can’t be activated unless the creature has been under its controller’s control continuously since their most recent turn began."
+[CR 602.5a] "A creature’s activated ability with the tap symbol ({T}) or the untap symbol ({Q}) in its activation cost can’t be activated unless the creature has been under its controller’s control since the start of their most recent turn."
+[CR 302.6] "This rule is informally called the “summoning sickness” rule."
+[Official ruling (Cultivator's Caravan)] "As long as Cultivator's Caravan isn't an artifact creature, its {T} ability can be activated if it came under your control this turn."
+[Oracle text of Forest] "({T}: Add {G}.)"
+[CR 602.5a] "Ignore this rule for creatures with haste (see rule 702.10)."
+
+=== ITEM q103 ===
+A player asks a Magic: the Gathering rules question:
+"My opponent has Chains of Mephistopheles. Divination is the last card in my hand, and I cast it. What happens?"
+
+Official source text:
+[CR 121.2] "121.2. Cards may only be drawn one at a time. If a player is instructed to draw multiple cards, that player performs that many individual card draws.
+121.2a An instruction to draw multiple cards can be modified by replacement effects that refer to the number of cards drawn. This modification occurs before considering any of the individual card draws. See rule 616.1g.
+121.2b Some effects say that a player can’t draw more than one card each turn. Such an effect applies to individual card draws. Instructions to draw multiple cards may still be partially carried out. However, if an effect offers ..."
+
+=== ITEM q104 ===
+A player asks a Magic: the Gathering rules question:
+"In a 1v1 Commander game, is my first mulligan free?"
+
+Official source text:
+[CR 103.5c] "103.5c In a multiplayer game and in any Brawl game, the first mulligan a player takes doesn’t count toward the number of cards that player will put on the bottom of their library or the number of mulligans that player may take. Subsequent mulligans are counted toward these numbers as normal."
+[CR 100.1b] "100.1b A multiplayer game is a game that begins with more than two players. See section 8, “Multiplayer Rules.”"
+
+=== ITEM q105 ===
+A player asks a Magic: the Gathering rules question:
+"I attack with a 6/6 that has trample and deathtouch, and it's blocked by a 4/4. What's the most damage I can put through to my opponent?"
+
+Official source text:
+[CR 702.2c] "702.2c Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt."
+[CR 702.19b] "702.19b The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking. When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s ..."
