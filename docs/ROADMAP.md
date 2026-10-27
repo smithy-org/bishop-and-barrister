@@ -41,12 +41,12 @@ only through a challenge that seven adversarial judges all accept. In order; one
 
 | Phase | Ships | Waits on |
 | ----- | ----- | -------- |
-| 1 | Plan 029, for review (#6) | The maintainer's review |
-| 2 | The Lean 4 core in `challenge/`: the challenge and rule state machines, `replay`, guards, fork detection, what each judge may see, structural derivation checks, the six theorems proved; the `bab-challenge` CLI; release binaries for five platforms. Open as #7, CI green | Phase 1 |
-| 3 | `scripts/challenge.py`: the event store, the pinned binary download, `open/brief/confirm/add/verify/status/show/list/withdraw/trace`; sync status as one field in `judge.py`. Open as #8, without the sync status: that code is in #5 | Phase 2, and #5 for the sync status |
-| 4 | `CHALLENGE.md`: the clerk and seven judge prompts, rounds, blind voting, unanimity, the single-agent marking. Open as #9 | Phase 3 |
-| 5 | `record`/`review` retired with migration; introduced rules in `rules/challenge-<id>.json`; the `rule` kind in search, index, recheck and sync; SKILL.md pointer. Open as #10 | Phase 4 |
-| 6 | The challenge eval set (10 cases, `evals/challenges/`) against a single agent and a three-answer majority vote. Built in #11; not yet run | Phase 5, and a release with binaries |
+| 1 | Merged 2026-10-26 (#6): plan 029 | Done |
+| 2 | The Lean 4 core in `challenge/`: the challenge and rule state machines, `replay`, guards, fork detection, what each judge may see, structural derivation checks, the six theorems proved; the `bab-challenge` CLI; release binaries for five platforms. Merged 2026-10-26 (#7) | Done |
+| 3 | `scripts/challenge.py`: the event store, the pinned binary download, `open/brief/confirm/add/verify/status/show/list/withdraw/trace`; sync status as one field in `judge.py`. Merged 2026-10-26 (#8), without the sync status: that code is in #5 | #5, for the sync status |
+| 4 | `CHALLENGE.md`: the clerk and seven judge prompts, rounds, blind voting, unanimity, the single-agent marking. Merged 2026-10-26 (#9) | Done |
+| 5 | `record`/`review` retired with migration; introduced rules in `rules/challenge-<id>.json`; the `rule` kind in search, index, recheck and sync; SKILL.md pointer. Merged 2026-10-26 (#10) | Done |
+| 6 | The challenge eval set (10 cases, `evals/challenges/`) against a single agent and a three-answer majority vote. Built in #11; not yet run | A release with binaries, and the decision to spend the tokens |
 
 ## To check before building
 
