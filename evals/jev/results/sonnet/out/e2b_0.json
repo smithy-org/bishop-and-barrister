@@ -1,0 +1,7 @@
+[
+{"id": "q101", "convinced": 0.6, "verdict": "introduce"},
+{"id": "q102", "convinced": 0.02, "verdict": "refuse"},
+{"id": "q103", "convinced": 0.03, "verdict": "refuse"},
+{"id": "q104", "convinced": 0.03, "verdict": "refuse"},
+{"id": "q105", "convinced": 0.72, "verdict": "introduce"}
+]

@@ -1,0 +1,60 @@
+=== ITEM q501 ===
+A player asks a Magic: the Gathering rules question:
+"Magar of the Magic Strings noted Dusk // Dawn. When the face-down creature deals combat damage, can I cast the Dawn half of the copy? What about Dusk?"
+
+Official source text:
+[CR 702.127a] "702.127a Aftermath is an ability found on some split cards (see rule 709, “Split Cards”). It represents three static abilities. “Aftermath” means “You may cast this half of this split card from your graveyard,” “This half of this split card can’t be cast from any zone other than a graveyard,” and “If this spell was cast from a graveyard, exile it instead of putting it anywhere else any time it would leave the stack.”"
+[CR 707.12] "707.12. An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving. Casting a copy of an object follows steps 601.2a–h of rule 601, “Casting Spells,” and then the copy becomes cast. Once cast, the copy is a spell on the stack, and just like any other spell it can resolve or be countered.
+707.12a An effect that creates multiple copies and says a player “may cast” those objects allows that player to ..."
+[CR 707.14] "707.14. One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule 608.2h.)"
+[CR 709.3c] "709.3c An effect may create a copy of a split card and allow a player to cast the copy. That copy retains the characteristics of the two halves separated into the same two halves as the original card. (See rule 707.12.)"
+
+=== ITEM q502 ===
+A player asks a Magic: the Gathering rules question:
+"I crack Evolving Wilds and Panglacial Wurm is in my library. Can I cast the Wurm while I'm searching? When does it resolve, and do I still get my land?"
+
+Official source text:
+[CR 608.2g] "608.2g If an effect gives a player the option to pay mana, they may activate mana abilities before taking that action. If an effect specifically instructs or allows a player to cast a spell during resolution, they do so by following the steps in rules 601.2a–i, except no player receives priority after it’s cast. That spell becomes the topmost object on the stack, and the currently resolving spell or ability continues to resolve, which may include casting other spells this way. No other spells can normally be cast and no other abilities can normally be activated during resolution."
+
+=== ITEM q503 ===
+A player asks a Magic: the Gathering rules question:
+"Sting, Bilbo's Sword came in with 3 hone counters on my Hobbit. If I equip Sting to a different creature, does the bonus go with it? And what if Sting loses its abilities?"
+
+Official source text:
+[CR 122.1j] "122.1j A hone counter on an Equipment gives +1/+0 to any creature that Equipment is attached to."
+
+=== ITEM q504 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. With Humility and Opalescence both out, Humility always wins: every creature, Humility included, is a 1/1 with no abilities, whichever came out first."
+
+Official source text the judges cited:
+[CR 613.7] "An effect with an earlier timestamp is applied before an effect with a later timestamp."
+[Official ruling (Humility)] "But if Humility entered before Opalescence, the following is true: Layer 4: Humility and Worship each become creatures that are still enchantments (Opalescence). Layer 6: Humility and Worship each lose their abilities (Humility). Layer 7b: Humility becomes 1/1 and Worship becomes 1/1 (Humility). Humility becomes 4/4 and Worship becomes 4/4 (Opalescence)."
+[Official ruling (Humility)] "If Humility has the earliest timestamp, then everything is 4/4."
+[Oracle text of Humility] "All creatures lose all abilities and have base power and toughness 1/1."
+[Official ruling (Humility/Opalescence wotc 2009-10-01)] "But if Humility entered before Opalescence, the following is true: Layer 4: Humility and Worship each become creatures that are still enchantments (Opalescence). Layer 6: Humility and Worship each lose their abilities (Humility). Layer 7b: Humility becomes 1/1 and Worship becomes 1/1 (Humility). Humility becomes 4/4 and Worship becomes 4/4 (Opalescence)."
+[Official ruling (Humility)] "The rest of it will apply even if the permanent loses its ability before it's finished applying."
+[Oracle text of Opalescence] "Each other non-Aura enchantment is a creature in addition to its other types and has base power and base toughness each equal to its mana value."
+[Official ruling (Humility / Opalescence 2009-10-01)] "But if Humility entered before Opalescence, the following is true:"
+[Official ruling (Humility / Opalescence 2009-10-01)] "Humility becomes 1/1 and Worship becomes 1/1 (Humility). Humility becomes 4/4 and Worship becomes 4/4 (Opalescence)."
+[Official ruling (Humility/Opalescence wotc 2006-02-01)] "If Humility has the earliest timestamp, then everything is 4/4."
+
+=== ITEM q505 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. In a three-player Commander match of several games, CR 103.1 says the loser of the previous game chooses who starts, but two of us lost. Let's make it the rule that the player who lost first in the previous game chooses; if the previous game was a draw, 103.1's draw rule applies."
+
+Official source text the judges cited:
+[CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+[CR 103.1] "In a match of several games, the loser of the previous game chooses who takes the first turn."
+[CR 103.1] "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+[CR 800.4] "Unlike two-player games, multiplayer games can continue after one or more players have left the game."
+[CR 104.4a] "If all the players remaining in a game lose simultaneously, the game is a draw."
+[CR 800.4h] "If a rule requires a player who has left the game to make a choice, the next player in turn order makes that choice."
+[CR 104.2c] "Each player on the winning team wins the game, even if one or more of those players had previously lost that game."
+[MTR 2.2] "For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)
+during Swiss rounds, or the player ranked higher at the end of Swiss rounds during playoff matches - chooses
+either to play first or to play second. They must state this choice before"
+[MTR 9.3] "A team determined at random chooses either to play first or to play second. The choice must be made before
+either player on that team looks at their hand. If either player on that team looks at their hand before their choice
+is made, that team plays first. The team who plays first skips the draw ste"
+[CR 104.5] "If a player loses the game, that player leaves the game. If the game is a draw for a player, that player leaves the game."

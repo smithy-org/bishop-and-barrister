@@ -58,6 +58,7 @@ Facts the plan relies on that were not confirmed on 2026-10-25.
 | Whether GitHub Sponsors lets a sponsor enter their own amount, or only pick a tier                                                    | Choosing the tip service |
 | Which trusted sources claude.ai's sandbox can reach (Scryfall, Wizards, Magic Judges)                                                 | Phase 2's install notes  |
 | Scryfall's terms for the bulk rulings file: downloading it on each user's machine is fine; confirm nothing in the plan republishes it | Phase 1                  |
+| Whether Jev (TypeSafe's System One model) helps next to the challenge judges: measured offline in `evals/jev/` (2026-10-27): triage and second opinion not better than the baselines, step-entailment check worth testing further on real refutations; always optional, and anything sent to a third party is a privacy decision | Any adoption |
 
 ## Upkeep, after each Comprehensive Rules release
 

@@ -1,0 +1,39 @@
+=== ITEM q401 ===
+A player asks a Magic: the Gathering rules question:
+"Competitive REL, game 1 of round 3. When I presented my deck for pre-game shuffling, my opponent counted 59 cards. My decklist has 60; the missing card was still in my deck box. What's the infraction and the penalty?"
+
+=== ITEM q402 ===
+A player asks a Magic: the Gathering rules question:
+"On my turn I cast Lightning Bolt at my opponent's creature, and in response they cast Divination to draw two cards. Is that legal?"
+
+=== ITEM q403 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. At a Friday Night Magic, if you draw an extra card it's a Game Loss. That should be the rule."
+
+=== ITEM q404 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. In our group the first time you recast your commander from the command zone it costs nothing extra; the {2} tax starts from the second recast. Make that the rule."
+
+=== ITEM q405 ===
+A player asks a Magic: the Gathering rules question:
+"Magar of the Magic Strings noted Dusk // Dawn. When the face-down creature deals combat damage, can I cast the Dawn half of the copy? What about Dusk?"
+
+=== ITEM q406 ===
+A player asks a Magic: the Gathering rules question:
+"I'm building my deck at a booster draft. The store has a box of Snow-Covered Forests and some Wastes next to the regular basic lands. Can I add those to my deck like normal basics? What about putting regular Forests in my sideboard?"
+
+=== ITEM q407 ===
+A player asks a Magic: the Gathering rules question:
+"I crack Evolving Wilds and Panglacial Wurm is in my library. Can I cast the Wurm while I'm searching? When does it resolve, and do I still get my land?"
+
+=== ITEM q408 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. A trampler with deathtouch still has to assign damage equal to the blocker's toughness before any tramples over: deathtouch makes the damage lethal, it doesn't change how much you must assign. That should be the rule."
+
+=== ITEM q409 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. In a three-player Commander match of several games, CR 103.1 says the loser of the previous game chooses who starts, but two of us lost. Let's make it the rule that the player who lost first in the previous game chooses; if the previous game was a draw, 103.1's draw rule applies."
+
+=== ITEM q410 ===
+A player asks a Magic: the Gathering rules question:
+"My Lake-town Lookout died and I recruited. Do I get a Human Soldier token?"

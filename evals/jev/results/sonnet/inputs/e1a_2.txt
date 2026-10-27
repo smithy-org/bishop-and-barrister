@@ -1,0 +1,39 @@
+=== ITEM q301 ===
+A player asks a Magic: the Gathering rules question:
+"Three of us are playing Commander. Does whoever goes first skip their first draw?"
+
+=== ITEM q302 ===
+A player asks a Magic: the Gathering rules question:
+"Commander game. Earlier I used Karn Liberated's -3 to exile my opponent's commander, and now I use Karn's ultimate. What happens to life totals, commander tax, commander damage, and that commander?"
+
+=== ITEM q303 ===
+A player asks a Magic: the Gathering rules question:
+"My opponent has Blood Moon out and I've got Urborg, Tomb of Yawgmoth. Are all my lands still Swamps? What can Urborg tap for?"
+
+=== ITEM q304 ===
+A player asks a Magic: the Gathering rules question:
+"At a Competitive REL tournament I cast Divination and accidentally drew three cards instead of two. What happens? What's the penalty?"
+
+=== ITEM q305 ===
+A player asks a Magic: the Gathering rules question:
+"I attack with a 6/6 that has trample and deathtouch, and it's blocked by a 4/4. What's the most damage I can put through to my opponent?"
+
+=== ITEM q306 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. Blood Moon turns Urborg, Tomb of Yawgmoth into a Mountain, but Urborg was on the battlefield first, so its ability still applies and all my lands are still Swamps. I want that to be the rule."
+
+=== ITEM q307 ===
+A player asks a Magic: the Gathering rules question:
+"I've got Humility and Opalescence both on the battlefield. What are my enchantments now, power/toughness and abilities?"
+
+=== ITEM q308 ===
+A player asks a Magic: the Gathering rules question:
+"I control Blood Artist and two other creatures. My opponent controls two creatures. I cast Wrath of God. How many times does Blood Artist trigger, and what happens?"
+
+=== ITEM q309 ===
+A player asks a Magic: the Gathering rules question:
+"I already have a Jace token with 1 loyalty from earlier. Now Arcane Amphisbaena enters and I empower Jace 2. Do I get a second Jace? What's my loyalty, and what can the token do?"
+
+=== ITEM q310 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. If time is called in a four-player match of several games, the player with the most game wins takes the match, and equal wins are a draw among those players. Nothing official covers this, so let's make it our rule."

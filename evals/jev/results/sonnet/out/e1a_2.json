@@ -1,0 +1,12 @@
+[
+{"id":"q301","label":"settled","confidence":0.95},
+{"id":"q302","label":"settled","confidence":0.85},
+{"id":"q303","label":"settled","confidence":0.95},
+{"id":"q304","label":"settled","confidence":0.9},
+{"id":"q305","label":"settled","confidence":0.95},
+{"id":"q306","label":"settled","confidence":0.9},
+{"id":"q307","label":"settled","confidence":0.85},
+{"id":"q308","label":"settled","confidence":0.93},
+{"id":"q309","label":"settled","confidence":0.7},
+{"id":"q310","label":"gap","confidence":0.65}
+]

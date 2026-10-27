@@ -1,0 +1,1022 @@
+{
+ "e1a_0": [
+  {
+   "id": "q101",
+   "key": "ev/heartwood-tokens-tethermage"
+  },
+  {
+   "id": "q102",
+   "key": "ev/rest-in-peace-blood-artist"
+  },
+  {
+   "id": "q103",
+   "key": "ch/forged-quote"
+  },
+  {
+   "id": "q104",
+   "key": "ch/summoning-sickness-all-permanents"
+  },
+  {
+   "id": "q105",
+   "key": "ev/pithing-needle-mana-ability"
+  },
+  {
+   "id": "q106",
+   "key": "ev/storied-enduring-story-persists"
+  },
+  {
+   "id": "q107",
+   "key": "ch/magar-aftermath"
+  },
+  {
+   "id": "q108",
+   "key": "ev/ob-nixilis-combat-damage-total"
+  },
+  {
+   "id": "q109",
+   "key": "ev/two-player-commander-free-mulligan"
+  },
+  {
+   "id": "q110",
+   "key": "ev/die-roll-decides-match"
+  }
+ ],
+ "e1a_1": [
+  {
+   "id": "q201",
+   "key": "ev/missed-trigger-regular-pointing-out"
+  },
+  {
+   "id": "q202",
+   "key": "ev/llanowar-elves-summoning-sick"
+  },
+  {
+   "id": "q203",
+   "key": "ev/oathbreaker-signature-spell"
+  },
+  {
+   "id": "q204",
+   "key": "ev/sting-hone-counters-move"
+  },
+  {
+   "id": "q205",
+   "key": "ev/yuriko-attacks-a-player-alone"
+  },
+  {
+   "id": "q206",
+   "key": "ev/extra-card-regular-rel"
+  },
+  {
+   "id": "q207",
+   "key": "ev/chains-of-mephistopheles-empty-hand"
+  },
+  {
+   "id": "q208",
+   "key": "ev/commander-relentless-rats-sol-ring"
+  },
+  {
+   "id": "q209",
+   "key": "ev/torbran-trample-assignment"
+  },
+  {
+   "id": "q210",
+   "key": "ch/humility-always-wins"
+  }
+ ],
+ "e1a_2": [
+  {
+   "id": "q301",
+   "key": "ev/three-player-first-draw"
+  },
+  {
+   "id": "q302",
+   "key": "ev/karn-liberated-restart-commander"
+  },
+  {
+   "id": "q303",
+   "key": "ev/blood-moon-urborg"
+  },
+  {
+   "id": "q304",
+   "key": "ev/extra-card-competitive-rel"
+  },
+  {
+   "id": "q305",
+   "key": "ev/trample-deathtouch-damage"
+  },
+  {
+   "id": "q306",
+   "key": "ch/urborg-still-swamps"
+  },
+  {
+   "id": "q307",
+   "key": "ev/humility-opalescence-asks-timestamp"
+  },
+  {
+   "id": "q308",
+   "key": "ev/wrath-blood-artist-triggers"
+  },
+  {
+   "id": "q309",
+   "key": "ev/empower-jace-existing-token"
+  },
+  {
+   "id": "q310",
+   "key": "ch/multiplayer-match-ends-at-time"
+  }
+ ],
+ "e1a_3": [
+  {
+   "id": "q401",
+   "key": "ev/deck-problem-59-cards-game-one"
+  },
+  {
+   "id": "q402",
+   "key": "ev/sorcery-in-response"
+  },
+  {
+   "id": "q403",
+   "key": "ch/extra-card-regular-rel-game-loss"
+  },
+  {
+   "id": "q404",
+   "key": "ch/commander-tax-free-first-recast"
+  },
+  {
+   "id": "q405",
+   "key": "ev/magar-aftermath-unsettled"
+  },
+  {
+   "id": "q406",
+   "key": "ev/draft-snow-basics"
+  },
+  {
+   "id": "q407",
+   "key": "ev/panglacial-wurm-evolving-wilds"
+  },
+  {
+   "id": "q408",
+   "key": "ch/deathtouch-trample-full-toughness"
+  },
+  {
+   "id": "q409",
+   "key": "ch/multiplayer-match-who-chooses"
+  },
+  {
+   "id": "q410",
+   "key": "ev/recruit-asks-what-was-discarded"
+  }
+ ],
+ "e1b_0": [
+  {
+   "id": "q101",
+   "key": "ev/draft-snow-basics"
+  },
+  {
+   "id": "q102",
+   "key": "ch/summoning-sickness-all-permanents"
+  },
+  {
+   "id": "q103",
+   "key": "ev/chains-of-mephistopheles-empty-hand"
+  },
+  {
+   "id": "q104",
+   "key": "ev/two-player-commander-free-mulligan"
+  },
+  {
+   "id": "q105",
+   "key": "ev/trample-deathtouch-damage"
+  }
+ ],
+ "e1b_1": [
+  {
+   "id": "q201",
+   "key": "ch/forged-quote"
+  },
+  {
+   "id": "q202",
+   "key": "ev/llanowar-elves-summoning-sick"
+  },
+  {
+   "id": "q203",
+   "key": "ch/magar-aftermath"
+  },
+  {
+   "id": "q204",
+   "key": "ev/humility-opalescence-asks-timestamp"
+  },
+  {
+   "id": "q205",
+   "key": "ch/urborg-still-swamps"
+  }
+ ],
+ "e1b_2": [
+  {
+   "id": "q301",
+   "key": "ev/missed-trigger-regular-pointing-out"
+  },
+  {
+   "id": "q302",
+   "key": "ev/pithing-needle-mana-ability"
+  },
+  {
+   "id": "q303",
+   "key": "ch/commander-tax-free-first-recast"
+  },
+  {
+   "id": "q304",
+   "key": "ev/karn-liberated-restart-commander"
+  },
+  {
+   "id": "q305",
+   "key": "ev/three-player-first-draw"
+  }
+ ],
+ "e1b_3": [
+  {
+   "id": "q401",
+   "key": "ev/sorcery-in-response"
+  },
+  {
+   "id": "q402",
+   "key": "ev/commander-relentless-rats-sol-ring"
+  },
+  {
+   "id": "q403",
+   "key": "ev/yuriko-attacks-a-player-alone"
+  },
+  {
+   "id": "q404",
+   "key": "ev/recruit-asks-what-was-discarded"
+  },
+  {
+   "id": "q405",
+   "key": "ev/storied-enduring-story-persists"
+  }
+ ],
+ "e1b_4": [
+  {
+   "id": "q501",
+   "key": "ev/magar-aftermath-unsettled"
+  },
+  {
+   "id": "q502",
+   "key": "ev/panglacial-wurm-evolving-wilds"
+  },
+  {
+   "id": "q503",
+   "key": "ev/sting-hone-counters-move"
+  },
+  {
+   "id": "q504",
+   "key": "ch/humility-always-wins"
+  },
+  {
+   "id": "q505",
+   "key": "ch/multiplayer-match-who-chooses"
+  }
+ ],
+ "e1b_5": [
+  {
+   "id": "q601",
+   "key": "ev/rest-in-peace-blood-artist"
+  },
+  {
+   "id": "q602",
+   "key": "ev/heartwood-tokens-tethermage"
+  },
+  {
+   "id": "q603",
+   "key": "ch/multiplayer-match-ends-at-time"
+  },
+  {
+   "id": "q604",
+   "key": "ev/deck-problem-59-cards-game-one"
+  },
+  {
+   "id": "q605",
+   "key": "ev/extra-card-competitive-rel"
+  }
+ ],
+ "e1b_6": [
+  {
+   "id": "q701",
+   "key": "ev/oathbreaker-signature-spell"
+  },
+  {
+   "id": "q702",
+   "key": "ev/blood-moon-urborg"
+  },
+  {
+   "id": "q703",
+   "key": "ev/extra-card-regular-rel"
+  },
+  {
+   "id": "q704",
+   "key": "ch/extra-card-regular-rel-game-loss"
+  },
+  {
+   "id": "q705",
+   "key": "ev/ob-nixilis-combat-damage-total"
+  }
+ ],
+ "e1b_7": [
+  {
+   "id": "q801",
+   "key": "ch/deathtouch-trample-full-toughness"
+  },
+  {
+   "id": "q802",
+   "key": "ev/torbran-trample-assignment"
+  },
+  {
+   "id": "q803",
+   "key": "ev/die-roll-decides-match"
+  },
+  {
+   "id": "q804",
+   "key": "ev/wrath-blood-artist-triggers"
+  },
+  {
+   "id": "q805",
+   "key": "ev/empower-jace-existing-token"
+  }
+ ],
+ "e2a_0": [
+  {
+   "id": "q101",
+   "key": "challenges-2/deathtouch-trample-full-toughness"
+  },
+  {
+   "id": "q102",
+   "key": "challenges-4/forged-quote"
+  },
+  {
+   "id": "q103",
+   "key": "challenges-2/forged-quote"
+  },
+  {
+   "id": "q104",
+   "key": "challenges-2/extra-card-regular-rel-game-loss"
+  },
+  {
+   "id": "q105",
+   "key": "challenges-2/summoning-sickness-all-permanents"
+  }
+ ],
+ "e2a_1": [
+  {
+   "id": "q201",
+   "key": "challenges-3/multiplayer-match-who-chooses"
+  },
+  {
+   "id": "q202",
+   "key": "challenges-4/multiplayer-match-who-chooses"
+  },
+  {
+   "id": "q203",
+   "key": "challenges-2/humility-always-wins"
+  },
+  {
+   "id": "q204",
+   "key": "challenges-2/urborg-still-swamps"
+  }
+ ],
+ "e2a_2": [
+  {
+   "id": "q301",
+   "key": "challenges-3/magar-aftermath"
+  },
+  {
+   "id": "q302",
+   "key": "challenges-4/multiplayer-match-ends-at-time"
+  },
+  {
+   "id": "q303",
+   "key": "challenges-3/commander-tax-free-first-recast"
+  },
+  {
+   "id": "q304",
+   "key": "challenges-4/magar-aftermath"
+  }
+ ],
+ "e2b_0": [
+  {
+   "id": "q101",
+   "key": "challenges-4/multiplayer-match-who-chooses"
+  },
+  {
+   "id": "q102",
+   "key": "challenges-4/forged-quote"
+  },
+  {
+   "id": "q103",
+   "key": "challenges-2/humility-always-wins"
+  },
+  {
+   "id": "q104",
+   "key": "challenges-2/urborg-still-swamps"
+  },
+  {
+   "id": "q105",
+   "key": "challenges-4/multiplayer-match-ends-at-time"
+  }
+ ],
+ "e2b_1": [
+  {
+   "id": "q201",
+   "key": "challenges-3/multiplayer-match-who-chooses"
+  },
+  {
+   "id": "q202",
+   "key": "challenges-4/magar-aftermath"
+  },
+  {
+   "id": "q203",
+   "key": "challenges-3/commander-tax-free-first-recast"
+  },
+  {
+   "id": "q204",
+   "key": "challenges-2/extra-card-regular-rel-game-loss"
+  }
+ ],
+ "e2b_2": [
+  {
+   "id": "q301",
+   "key": "challenges-2/forged-quote"
+  },
+  {
+   "id": "q302",
+   "key": "challenges-2/summoning-sickness-all-permanents"
+  },
+  {
+   "id": "q303",
+   "key": "challenges-3/magar-aftermath"
+  },
+  {
+   "id": "q304",
+   "key": "challenges-2/deathtouch-trample-full-toughness"
+  }
+ ],
+ "e3_0": [
+  {
+   "id": "q101",
+   "key": "s002/orig"
+  },
+  {
+   "id": "q102",
+   "key": "s023/swap"
+  },
+  {
+   "id": "q103",
+   "key": "s018/orig"
+  },
+  {
+   "id": "q104",
+   "key": "s017/excerpt"
+  },
+  {
+   "id": "q105",
+   "key": "s010/neg"
+  },
+  {
+   "id": "q106",
+   "key": "s008/swap"
+  },
+  {
+   "id": "q107",
+   "key": "s028/orig"
+  },
+  {
+   "id": "q108",
+   "key": "s012/neg"
+  },
+  {
+   "id": "q109",
+   "key": "s032/excerpt"
+  },
+  {
+   "id": "q110",
+   "key": "s019/swap"
+  },
+  {
+   "id": "q111",
+   "key": "s030/excerpt"
+  },
+  {
+   "id": "q112",
+   "key": "s015/orig"
+  },
+  {
+   "id": "q113",
+   "key": "s026/neg"
+  },
+  {
+   "id": "q114",
+   "key": "s005/neg"
+  },
+  {
+   "id": "q115",
+   "key": "s006/excerpt"
+  },
+  {
+   "id": "q116",
+   "key": "s000/orig"
+  },
+  {
+   "id": "q117",
+   "key": "s021/swap"
+  }
+ ],
+ "e3_1": [
+  {
+   "id": "q201",
+   "key": "s011/neg"
+  },
+  {
+   "id": "q202",
+   "key": "s031/neg"
+  },
+  {
+   "id": "q203",
+   "key": "s022/excerpt"
+  },
+  {
+   "id": "q204",
+   "key": "s001/orig"
+  },
+  {
+   "id": "q205",
+   "key": "s014/excerpt"
+  },
+  {
+   "id": "q206",
+   "key": "s004/orig"
+  },
+  {
+   "id": "q207",
+   "key": "s013/neg"
+  },
+  {
+   "id": "q208",
+   "key": "s007/excerpt"
+  },
+  {
+   "id": "q209",
+   "key": "s020/swap"
+  },
+  {
+   "id": "q210",
+   "key": "s033/excerpt"
+  },
+  {
+   "id": "q211",
+   "key": "s025/swap"
+  },
+  {
+   "id": "q212",
+   "key": "s029/orig"
+  },
+  {
+   "id": "q213",
+   "key": "s003/orig"
+  },
+  {
+   "id": "q214",
+   "key": "s016/orig"
+  },
+  {
+   "id": "q215",
+   "key": "s027/neg"
+  },
+  {
+   "id": "q216",
+   "key": "s024/swap"
+  },
+  {
+   "id": "q217",
+   "key": "s009/swap"
+  }
+ ],
+ "e3_2": [
+  {
+   "id": "q301",
+   "key": "s017/orig"
+  },
+  {
+   "id": "q302",
+   "key": "s000/neg"
+  },
+  {
+   "id": "q303",
+   "key": "s008/excerpt"
+  },
+  {
+   "id": "q304",
+   "key": "s032/orig"
+  },
+  {
+   "id": "q305",
+   "key": "s028/neg"
+  },
+  {
+   "id": "q306",
+   "key": "s021/excerpt"
+  },
+  {
+   "id": "q307",
+   "key": "s012/swap"
+  },
+  {
+   "id": "q308",
+   "key": "s030/orig"
+  },
+  {
+   "id": "q309",
+   "key": "s023/excerpt"
+  },
+  {
+   "id": "q310",
+   "key": "s026/swap"
+  },
+  {
+   "id": "q311",
+   "key": "s018/neg"
+  },
+  {
+   "id": "q312",
+   "key": "s002/neg"
+  },
+  {
+   "id": "q313",
+   "key": "s005/swap"
+  },
+  {
+   "id": "q314",
+   "key": "s015/neg"
+  },
+  {
+   "id": "q315",
+   "key": "s019/excerpt"
+  },
+  {
+   "id": "q316",
+   "key": "s010/swap"
+  },
+  {
+   "id": "q317",
+   "key": "s006/orig"
+  }
+ ],
+ "e3_3": [
+  {
+   "id": "q401",
+   "key": "s014/orig"
+  },
+  {
+   "id": "q402",
+   "key": "s027/swap"
+  },
+  {
+   "id": "q403",
+   "key": "s004/neg"
+  },
+  {
+   "id": "q404",
+   "key": "s011/swap"
+  },
+  {
+   "id": "q405",
+   "key": "s025/excerpt"
+  },
+  {
+   "id": "q406",
+   "key": "s007/orig"
+  },
+  {
+   "id": "q407",
+   "key": "s033/orig"
+  },
+  {
+   "id": "q408",
+   "key": "s020/excerpt"
+  },
+  {
+   "id": "q409",
+   "key": "s016/neg"
+  },
+  {
+   "id": "q410",
+   "key": "s009/excerpt"
+  },
+  {
+   "id": "q411",
+   "key": "s024/excerpt"
+  },
+  {
+   "id": "q412",
+   "key": "s013/swap"
+  },
+  {
+   "id": "q413",
+   "key": "s031/swap"
+  },
+  {
+   "id": "q414",
+   "key": "s022/orig"
+  },
+  {
+   "id": "q415",
+   "key": "s001/neg"
+  },
+  {
+   "id": "q416",
+   "key": "s003/neg"
+  },
+  {
+   "id": "q417",
+   "key": "s029/neg"
+  }
+ ],
+ "e3_4": [
+  {
+   "id": "q501",
+   "key": "s021/orig"
+  },
+  {
+   "id": "q502",
+   "key": "s008/orig"
+  },
+  {
+   "id": "q503",
+   "key": "s028/swap"
+  },
+  {
+   "id": "q504",
+   "key": "s017/neg"
+  },
+  {
+   "id": "q505",
+   "key": "s019/orig"
+  },
+  {
+   "id": "q506",
+   "key": "s030/neg"
+  },
+  {
+   "id": "q507",
+   "key": "s005/excerpt"
+  },
+  {
+   "id": "q508",
+   "key": "s000/swap"
+  },
+  {
+   "id": "q509",
+   "key": "s010/excerpt"
+  },
+  {
+   "id": "q510",
+   "key": "s018/swap"
+  },
+  {
+   "id": "q511",
+   "key": "s006/neg"
+  },
+  {
+   "id": "q512",
+   "key": "s032/neg"
+  },
+  {
+   "id": "q513",
+   "key": "s015/swap"
+  },
+  {
+   "id": "q514",
+   "key": "s026/excerpt"
+  },
+  {
+   "id": "q515",
+   "key": "s023/orig"
+  },
+  {
+   "id": "q516",
+   "key": "s012/excerpt"
+  },
+  {
+   "id": "q517",
+   "key": "s002/swap"
+  }
+ ],
+ "e3_5": [
+  {
+   "id": "q601",
+   "key": "s020/orig"
+  },
+  {
+   "id": "q602",
+   "key": "s013/excerpt"
+  },
+  {
+   "id": "q603",
+   "key": "s024/orig"
+  },
+  {
+   "id": "q604",
+   "key": "s011/excerpt"
+  },
+  {
+   "id": "q605",
+   "key": "s003/swap"
+  },
+  {
+   "id": "q606",
+   "key": "s016/swap"
+  },
+  {
+   "id": "q607",
+   "key": "s001/swap"
+  },
+  {
+   "id": "q608",
+   "key": "s009/orig"
+  },
+  {
+   "id": "q609",
+   "key": "s022/neg"
+  },
+  {
+   "id": "q610",
+   "key": "s031/excerpt"
+  },
+  {
+   "id": "q611",
+   "key": "s004/swap"
+  },
+  {
+   "id": "q612",
+   "key": "s025/orig"
+  },
+  {
+   "id": "q613",
+   "key": "s014/neg"
+  },
+  {
+   "id": "q614",
+   "key": "s007/neg"
+  },
+  {
+   "id": "q615",
+   "key": "s029/swap"
+  },
+  {
+   "id": "q616",
+   "key": "s033/neg"
+  },
+  {
+   "id": "q617",
+   "key": "s027/excerpt"
+  }
+ ],
+ "e3_6": [
+  {
+   "id": "q701",
+   "key": "s021/neg"
+  },
+  {
+   "id": "q702",
+   "key": "s032/swap"
+  },
+  {
+   "id": "q703",
+   "key": "s026/orig"
+  },
+  {
+   "id": "q704",
+   "key": "s005/orig"
+  },
+  {
+   "id": "q705",
+   "key": "s006/swap"
+  },
+  {
+   "id": "q706",
+   "key": "s000/excerpt"
+  },
+  {
+   "id": "q707",
+   "key": "s010/orig"
+  },
+  {
+   "id": "q708",
+   "key": "s023/neg"
+  },
+  {
+   "id": "q709",
+   "key": "s015/excerpt"
+  },
+  {
+   "id": "q710",
+   "key": "s002/excerpt"
+  },
+  {
+   "id": "q711",
+   "key": "s028/excerpt"
+  },
+  {
+   "id": "q712",
+   "key": "s008/neg"
+  },
+  {
+   "id": "q713",
+   "key": "s018/excerpt"
+  },
+  {
+   "id": "q714",
+   "key": "s030/swap"
+  },
+  {
+   "id": "q715",
+   "key": "s019/neg"
+  },
+  {
+   "id": "q716",
+   "key": "s017/swap"
+  },
+  {
+   "id": "q717",
+   "key": "s012/orig"
+  }
+ ],
+ "e3_7": [
+  {
+   "id": "q801",
+   "key": "s003/excerpt"
+  },
+  {
+   "id": "q802",
+   "key": "s013/orig"
+  },
+  {
+   "id": "q803",
+   "key": "s031/orig"
+  },
+  {
+   "id": "q804",
+   "key": "s001/excerpt"
+  },
+  {
+   "id": "q805",
+   "key": "s024/neg"
+  },
+  {
+   "id": "q806",
+   "key": "s029/excerpt"
+  },
+  {
+   "id": "q807",
+   "key": "s011/orig"
+  },
+  {
+   "id": "q808",
+   "key": "s009/neg"
+  },
+  {
+   "id": "q809",
+   "key": "s027/orig"
+  },
+  {
+   "id": "q810",
+   "key": "s020/neg"
+  },
+  {
+   "id": "q811",
+   "key": "s022/swap"
+  },
+  {
+   "id": "q812",
+   "key": "s016/excerpt"
+  },
+  {
+   "id": "q813",
+   "key": "s007/swap"
+  },
+  {
+   "id": "q814",
+   "key": "s033/swap"
+  },
+  {
+   "id": "q815",
+   "key": "s014/swap"
+  },
+  {
+   "id": "q816",
+   "key": "s004/excerpt"
+  },
+  {
+   "id": "q817",
+   "key": "s025/neg"
+  }
+ ]
+}

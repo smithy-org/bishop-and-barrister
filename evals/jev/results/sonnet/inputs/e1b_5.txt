@@ -1,0 +1,67 @@
+=== ITEM q601 ===
+A player asks a Magic: the Gathering rules question:
+"I control Blood Artist and my opponent has Rest in Peace. If I sacrifice three creatures, do I still drain them for 3?"
+
+Official source text:
+[CR 700.4] "700.4. The term dies means “is put into a graveyard from the battlefield.”"
+
+=== ITEM q602 ===
+A player asks a Magic: the Gathering rules question:
+"Tenured Tethermage entered and I sacrificed a land for two Heartwood tokens. Are those lands? Can I tap them for mana or for the Tethermage's ability this turn?"
+
+Official source text:
+[CR 111.10x] "111.10x A Heartwood token is a red and green Heartwood artifact token with “{T}: Add {R} or {G}.”"
+
+=== ITEM q603 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. If time is called in a four-player match of several games, the player with the most game wins takes the match, and equal wins are a draw among those players. Nothing official covers this, so let's make it our rule."
+
+Official source text the judges cited:
+[MTR 2.4] "Once the game is complete, players may not leave the table until the result of the match is recorded unless they
+are doing so to record the result.
+If the match time limit is reached before a winner is determined, the player whose turn it is finishes their turn and
+five additional turns are played i"
+[CR 100.1b] "A multiplayer game is a game that begins with more than two players. See section 8, “Multiplayer Rules.”"
+[CR 100.6a] "Tournaments usually consist of a series of matches. A two-player match usually involves playing until one player has won two games. A multiplayer match usually consists of only one game."
+[CR 100.1b] "A multiplayer game is a game that begins with more than two players."
+[CR 103.1] "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+[CR 104.1] "A game ends immediately when a player wins, when the game is a draw, or when the game is restarted."
+[CR 104.4] "There are several ways for the game to be a draw."
+[CR 101.1] "Whenever a card’s text directly contradicts these rules, the card takes precedence. The card overrides only the rule that applies to that specific situation. The only exception is that a player can concede the game at any time (see rule 104.3a)."
+[CR 104.4a] "If all the players remaining in a game lose simultaneously, the game is a draw."
+[MTR 2.1] "A match consists of a series of games that are played until one side has won a set number of games, usually two.
+Drawn games do not count toward this goal. If the round ends before a player has won the required number of
+games, the winner of the match is the player who has won the most games at that"
+
+=== ITEM q604 ===
+A player asks a Magic: the Gathering rules question:
+"Competitive REL, game 1 of round 3. When I presented my deck for pre-game shuffling, my opponent counted 59 cards. My decklist has 60; the missing card was still in my deck box. What's the infraction and the penalty?"
+
+Official source text:
+[IPG 3.5] "[Infraction Procedure Guide, effective September 23, 2024]
+
+3.5  Tournament Error — Deck Problem Warning
+Definition
+The contents of a deck or sideboard do not match the decklist registered and the decklist
+represents what the player intended to play.
+If there are extra cards stored with the sideboard that could conceivably be played in the player’s
+deck, they will be considered a part of the sideboard unless they are:
+• Promotional cards that have been handed out as part of the event.
+• Double-faced cards represented by substitute cards in the deck.
+• Damaged cards that have been officially ..."
+
+=== ITEM q605 ===
+A player asks a Magic: the Gathering rules question:
+"At a Competitive REL tournament I cast Divination and accidentally drew three cards instead of two. What happens? What's the penalty?"
+
+Official source text:
+[IPG 2.3] "[Infraction Procedure Guide, effective September 23, 2024]
+
+2.3  Game Play Error — Hidden Card Error Warning
+Definition
+A player commits an error in the game that cannot be corrected by only publicly available
+information. It is not a Hidden Card Error if  the opponent acknowledges the action or controls
+the continuous effect modifying the game rule that made the action illegal. This infraction only
+applies when a card whose identity is known to only one player is in a hidden set of cards both
+before and after the error.
+If an additional card is seen but not added to the set, the infraction ..."

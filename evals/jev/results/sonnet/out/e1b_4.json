@@ -1,0 +1,7 @@
+[
+{"id": "q501", "label": "settled", "confidence": 0.65},
+{"id": "q502", "label": "settled", "confidence": 0.8},
+{"id": "q503", "label": "settled", "confidence": 0.85},
+{"id": "q504", "label": "settled", "confidence": 0.95},
+{"id": "q505", "label": "gap", "confidence": 0.75}
+]

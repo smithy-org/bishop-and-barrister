@@ -1,0 +1,41 @@
+=== ITEM q701 ===
+A player asks a Magic: the Gathering rules question:
+"In Oathbreaker my Oathbreaker just died. Can I still cast my Signature Spell from the command zone?"
+
+(No rule text could be attached.)
+
+=== ITEM q702 ===
+A player asks a Magic: the Gathering rules question:
+"My opponent has Blood Moon out and I've got Urborg, Tomb of Yawgmoth. Are all my lands still Swamps? What can Urborg tap for?"
+
+Official source text:
+[CR 613.8] "613.8. Within a layer or sublayer, determining which order effects are applied in is sometimes done using a dependency system. If a dependency exists, it will override the timestamp system.
+613.8a An effect is said to “depend on” another if (a) it’s applied in the same layer (and, if applicable, sublayer) as the other effect; (b) applying the other would change the text or the existence of the first effect, what it applies to, or what it does to any of the things it applies to; and (c) neither effect is from a characteristic-defining ability or both effects are from characteristic-defining ..."
+
+=== ITEM q703 ===
+A player asks a Magic: the Gathering rules question:
+"At Friday Night Magic I cast Opt and accidentally drew two cards instead of one. Nobody saw which card was the extra one. What's the fix? Do I get a penalty?"
+
+(No rule text could be attached.)
+
+=== ITEM q704 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. At a Friday Night Magic, if you draw an extra card it's a Game Loss. That should be the rule."
+
+Official source text the judges cited:
+[MTR 1.12] "Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document"
+[JAR 8] "any player engaging in the following must be removed from your event"
+[JAR 0] "If a player continues to repeat a mistake despite multiple reminders, you may warn"
+[JAR 0] "If a player accidentally breaks a rule, use the remedies described below and your common sense as guidance to make the best ruling you can."
+[JAR 0] "Knowingly breaking a rule is a Serious"
+[JAR 8] "Knowingly breaking or letting an opponent break game or tournament rules, or lying, in order to"
+[MTR F] "Friday Night Magic Regular"
+[IPG 2.3] "These excess cards are returned to"
+[JAR 0] "If a player continues to repeat a mistake despite multiple reminders, you may warn them that the next occurrence will result in a Game Loss."
+[MTR F] "The following chart indicates the appropriate (minimum) Rules Enforcement level for various programs:"
+
+=== ITEM q705 ===
+A player asks a Magic: the Gathering rules question:
+"I control Ob Nixilis, Captive Kingpin. Three unblocked 1/1s hit my opponent at the same time. How many times does Ob Nixilis trigger? What if instead a Blood Artist trigger makes them lose 1?"
+
+(No rule text could be attached.)

@@ -1,0 +1,63 @@
+=== ITEM q201 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: In a free-for-all match of several games that is not an Archenemy, Team vs. Team, Emperor, Grand Melee or Two-Headed Giant game, when the previous game had more than one loser and was not a draw, the player who lost first in the previous game chooses who takes the first turn; if several players lost in the same event, the one among them who is first in turn order starting from the player whose turn it was when they lost chooses; if the previous game was a draw, CR 103.1's draw rule applies
+APPLIES WHEN: a match of several games
+APPLIES WHEN: a free-for-all game with no teams and one player's turn at a time, in which 103.1's methods are used (not Archenemy per 103.1b, Grand Melee, Two-Headed Giant, Team vs. Team or Emperor)
+APPLIES WHEN: the previous game had more than one loser
+APPLIES WHEN: the previous game was not a draw
+CLAIM CHALLENGES: CR 103.1: the loser of the previous game chooses who takes the first turn (singular loser, with no rule for two losers)
+FACTS:
+  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match
+  F2: In the previous game, two of the three players lost and the third won; it was not a draw
+DERIVATION:
+  Step 1 (from F1) per [CR 103.1] "In a match of several games, the loser of the previous game chooses who takes the first turn." => In a match of several games, the loser of the previous game chooses who takes the first turn
+  Step 2 (from F1, F2, S1) ASSUMPTION (no source) => In a free-for-all game where 103.1 applies and two players lost, 103.1 names one loser, so the player who lost first is the one who chooses
+  Step 3 (from F1, F2, S2) ASSUMPTION (no source) => If both losers lost in the same event, the one first in turn order starting from the player whose turn it was (a single player, since turns are taken one at a time) chooses, so a chooser always exists
+  Step 4 (from F1) per [CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game." => If the previous game was a draw, the player who made the choice in that game makes the choice in this game
+
+=== ITEM q202 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: In a free-for-all multiplayer match of several games, if the previous game was won by one player and no player left it because the game was a draw for them, the losers of that game are the players who left it by losing, each at the moment they lost, and any players still in the game when the winner won, at the moment the game ended. If there is more than one loser, the player who lost first is the loser who chooses who takes the first turn. If several players lost first at the same moment, those players decide among themselves which of them chooses, and if they cannot agree the chooser is picked at random from them. If the previous game was a draw, or was a draw for any player, the draw sentence of 103.1 applies and this rule does not apply. The rule does not apply to team games, or to any game type whose starting player the Comprehensive Rules already settle by their own rule, such as Archenemy games (103.1b) and Supervillain Rumble (904.12c); those stay as they are.
+APPLIES WHEN: a free-for-all multiplayer match of several games (such as a three-player Commander match), not a team game and not a game type whose starting player the CR already settles (such as Archenemy or Supervillain Rumble), where the previous game was won by one player, no player left it because the game was a draw for them, and there was more than one loser
+CLAIM CHALLENGES: none: a gap
+FACTS:
+  F1: A Commander match of several games with three players
+  F2: In the previous game, two of the three players lost (at different times) and the third player won
+DERIVATION:
+  Step 1 (from F1) per [CR 103.1] "In a match of several games, the loser of the previous game chooses who takes the first turn." => In a match of several games, 103.1 has the loser of the previous game choose who takes the first turn.
+  Step 2 (from F1, F2) per [CR 800.4] "Unlike two-player games, multiplayer games can continue after one or more players have left the game." => A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times.
+  Step 3 (from S1, S2) STIPULATION (the rule's own new content, no source) => In a free-for-all game with one winner in which no player left because the game was a draw for them, the losers for 103.1 are the players who left by losing and the players still in the game when the winner won. Where there is more than one loser, the player who lost first chooses who takes the first turn; players who lost first at the same moment decide among themselves who chooses, else it is random among them. Draws (whole game or for any player), team games and game types whose starting player the CR already settles (Archenemy, Supervillain Rumble) are outside this stipulation.
+  Step 4 (from F1) per [CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game." => If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game; the stipulation does not apply to a draw, so this stays as it is.
+
+=== ITEM q203 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: With Humility and Opalescence both on the battlefield, Humility always wins regardless of which entered first: every creature, Humility included, is a 1/1 with no abilities
+APPLIES WHEN: Humility and Opalescence are both on the battlefield, in either order of entry
+CLAIM CHALLENGES: ruling: Humility/Opalescence wotc 2009-10-01 (if Humility entered before Opalescence, Humility becomes 4/4) and wotc 2006-02-01 (if Humility has the earliest timestamp, then everything is 4/4)
+FACTS:
+  F1: Humility and Opalescence are both on the battlefield
+  F2: Either one may have entered the battlefield first (the user says it makes no difference)
+  F3: No other permanents are on the battlefield
+  F4: No other effects are in play, and neither card's timestamp has changed since it entered
+  F5: There is exactly one Humility and one Opalescence
+DERIVATION:
+  Step 1 (from F1) per [Oracle text of Humility] "All creatures lose all abilities and have base power and toughness 1/1." => Humility's effect makes every creature lose all abilities and have base power and toughness 1/1
+  Step 2 (from F1, F2, F3, F4, F5, S1) ASSUMPTION (no source) => Humility's "loses all abilities" beats everything, so Opalescence cannot matter whichever came out first: every creature, Humility included, is a 1/1 with no abilities
+
+=== ITEM q204 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: If Urborg, Tomb of Yawgmoth was on the battlefield before Blood Moon, Urborg's ability still applies after Blood Moon enters, so lands are still Swamps in addition to being Mountains
+APPLIES WHEN: Urborg, Tomb of Yawgmoth entered the battlefield before Blood Moon, and both are on the battlefield
+CLAIM CHALLENGES: ruling: Urborg, Tomb of Yawgmoth 2021-03-19: If an effect such as that of Magus of the Moon causes Urborg to lose its abilities by setting it to a basic land type not in addition to its other types, it won't turn lands into Swamps, no matter in what order those effects started to apply.
+FACTS:
+  F1: Blood Moon and Urborg, Tomb of Yawgmoth are both on the battlefield
+  F2: Urborg entered the battlefield before Blood Moon
+  F3: The user controls lands whose all of them are being claimed to be Swamps (the user says 'all my lands')
+DERIVATION:
+  Step 1 (from F1) per [Oracle text of Blood Moon] "Nonbasic lands are Mountains." => Blood Moon makes Urborg, a nonbasic land, a Mountain
+  Step 2 (from F2, S1) ASSUMPTION (no source) => Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain
+  Step 3 (from S2) per [Oracle text of Urborg, Tomb of Yawgmoth] "Each land is a Swamp in addition to its other land types." => Each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps

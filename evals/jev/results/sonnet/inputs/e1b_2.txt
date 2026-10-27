@@ -1,0 +1,44 @@
+=== ITEM q301 ===
+A player asks a Magic: the Gathering rules question:
+"At a store event my opponent forgot their Dark Confidant trigger in their upkeep and has now drawn for the turn. Do I have to point it out? If a judge gets involved, what do they do?"
+
+Official source text:
+[IPG 2.1] "[Infraction Procedure Guide, effective September 23, 2024]
+
+2.1  Game Play Error — Missed Trigger No Penalty
+Definition
+A triggered ability triggers, but the player controlling the ability doesn’t demonstrate awareness
+of the trigger’s existence by the first time that it would affect the game in a visible fashion.
+The point by which the player needs to demonstrate this awareness depends on the impact that
+the trigger would have on the game:
+• A triggered ability that requires its controller to choose targets (other than 'target
+opponent'), modes, or other choices made when the ability is put ..."
+
+=== ITEM q302 ===
+A player asks a Magic: the Gathering rules question:
+"If I name Llanowar Elves with Pithing Needle, can my opponent still tap their Elves for mana?"
+
+(No rule text could be attached.)
+
+=== ITEM q303 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. In our group the first time you recast your commander from the command zone it costs nothing extra; the {2} tax starts from the second recast. Make that the rule."
+
+Official source text the judges cited:
+[CR 903.8] "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game."
+[CR 903.1] "The Commander variant uses all the normal rules for a Magic game, with the following additions."
+
+=== ITEM q304 ===
+A player asks a Magic: the Gathering rules question:
+"Commander game. Earlier I used Karn Liberated's -3 to exile my opponent's commander, and now I use Karn's ultimate. What happens to life totals, commander tax, commander damage, and that commander?"
+
+(No rule text could be attached.)
+
+=== ITEM q305 ===
+A player asks a Magic: the Gathering rules question:
+"Three of us are playing Commander. Does whoever goes first skip their first draw?"
+
+Official source text:
+[CR 103.8a] "103.8a In a two-player game, the player who plays first skips the draw step (see rule 504, “Draw Step”) of their first turn."
+[CR 103.8b] "103.8b In a Two-Headed Giant game, the team who plays first skips the draw step of their first turn."
+[CR 103.8c] "103.8c In all other multiplayer games, no player skips the draw step of their first turn."

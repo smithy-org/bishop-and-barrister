@@ -1,0 +1,352 @@
+[
+ {
+  "key": "ch/commander-tax-free-first-recast",
+  "group": "challenge",
+  "case": "commander-tax-free-first-recast",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. In our group the first time you recast your commander from the command zone it costs nothing extra; the {2} tax starts from the second recast. Make that the rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. In our group the first time you recast your commander from the command zone it costs nothing extra; the {2} tax starts from the second recast. Make that the rule.\"\n\nOfficial source text the judges cited:\n[CR 903.8] \"A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game.\"\n[CR 903.1] \"The Commander variant uses all the normal rules for a Magic game, with the following additions.\""
+ },
+ {
+  "key": "ch/deathtouch-trample-full-toughness",
+  "group": "challenge",
+  "case": "deathtouch-trample-full-toughness",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. A trampler with deathtouch still has to assign damage equal to the blocker's toughness before any tramples over: deathtouch makes the damage lethal, it doesn't change how much you must assign. That should be the rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. A trampler with deathtouch still has to assign damage equal to the blocker's toughness before any tramples over: deathtouch makes the damage lethal, it doesn't change how much you must assign. That should be the rule.\"\n\nOfficial source text the judges cited:\n[CR 702.2c] \"Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.\"\n[CR 702.19b] \"Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n[CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n[CR 702.19b] \"any excess damage is assigned as its controller chooses among those blocking creatures and the player\"\n[CR 120.4a] \"Any amount of damage greater than 1 is excess damage if the source dealing that damage to a creature has deathtouch.\"\n[Official ruling (Goblin Negotiation (wotc, 2024-11-08))] \"Even 1 damage dealt to a creature from a source with deathtouch is considered lethal damage, so any amount greater than that will cause excess damage to be dealt, even if the total amount of damage isn't greater than the creature's toughness\"\n[Official ruling (Megatron (wotc, 2022-10-14))] \"1 damage is lethal damage, and any amount beyond that is excess damage.\"\n[CR 704.5h] \"If a creature has toughness greater than 0, and it’s been dealt damage by a source with deathtouch since the last time state-based actions were checked, that creature is destroyed.\""
+ },
+ {
+  "key": "ch/extra-card-regular-rel-game-loss",
+  "group": "challenge",
+  "case": "extra-card-regular-rel-game-loss",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. At a Friday Night Magic, if you draw an extra card it's a Game Loss. That should be the rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. At a Friday Night Magic, if you draw an extra card it's a Game Loss. That should be the rule.\"\n\nOfficial source text the judges cited:\n[MTR 1.12] \"Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document\"\n[JAR 8] \"any player engaging in the following must be removed from your event\"\n[JAR 0] \"If a player continues to repeat a mistake despite multiple reminders, you may warn\"\n[JAR 0] \"If a player accidentally breaks a rule, use the remedies described below and your common sense as guidance to make the best ruling you can.\"\n[JAR 0] \"Knowingly breaking a rule is a Serious\"\n[JAR 8] \"Knowingly breaking or letting an opponent break game or tournament rules, or lying, in order to\"\n[MTR F] \"Friday Night Magic Regular\"\n[IPG 2.3] \"These excess cards are returned to\"\n[JAR 0] \"If a player continues to repeat a mistake despite multiple reminders, you may warn them that the next occurrence will result in a Game Loss.\"\n[MTR F] \"The following chart indicates the appropriate (minimum) Rules Enforcement level for various programs:\""
+ },
+ {
+  "key": "ch/forged-quote",
+  "group": "challenge",
+  "case": "forged-quote",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. CR 702.19b says a trampler that's blocked by a creature with protection from its color deals all its damage to the player. So protection blockers can't soak trample damage. Make that the rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. CR 702.19b says a trampler that's blocked by a creature with protection from its color deals all its damage to the player. So protection blockers can't soak trample damage. Make that the rule.\"\n\nOfficial source text the judges cited:\n[CR 702.19b] \"Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n[CR 702.19b] \"The attacking creature’s controller need not assign lethal damage to all those blocking creatures but in that case can’t assign any damage to the player or planeswalker it’s attacking.\"\n[CR 702.16e] \"Any damage that would be dealt by sources that have the stated quality to a permanent or player with protection is prevented.\"\n[CR 702.19b] \"When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s actually dealt.\"\n[CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it.\"\n[CR 702.19b] \"The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking.\"\n[CR 510.1c] \"A blocked creature assigns its combat damage to the creatures blocking it.\"\n[CR 702.19b] \"but not any abilities or effects that might change the amount of damage\"\n[CR 702.19b] \"but not any abilities or effects that might change the amount of damage that’s actually dealt\"\n[CR 702.19b] \"but not any abilities or effects that might change the amount of damage that\""
+ },
+ {
+  "key": "ch/humility-always-wins",
+  "group": "challenge",
+  "case": "humility-always-wins",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. With Humility and Opalescence both out, Humility always wins: every creature, Humility included, is a 1/1 with no abilities, whichever came out first.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. With Humility and Opalescence both out, Humility always wins: every creature, Humility included, is a 1/1 with no abilities, whichever came out first.\"\n\nOfficial source text the judges cited:\n[CR 613.7] \"An effect with an earlier timestamp is applied before an effect with a later timestamp.\"\n[Official ruling (Humility)] \"But if Humility entered before Opalescence, the following is true: Layer 4: Humility and Worship each become creatures that are still enchantments (Opalescence). Layer 6: Humility and Worship each lose their abilities (Humility). Layer 7b: Humility becomes 1/1 and Worship becomes 1/1 (Humility). Humility becomes 4/4 and Worship becomes 4/4 (Opalescence).\"\n[Official ruling (Humility)] \"If Humility has the earliest timestamp, then everything is 4/4.\"\n[Oracle text of Humility] \"All creatures lose all abilities and have base power and toughness 1/1.\"\n[Official ruling (Humility/Opalescence wotc 2009-10-01)] \"But if Humility entered before Opalescence, the following is true: Layer 4: Humility and Worship each become creatures that are still enchantments (Opalescence). Layer 6: Humility and Worship each lose their abilities (Humility). Layer 7b: Humility becomes 1/1 and Worship becomes 1/1 (Humility). Humility becomes 4/4 and Worship becomes 4/4 (Opalescence).\"\n[Official ruling (Humility)] \"The rest of it will apply even if the permanent loses its ability before it's finished applying.\"\n[Oracle text of Opalescence] \"Each other non-Aura enchantment is a creature in addition to its other types and has base power and base toughness each equal to its mana value.\"\n[Official ruling (Humility / Opalescence 2009-10-01)] \"But if Humility entered before Opalescence, the following is true:\"\n[Official ruling (Humility / Opalescence 2009-10-01)] \"Humility becomes 1/1 and Worship becomes 1/1 (Humility). Humility becomes 4/4 and Worship becomes 4/4 (Opalescence).\"\n[Official ruling (Humility/Opalescence wotc 2006-02-01)] \"If Humility has the earliest timestamp, then everything is 4/4.\""
+ },
+ {
+  "key": "ch/magar-aftermath",
+  "group": "challenge",
+  "case": "magar-aftermath",
+  "label": "contested",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. Magar of the Magic Strings noted Dusk // Dawn. When Magar lets me cast a copy, I can cast Dawn because the copy uses the card's characteristics as it last existed in the graveyard. Make that the rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. Magar of the Magic Strings noted Dusk // Dawn. When Magar lets me cast a copy, I can cast Dawn because the copy uses the card's characteristics as it last existed in the graveyard. Make that the rule.\"\n\nOfficial source text the judges cited:\n[CR 702.127a] \"This half of this split card can’t be cast from any zone other than a graveyard\"\n[CR 707.12] \"the copy is created in the same zone the object is in and then cast while another spell or ability is resolving\"\n[Oracle text of Magar of the Magic Strings] \"put it onto the battlefield face down\"\n[Official ruling (Dusk // Dawn)] \"If another effect allows you to cast a split card with aftermath from any zone other than a graveyard, you can't cast the half with aftermath.\"\n[CR 707.14] \"use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy.\"\n[CR 702.127a] \"“This half of this split card can’t be cast from any zone other than a graveyard,”\"\n[CR 707.14] \"use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy\"\n[CR 400.7] \"An object that moves from one zone to another becomes a new object with no memory of, or relation to, its previous existence.\"\n[CR 707.12] \"the copy is created in the same zone the object is in\"\n[CR 709.3c] \"That copy retains the characteristics of the two halves separated into the same two halves as the original card.\""
+ },
+ {
+  "key": "ch/multiplayer-match-ends-at-time",
+  "group": "challenge",
+  "case": "multiplayer-match-ends-at-time",
+  "label": "gap",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. If time is called in a four-player match of several games, the player with the most game wins takes the match, and equal wins are a draw among those players. Nothing official covers this, so let's make it our rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. If time is called in a four-player match of several games, the player with the most game wins takes the match, and equal wins are a draw among those players. Nothing official covers this, so let's make it our rule.\"\n\nOfficial source text the judges cited:\n[MTR 2.4] \"Once the game is complete, players may not leave the table until the result of the match is recorded unless they\nare doing so to record the result.\nIf the match time limit is reached before a winner is determined, the player whose turn it is finishes their turn and\nfive additional turns are played i\"\n[CR 100.1b] \"A multiplayer game is a game that begins with more than two players. See section 8, “Multiplayer Rules.”\"\n[CR 100.6a] \"Tournaments usually consist of a series of matches. A two-player match usually involves playing until one player has won two games. A multiplayer match usually consists of only one game.\"\n[CR 100.1b] \"A multiplayer game is a game that begins with more than two players.\"\n[CR 103.1] \"At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser\"\n[CR 104.1] \"A game ends immediately when a player wins, when the game is a draw, or when the game is restarted.\"\n[CR 104.4] \"There are several ways for the game to be a draw.\"\n[CR 101.1] \"Whenever a card’s text directly contradicts these rules, the card takes precedence. The card overrides only the rule that applies to that specific situation. The only exception is that a player can concede the game at any time (see rule 104.3a).\"\n[CR 104.4a] \"If all the players remaining in a game lose simultaneously, the game is a draw.\"\n[MTR 2.1] \"A match consists of a series of games that are played until one side has won a set number of games, usually two.\nDrawn games do not count toward this goal. If the round ends before a player has won the required number of\ngames, the winner of the match is the player who has won the most games at that\""
+ },
+ {
+  "key": "ch/multiplayer-match-who-chooses",
+  "group": "challenge",
+  "case": "multiplayer-match-who-chooses",
+  "label": "gap",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. In a three-player Commander match of several games, CR 103.1 says the loser of the previous game chooses who starts, but two of us lost. Let's make it the rule that the player who lost first in the previous game chooses; if the previous game was a draw, 103.1's draw rule applies.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. In a three-player Commander match of several games, CR 103.1 says the loser of the previous game chooses who starts, but two of us lost. Let's make it the rule that the player who lost first in the previous game chooses; if the previous game was a draw, 103.1's draw rule applies.\"\n\nOfficial source text the judges cited:\n[CR 103.1] \"If the previous game was a draw, the player who made the choice in that game makes the choice in this game.\"\n[CR 103.1] \"In a match of several games, the loser of the previous game chooses who takes the first turn.\"\n[CR 103.1] \"At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser\"\n[CR 800.4] \"Unlike two-player games, multiplayer games can continue after one or more players have left the game.\"\n[CR 104.4a] \"If all the players remaining in a game lose simultaneously, the game is a draw.\"\n[CR 800.4h] \"If a rule requires a player who has left the game to make a choice, the next player in turn order makes that choice.\"\n[CR 104.2c] \"Each player on the winning team wins the game, even if one or more of those players had previously lost that game.\"\n[MTR 2.2] \"For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)\nduring Swiss rounds, or the player ranked higher at the end of Swiss rounds during playoff matches - chooses\neither to play first or to play second. They must state this choice before\"\n[MTR 9.3] \"A team determined at random chooses either to play first or to play second. The choice must be made before\neither player on that team looks at their hand. If either player on that team looks at their hand before their choice\nis made, that team plays first. The team who plays first skips the draw ste\"\n[CR 104.5] \"If a player loses the game, that player leaves the game. If the game is a draw for a player, that player leaves the game.\""
+ },
+ {
+  "key": "ch/summoning-sickness-all-permanents",
+  "group": "challenge",
+  "case": "summoning-sickness-all-permanents",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. Any permanent that came under your control this turn can't use {T} abilities: that's what summoning sickness is. I want it stated as a rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. Any permanent that came under your control this turn can't use {T} abilities: that's what summoning sickness is. I want it stated as a rule.\"\n\nOfficial source text the judges cited:\n[Oracle text of Sol Ring] \"{T}: Add {C}{C}.\"\n[CR 302.6] \"A creature’s activated ability with the tap symbol or the untap symbol in its activation cost can’t be activated unless the creature has been under its controller’s control continuously since their most recent turn began.\"\n[CR 602.5a] \"A creature’s activated ability with the tap symbol ({T}) or the untap symbol ({Q}) in its activation cost can’t be activated unless the creature has been under its controller’s control since the start of their most recent turn.\"\n[CR 302.6] \"This rule is informally called the “summoning sickness” rule.\"\n[Official ruling (Cultivator's Caravan)] \"As long as Cultivator's Caravan isn't an artifact creature, its {T} ability can be activated if it came under your control this turn.\"\n[Oracle text of Forest] \"({T}: Add {G}.)\"\n[CR 602.5a] \"Ignore this rule for creatures with haste (see rule 702.10).\""
+ },
+ {
+  "key": "ch/urborg-still-swamps",
+  "group": "challenge",
+  "case": "urborg-still-swamps",
+  "label": "settled",
+  "a": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. Blood Moon turns Urborg, Tomb of Yawgmoth into a Mountain, but Urborg was on the battlefield first, so its ability still applies and all my lands are still Swamps. I want that to be the rule.\"",
+  "b": "A player proposes this to a Magic: the Gathering rules panel:\n\"I want to challenge this. Blood Moon turns Urborg, Tomb of Yawgmoth into a Mountain, but Urborg was on the battlefield first, so its ability still applies and all my lands are still Swamps. I want that to be the rule.\"\n\nOfficial source text the judges cited:\n[CR 305.7] \"If an effect sets a land’s subtype to one or more of the basic land types, the land no longer has its old land type. It loses all abilities generated from its rules text, its old land types, and any copiable effects affecting that land\"\n[Official ruling (Urborg, Tomb of Yawgmoth 2021-03-19)] \"If an effect such as that of Magus of the Moon causes Urborg to lose its abilities by setting it to a basic land type not in addition to its other types, it won't turn lands into Swamps, no matter in what order those effects started to apply.\"\n[Oracle text of Blood Moon] \"Nonbasic lands are Mountains.\"\n[CR 613.8] \"If a dependency exists, it will override the timestamp system.\"\n[CR 305.7] \"If an effect sets a land’s subtype to one or more of the basic land types, the land no longer has its old land type. It loses all abilities generated from its rules text\"\n[Official ruling (Urborg, Tomb of Yawgmoth 2021-03-19)] \"it won't turn lands into Swamps, no matter in what order those effects started to apply.\"\n[CR 613.7d] \"An object receives a timestamp at the time it enters a zone.\"\n[Oracle text of Urborg, Tomb of Yawgmoth] \"Each land is a Swamp in addition to its other land types.\"\n[CR 613.8a] \"An effect is said to “depend on” another if (a) it’s applied in the same layer (and, if applicable, sublayer) as the other effect; (b) applying the other would change the text or the existence of the first effect, what it applies to, or what it does to any of the things it applies to\"\n[Official ruling (Blood Moon 2020-08-07)] \"Nonbasic lands will lose any other land types and abilities they had. They will gain the land type Mountain and gain the ability \"{T}: Add {R}.\"\""
+ },
+ {
+  "key": "ev/blood-moon-urborg",
+  "group": "everyday",
+  "case": "blood-moon-urborg",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"My opponent has Blood Moon out and I've got Urborg, Tomb of Yawgmoth. Are all my lands still Swamps? What can Urborg tap for?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"My opponent has Blood Moon out and I've got Urborg, Tomb of Yawgmoth. Are all my lands still Swamps? What can Urborg tap for?\"\n\nOfficial source text:\n[CR 613.8] \"613.8. Within a layer or sublayer, determining which order effects are applied in is sometimes done using a dependency system. If a dependency exists, it will override the timestamp system.\n613.8a An effect is said to “depend on” another if (a) it’s applied in the same layer (and, if applicable, sublayer) as the other effect; (b) applying the other would change the text or the existence of the first effect, what it applies to, or what it does to any of the things it applies to; and (c) neither effect is from a characteristic-defining ability or both effects are from characteristic-defining ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/chains-of-mephistopheles-empty-hand",
+  "group": "everyday",
+  "case": "chains-of-mephistopheles-empty-hand",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"My opponent has Chains of Mephistopheles. Divination is the last card in my hand, and I cast it. What happens?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"My opponent has Chains of Mephistopheles. Divination is the last card in my hand, and I cast it. What happens?\"\n\nOfficial source text:\n[CR 121.2] \"121.2. Cards may only be drawn one at a time. If a player is instructed to draw multiple cards, that player performs that many individual card draws.\n121.2a An instruction to draw multiple cards can be modified by replacement effects that refer to the number of cards drawn. This modification occurs before considering any of the individual card draws. See rule 616.1g.\n121.2b Some effects say that a player can’t draw more than one card each turn. Such an effect applies to individual card draws. Instructions to draw multiple cards may still be partially carried out. However, if an effect offers ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/commander-relentless-rats-sol-ring",
+  "group": "everyday",
+  "case": "commander-relentless-rats-sol-ring",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Building Commander with Sheoldred, Whispering One as my commander. Can I run 30 copies of Relentless Rats and a Sol Ring?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Building Commander with Sheoldred, Whispering One as my commander. Can I run 30 copies of Relentless Rats and a Sol Ring?\"\n\nOfficial source text:\n[CR 101.1] \"101.1. Whenever a card’s text directly contradicts these rules, the card takes precedence. The card overrides only the rule that applies to that specific situation. The only exception is that a player can concede the game at any time (see rule 104.3a).\"\n[CR 903.4] \"903.4. The Commander variant uses color identity to determine what cards can be in a deck with a certain commander. The color identity of a card is the color or colors of any mana symbols in that card’s mana cost or rules text, plus any colors defined by its characteristic-defining abilities (see rule 604.3) or color indicator (see rule 204).\nExample: Bosh, Iron Golem is a legendary artifact creature with mana cost {8} and the ability “{3}{R}, Sacrifice an artifact: Bosh, Iron Golem deals damage equal to the sacrificed artifact’s mana value to any target.” Bosh’s color identity is red.\n903.4a ...\"\n[CR 903.5b] \"903.5b Other than basic lands, each card in a Commander deck must have a different English name. For the purposes of deck construction, cards with interchangeable names have the same English name (see rule 201.3).\"",
+  "n_sources": 3
+ },
+ {
+  "key": "ev/deck-problem-59-cards-game-one",
+  "group": "everyday",
+  "case": "deck-problem-59-cards-game-one",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Competitive REL, game 1 of round 3. When I presented my deck for pre-game shuffling, my opponent counted 59 cards. My decklist has 60; the missing card was still in my deck box. What's the infraction and the penalty?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Competitive REL, game 1 of round 3. When I presented my deck for pre-game shuffling, my opponent counted 59 cards. My decklist has 60; the missing card was still in my deck box. What's the infraction and the penalty?\"\n\nOfficial source text:\n[IPG 3.5] \"[Infraction Procedure Guide, effective September 23, 2024]\n\n3.5  Tournament Error — Deck Problem Warning\nDefinition\nThe contents of a deck or sideboard do not match the decklist registered and the decklist\nrepresents what the player intended to play.\nIf there are extra cards stored with the sideboard that could conceivably be played in the player’s\ndeck, they will be considered a part of the sideboard unless they are:\n• Promotional cards that have been handed out as part of the event.\n• Double-faced cards represented by substitute cards in the deck.\n• Damaged cards that have been officially ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/die-roll-decides-match",
+  "group": "everyday",
+  "case": "die-roll-decides-match",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Competitive REL. Time was called in our match and we were heading for a draw, so my opponent and I rolled a die to decide who wins. A judge saw it. What happens?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Competitive REL. Time was called in our match and we were heading for a draw, so my opponent and I rolled a die to decide who wins. A judge saw it. What happens?\"\n\nOfficial source text:\n[IPG 4.3] \"[Infraction Procedure Guide, effective September 23, 2024]\n\n4.3  Unsporting Conduct — Improperly Determining a Winner Match Loss\nDefinition\nA player uses or offers to use a method that is not part of the current game (including actions not\nlegal in the current game) to determine the outcome of a game or match, or uses language\ndesigned to trick someone who may not know it’s against the rules to make such an offer.\nIf the player was aware that what they were doing was against the rules, the infraction is\nUnsporting Conduct — Cheating.\n[left out: Examples, Philosophy; add --all to see them]\"\n[MTR 2.5] \"[Magic Tournament Rules, effective February 27, 2026]\n\n2.5  Conceding or Intentionally Drawing Games or Matches\nUntil the result of a match has been recorded, players may concede or mutually agree to a draw in that game or\nmatch. If the conceding player won a game in the match, the match must be reported as 2-1. Intentional draws\nwhere no games were played are always reported as 0-0-3 in EventLink.\nPlayers may not agree to a concession or draw in exchange for any reward or incentive. Doing so will be\nconsidered Bribery (see section 5.2).\nIf a player refuses to play, it is assumed that they ...\"",
+  "n_sources": 2
+ },
+ {
+  "key": "ev/draft-snow-basics",
+  "group": "everyday",
+  "case": "draft-snow-basics",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I'm building my deck at a booster draft. The store has a box of Snow-Covered Forests and some Wastes next to the regular basic lands. Can I add those to my deck like normal basics? What about putting regular Forests in my sideboard?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I'm building my deck at a booster draft. The store has a box of Snow-Covered Forests and some Wastes next to the regular basic lands. Can I add those to my deck like normal basics? What about putting regular Forests in my sideboard?\"\n\nOfficial source text:\n[CR 100.2b] \"100.2b In limited play (a way of playing in which each player gets the same quantity of unopened Magic product such as booster packs and creates their own deck using only this product and basic land cards), each deck has a minimum deck size of 40 cards. A limited deck may contain as many duplicates of a card as are included with the product.\"\n[CR 100.4b] \"100.4b In limited play involving individual players, all cards in a player’s card pool not included in their deck are in that player’s sideboard.\"\n[MTR 7.1] \"[Magic Tournament Rules, effective February 27, 2026]\n\n7.1  Deck Construction Restrictions\nLimited decks must contain a minimum of forty cards. There is no maximum deck size. Any drafted or opened\ncards not used in a player’s Limited deck function as their sideboard.\nPlayers are not restricted to four of any one card in Limited tournament play.\"",
+  "n_sources": 3
+ },
+ {
+  "key": "ev/empower-jace-existing-token",
+  "group": "everyday",
+  "case": "empower-jace-existing-token",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I already have a Jace token with 1 loyalty from earlier. Now Arcane Amphisbaena enters and I empower Jace 2. Do I get a second Jace? What's my loyalty, and what can the token do?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I already have a Jace token with 1 loyalty from earlier. Now Arcane Amphisbaena enters and I empower Jace 2. Do I get a second Jace? What's my loyalty, and what can the token do?\"\n\nOfficial source text:\n[CR 701.71a] \"701.71a To empower Jace N means “If you don’t control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, ‘[−1]: Surveil 1,’ and ‘[−3]: Draw a card.’ Choose a Jace planeswalker token you control. Put N loyalty counters on it.”\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/extra-card-competitive-rel",
+  "group": "everyday",
+  "case": "extra-card-competitive-rel",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"At a Competitive REL tournament I cast Divination and accidentally drew three cards instead of two. What happens? What's the penalty?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"At a Competitive REL tournament I cast Divination and accidentally drew three cards instead of two. What happens? What's the penalty?\"\n\nOfficial source text:\n[IPG 2.3] \"[Infraction Procedure Guide, effective September 23, 2024]\n\n2.3  Game Play Error — Hidden Card Error Warning\nDefinition\nA player commits an error in the game that cannot be corrected by only publicly available\ninformation. It is not a Hidden Card Error if  the opponent acknowledges the action or controls\nthe continuous effect modifying the game rule that made the action illegal. This infraction only\napplies when a card whose identity is known to only one player is in a hidden set of cards both\nbefore and after the error.\nIf an additional card is seen but not added to the set, the infraction ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/extra-card-regular-rel",
+  "group": "everyday",
+  "case": "extra-card-regular-rel",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"At Friday Night Magic I cast Opt and accidentally drew two cards instead of one. Nobody saw which card was the extra one. What's the fix? Do I get a penalty?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"At Friday Night Magic I cast Opt and accidentally drew two cards instead of one. Nobody saw which card was the extra one. What's the fix? Do I get a penalty?\"\n\n(No rule text could be attached.)",
+  "n_sources": 0
+ },
+ {
+  "key": "ev/heartwood-tokens-tethermage",
+  "group": "everyday",
+  "case": "heartwood-tokens-tethermage",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Tenured Tethermage entered and I sacrificed a land for two Heartwood tokens. Are those lands? Can I tap them for mana or for the Tethermage's ability this turn?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Tenured Tethermage entered and I sacrificed a land for two Heartwood tokens. Are those lands? Can I tap them for mana or for the Tethermage's ability this turn?\"\n\nOfficial source text:\n[CR 111.10x] \"111.10x A Heartwood token is a red and green Heartwood artifact token with “{T}: Add {R} or {G}.”\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/humility-opalescence-asks-timestamp",
+  "group": "everyday",
+  "case": "humility-opalescence-asks-timestamp",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I've got Humility and Opalescence both on the battlefield. What are my enchantments now, power/toughness and abilities?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I've got Humility and Opalescence both on the battlefield. What are my enchantments now, power/toughness and abilities?\"\n\n(No rule text could be attached.)",
+  "n_sources": 0
+ },
+ {
+  "key": "ev/karn-liberated-restart-commander",
+  "group": "everyday",
+  "case": "karn-liberated-restart-commander",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Commander game. Earlier I used Karn Liberated's -3 to exile my opponent's commander, and now I use Karn's ultimate. What happens to life totals, commander tax, commander damage, and that commander?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Commander game. Earlier I used Karn Liberated's -3 to exile my opponent's commander, and now I use Karn's ultimate. What happens to life totals, commander tax, commander damage, and that commander?\"\n\n(No rule text could be attached.)",
+  "n_sources": 0
+ },
+ {
+  "key": "ev/llanowar-elves-summoning-sick",
+  "group": "everyday",
+  "case": "llanowar-elves-summoning-sick",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"My opponent cast Llanowar Elves and then immediately tapped it for G to help cast another spell the same turn. Can they do that?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"My opponent cast Llanowar Elves and then immediately tapped it for G to help cast another spell the same turn. Can they do that?\"\n\nOfficial source text:\n[CR 302.6] \"302.6. A creature’s activated ability with the tap symbol or the untap symbol in its activation cost can’t be activated unless the creature has been under its controller’s control continuously since their most recent turn began. A creature can’t attack unless it has been under its controller’s control continuously since their most recent turn began. This rule is informally called the “summoning sickness” rule.\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/magar-aftermath-unsettled",
+  "group": "everyday",
+  "case": "magar-aftermath-unsettled",
+  "label": "contested",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Magar of the Magic Strings noted Dusk // Dawn. When the face-down creature deals combat damage, can I cast the Dawn half of the copy? What about Dusk?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Magar of the Magic Strings noted Dusk // Dawn. When the face-down creature deals combat damage, can I cast the Dawn half of the copy? What about Dusk?\"\n\nOfficial source text:\n[CR 702.127a] \"702.127a Aftermath is an ability found on some split cards (see rule 709, “Split Cards”). It represents three static abilities. “Aftermath” means “You may cast this half of this split card from your graveyard,” “This half of this split card can’t be cast from any zone other than a graveyard,” and “If this spell was cast from a graveyard, exile it instead of putting it anywhere else any time it would leave the stack.”\"\n[CR 707.12] \"707.12. An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving. Casting a copy of an object follows steps 601.2a–h of rule 601, “Casting Spells,” and then the copy becomes cast. Once cast, the copy is a spell on the stack, and just like any other spell it can resolve or be countered.\n707.12a An effect that creates multiple copies and says a player “may cast” those objects allows that player to ...\"\n[CR 707.14] \"707.14. One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule 608.2h.)\"\n[CR 709.3c] \"709.3c An effect may create a copy of a split card and allow a player to cast the copy. That copy retains the characteristics of the two halves separated into the same two halves as the original card. (See rule 707.12.)\"",
+  "n_sources": 4
+ },
+ {
+  "key": "ev/missed-trigger-regular-pointing-out",
+  "group": "everyday",
+  "case": "missed-trigger-regular-pointing-out",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"At a store event my opponent forgot their Dark Confidant trigger in their upkeep and has now drawn for the turn. Do I have to point it out? If a judge gets involved, what do they do?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"At a store event my opponent forgot their Dark Confidant trigger in their upkeep and has now drawn for the turn. Do I have to point it out? If a judge gets involved, what do they do?\"\n\nOfficial source text:\n[IPG 2.1] \"[Infraction Procedure Guide, effective September 23, 2024]\n\n2.1  Game Play Error — Missed Trigger No Penalty\nDefinition\nA triggered ability triggers, but the player controlling the ability doesn’t demonstrate awareness\nof the trigger’s existence by the first time that it would affect the game in a visible fashion.\nThe point by which the player needs to demonstrate this awareness depends on the impact that\nthe trigger would have on the game:\n• A triggered ability that requires its controller to choose targets (other than 'target\nopponent'), modes, or other choices made when the ability is put ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/oathbreaker-signature-spell",
+  "group": "everyday",
+  "case": "oathbreaker-signature-spell",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"In Oathbreaker my Oathbreaker just died. Can I still cast my Signature Spell from the command zone?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"In Oathbreaker my Oathbreaker just died. Can I still cast my Signature Spell from the command zone?\"\n\n(No rule text could be attached.)",
+  "n_sources": 0
+ },
+ {
+  "key": "ev/ob-nixilis-combat-damage-total",
+  "group": "everyday",
+  "case": "ob-nixilis-combat-damage-total",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I control Ob Nixilis, Captive Kingpin. Three unblocked 1/1s hit my opponent at the same time. How many times does Ob Nixilis trigger? What if instead a Blood Artist trigger makes them lose 1?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I control Ob Nixilis, Captive Kingpin. Three unblocked 1/1s hit my opponent at the same time. How many times does Ob Nixilis trigger? What if instead a Blood Artist trigger makes them lose 1?\"\n\n(No rule text could be attached.)",
+  "n_sources": 0
+ },
+ {
+  "key": "ev/panglacial-wurm-evolving-wilds",
+  "group": "everyday",
+  "case": "panglacial-wurm-evolving-wilds",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I crack Evolving Wilds and Panglacial Wurm is in my library. Can I cast the Wurm while I'm searching? When does it resolve, and do I still get my land?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I crack Evolving Wilds and Panglacial Wurm is in my library. Can I cast the Wurm while I'm searching? When does it resolve, and do I still get my land?\"\n\nOfficial source text:\n[CR 608.2g] \"608.2g If an effect gives a player the option to pay mana, they may activate mana abilities before taking that action. If an effect specifically instructs or allows a player to cast a spell during resolution, they do so by following the steps in rules 601.2a–i, except no player receives priority after it’s cast. That spell becomes the topmost object on the stack, and the currently resolving spell or ability continues to resolve, which may include casting other spells this way. No other spells can normally be cast and no other abilities can normally be activated during resolution.\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/pithing-needle-mana-ability",
+  "group": "everyday",
+  "case": "pithing-needle-mana-ability",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"If I name Llanowar Elves with Pithing Needle, can my opponent still tap their Elves for mana?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"If I name Llanowar Elves with Pithing Needle, can my opponent still tap their Elves for mana?\"\n\n(No rule text could be attached.)",
+  "n_sources": 0
+ },
+ {
+  "key": "ev/recruit-asks-what-was-discarded",
+  "group": "everyday",
+  "case": "recruit-asks-what-was-discarded",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"My Lake-town Lookout died and I recruited. Do I get a Human Soldier token?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"My Lake-town Lookout died and I recruited. Do I get a Human Soldier token?\"\n\nOfficial source text:\n[CR 701.70a] \"701.70a “Recruit” means “Draw a card, then discard a card. If you discarded a nonland card this way, create a 1/1 white Human Soldier creature token.”\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/rest-in-peace-blood-artist",
+  "group": "everyday",
+  "case": "rest-in-peace-blood-artist",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I control Blood Artist and my opponent has Rest in Peace. If I sacrifice three creatures, do I still drain them for 3?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I control Blood Artist and my opponent has Rest in Peace. If I sacrifice three creatures, do I still drain them for 3?\"\n\nOfficial source text:\n[CR 700.4] \"700.4. The term dies means “is put into a graveyard from the battlefield.”\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/sorcery-in-response",
+  "group": "everyday",
+  "case": "sorcery-in-response",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"On my turn I cast Lightning Bolt at my opponent's creature, and in response they cast Divination to draw two cards. Is that legal?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"On my turn I cast Lightning Bolt at my opponent's creature, and in response they cast Divination to draw two cards. Is that legal?\"\n\nOfficial source text:\n[CR 307.1] \"307.1. A player who has priority may cast a sorcery card from their hand during a main phase of their turn when the stack is empty. Casting a sorcery as a spell uses the stack. (See rule 601, “Casting Spells.”)\"\n[CR 117.1a] \"117.1a A player may cast an instant spell any time they have priority. A player may cast a noninstant spell during their main phase any time they have priority and the stack is empty.\"",
+  "n_sources": 2
+ },
+ {
+  "key": "ev/sting-hone-counters-move",
+  "group": "everyday",
+  "case": "sting-hone-counters-move",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Sting, Bilbo's Sword came in with 3 hone counters on my Hobbit. If I equip Sting to a different creature, does the bonus go with it? And what if Sting loses its abilities?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Sting, Bilbo's Sword came in with 3 hone counters on my Hobbit. If I equip Sting to a different creature, does the bonus go with it? And what if Sting loses its abilities?\"\n\nOfficial source text:\n[CR 122.1j] \"122.1j A hone counter on an Equipment gives +1/+0 to any creature that Equipment is attached to.\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/storied-enduring-story-persists",
+  "group": "everyday",
+  "case": "storied-enduring-story-persists",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I control Fíli the Pathfinder plus two artifacts, so I got an enduring story. My opponent just destroyed both artifacts. Do my creatures still get +1/+1 from Fíli?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I control Fíli the Pathfinder plus two artifacts, so I got an enduring story. My opponent just destroyed both artifacts. Do my creatures still get +1/+1 from Fíli?\"\n\nOfficial source text:\n[CR 702.195a] \"702.195a Storied is a static ability. It means “Any time you control three or more permanents that are artifacts, Sagas, and/or legendary and you don’t have an enduring story, you have an enduring story for the rest of the game.”\"\n[CR 702.195b] \"702.195b Enduring story is a designation that has no rules meaning other than to act as a marker that other rules and effects can identify. Any number of players may have the enduring story designation at the same time.\"",
+  "n_sources": 2
+ },
+ {
+  "key": "ev/three-player-first-draw",
+  "group": "everyday",
+  "case": "three-player-first-draw",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Three of us are playing Commander. Does whoever goes first skip their first draw?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Three of us are playing Commander. Does whoever goes first skip their first draw?\"\n\nOfficial source text:\n[CR 103.8a] \"103.8a In a two-player game, the player who plays first skips the draw step (see rule 504, “Draw Step”) of their first turn.\"\n[CR 103.8b] \"103.8b In a Two-Headed Giant game, the team who plays first skips the draw step of their first turn.\"\n[CR 103.8c] \"103.8c In all other multiplayer games, no player skips the draw step of their first turn.\"",
+  "n_sources": 3
+ },
+ {
+  "key": "ev/torbran-trample-assignment",
+  "group": "everyday",
+  "case": "torbran-trample-assignment",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I control Torbran, Thane of Red Fell and attack with a red 5/5 that has trample. My opponent blocks with a 2/2. How much damage does the 2/2 take and how much goes to my opponent?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I control Torbran, Thane of Red Fell and attack with a red 5/5 that has trample. My opponent blocks with a 2/2. How much damage does the 2/2 take and how much goes to my opponent?\"\n\nOfficial source text:\n[CR 702.19b] \"702.19b The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking. When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/trample-deathtouch-damage",
+  "group": "everyday",
+  "case": "trample-deathtouch-damage",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I attack with a 6/6 that has trample and deathtouch, and it's blocked by a 4/4. What's the most damage I can put through to my opponent?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I attack with a 6/6 that has trample and deathtouch, and it's blocked by a 4/4. What's the most damage I can put through to my opponent?\"\n\nOfficial source text:\n[CR 702.2c] \"702.2c Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt.\"\n[CR 702.19b] \"702.19b The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking. When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s ...\"",
+  "n_sources": 2
+ },
+ {
+  "key": "ev/two-player-commander-free-mulligan",
+  "group": "everyday",
+  "case": "two-player-commander-free-mulligan",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"In a 1v1 Commander game, is my first mulligan free?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"In a 1v1 Commander game, is my first mulligan free?\"\n\nOfficial source text:\n[CR 103.5c] \"103.5c In a multiplayer game and in any Brawl game, the first mulligan a player takes doesn’t count toward the number of cards that player will put on the bottom of their library or the number of mulligans that player may take. Subsequent mulligans are counted toward these numbers as normal.\"\n[CR 100.1b] \"100.1b A multiplayer game is a game that begins with more than two players. See section 8, “Multiplayer Rules.”\"",
+  "n_sources": 2
+ },
+ {
+  "key": "ev/wrath-blood-artist-triggers",
+  "group": "everyday",
+  "case": "wrath-blood-artist-triggers",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"I control Blood Artist and two other creatures. My opponent controls two creatures. I cast Wrath of God. How many times does Blood Artist trigger, and what happens?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"I control Blood Artist and two other creatures. My opponent controls two creatures. I cast Wrath of God. How many times does Blood Artist trigger, and what happens?\"\n\nOfficial source text:\n[CR 603.10a] \"603.10a Some zone-change triggers look back in time. These are leaves-the-battlefield abilities, abilities that trigger when a player sacrifices a permanent, abilities that trigger when a card leaves a graveyard, and abilities that trigger when an object that all players can see is put into a hand or library.\nExample: Two creatures are on the battlefield along with an artifact that has the ability “Whenever a creature dies, you gain 1 life.” Someone casts a spell that destroys all artifacts, creatures, and enchantments. The artifact’s ability triggers twice, even though the artifact goes to ...\"",
+  "n_sources": 1
+ },
+ {
+  "key": "ev/yuriko-attacks-a-player-alone",
+  "group": "everyday",
+  "case": "yuriko-attacks-a-player-alone",
+  "label": "settled",
+  "a": "A player asks a Magic: the Gathering rules question:\n\"Four-player game. I control Yuriko, Blade of the Mighty. I attack opponent B with two creatures and opponent C with one creature. Which of my creatures get double strike?\"",
+  "b": "A player asks a Magic: the Gathering rules question:\n\"Four-player game. I control Yuriko, Blade of the Mighty. I attack opponent B with two creatures and opponent C with one creature. Which of my creatures get double strike?\"\n\nOfficial source text:\n[CR 506.6] \"506.6. A creature attacks a player alone if it’s declared as an attacker attacking a player during the declare attackers step and no other creature is declared as an attacker attacking that player. A creature is attacking a player alone if it’s attacking a player and no other creatures are attacking that player.\"",
+  "n_sources": 1
+ }
+]
