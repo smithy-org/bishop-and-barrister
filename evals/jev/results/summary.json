@@ -1,0 +1,180 @@
+{
+ "e1": {
+  "a": {
+   "Jev": {
+    "correct": 37,
+    "n": 40
+   },
+   "Sonnet 5.5": {
+    "correct": 35,
+    "n": 40
+   }
+  },
+  "b": {
+   "Jev": {
+    "correct": 36,
+    "n": 40
+   },
+   "Sonnet 5.5": {
+    "correct": 38,
+    "n": 40
+   }
+  }
+ },
+ "e1_usage": {
+  "a": {
+   "calls": 40,
+   "latency_ms_median": 155.4,
+   "latency_ms_p95": 203.5,
+   "latency_ms_max": 221.0,
+   "latency_ms_mean": 163,
+   "input_tokens_mean": 462,
+   "input_tokens_total": 18472,
+   "output_tokens_mean": 42,
+   "cost_usd_total": 0.00078,
+   "cost_usd_per_call": 1.94e-05,
+   "models": {
+    "jev-1.14.0": 40
+   }
+  },
+  "b": {
+   "calls": 40,
+   "latency_ms_median": 163.1,
+   "latency_ms_p95": 200.5,
+   "latency_ms_max": 359.3,
+   "latency_ms_mean": 170,
+   "input_tokens_mean": 647,
+   "input_tokens_total": 25867,
+   "output_tokens_mean": 42,
+   "cost_usd_total": 0.00109,
+   "cost_usd_per_call": 2.72e-05,
+   "models": {
+    "jev-1.14.0": 40
+   }
+  }
+ },
+ "e2": {
+  "Jev_a": {
+   "matches_expected": 6,
+   "matches_panel": 6,
+   "n": 13,
+   "catches_panel_errors": 1,
+   "panel_errors": 3,
+   "wrongly_overturns_correct_panel": 5,
+   "correct_panels": 10
+  },
+  "Jev_b": {
+   "matches_expected": 8,
+   "matches_panel": 8,
+   "n": 13,
+   "catches_panel_errors": 1,
+   "panel_errors": 3,
+   "wrongly_overturns_correct_panel": 3,
+   "correct_panels": 10
+  },
+  "Sonnet_a": {
+   "matches_expected": 12,
+   "matches_panel": 10,
+   "n": 13,
+   "catches_panel_errors": 2,
+   "panel_errors": 3,
+   "wrongly_overturns_correct_panel": 0,
+   "correct_panels": 10
+  },
+  "Sonnet_b": {
+   "matches_expected": 9,
+   "matches_panel": 9,
+   "n": 13,
+   "catches_panel_errors": 1,
+   "panel_errors": 3,
+   "wrongly_overturns_correct_panel": 2,
+   "correct_panels": 10
+  }
+ },
+ "e2_usage": {
+  "a": {
+   "calls": 13,
+   "latency_ms_median": 168.8,
+   "latency_ms_p95": 194.2,
+   "latency_ms_max": 210.5,
+   "latency_ms_mean": 174,
+   "input_tokens_mean": 955,
+   "input_tokens_total": 12413,
+   "output_tokens_mean": 63,
+   "cost_usd_total": 0.00052,
+   "cost_usd_per_call": 4.01e-05,
+   "models": {
+    "jev-1.14.0": 13
+   }
+  },
+  "b": {
+   "calls": 13,
+   "latency_ms_median": 174.5,
+   "latency_ms_p95": 223.8,
+   "latency_ms_max": 227.2,
+   "latency_ms_mean": 182,
+   "input_tokens_mean": 2201,
+   "input_tokens_total": 28618,
+   "output_tokens_mean": 63,
+   "cost_usd_total": 0.0012,
+   "cost_usd_per_call": 9.25e-05,
+   "models": {
+    "jev-1.14.0": 13
+   }
+  }
+ },
+ "e3": {
+  "Jev | all 34 steps in any recorded case version": {
+   "auc": 0.941,
+   "n_orig": 34,
+   "n_corrupt": 102
+  },
+  "Jev | the 20 steps of the final cases": {
+   "auc": 0.943,
+   "n_orig": 20,
+   "n_corrupt": 60
+  },
+  "Sonnet 5.5 | all 34 steps in any recorded case version": {
+   "auc": 0.944,
+   "n_orig": 34,
+   "n_corrupt": 102
+  },
+  "Sonnet 5.5 | the 20 steps of the final cases": {
+   "auc": 0.964,
+   "n_orig": 20,
+   "n_corrupt": 60
+  }
+ },
+ "e3_usage": {
+  "calls": 136,
+  "latency_ms_median": 157.6,
+  "latency_ms_p95": 205.5,
+  "latency_ms_max": 585.5,
+  "latency_ms_mean": 168,
+  "input_tokens_mean": 478,
+  "input_tokens_total": 64985,
+  "output_tokens_mean": 22,
+  "cost_usd_total": 0.00273,
+  "cost_usd_per_call": 2.01e-05,
+  "models": {
+   "jev-1.14.0": 136
+  }
+ },
+ "sonnet_cost": {
+  "e1": {
+   "agents": 12,
+   "tokens": 837344,
+   "seconds_mean_per_agent": 18.6
+  },
+  "e2": {
+   "agents": 6,
+   "tokens": 448596,
+   "seconds_mean_per_agent": 15.7
+  },
+  "e3": {
+   "agents": 8,
+   "tokens": 576295,
+   "seconds_mean_per_agent": 17.2
+  }
+ }
+}

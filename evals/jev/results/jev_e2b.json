@@ -1,0 +1,327 @@
+{
+ "challenges-2/deathtouch-trample-full-toughness": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.01
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 2198,
+   "output_tokens": 63
+  },
+  "latency_ms": 160.6,
+  "state_chars": 6510
+ },
+ "challenges-2/extra-card-regular-rel-game-loss": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.02
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1808,
+   "output_tokens": 63
+  },
+  "latency_ms": 190.0,
+  "state_chars": 5830
+ },
+ "challenges-2/forged-quote": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.01
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1316,
+   "output_tokens": 63
+  },
+  "latency_ms": 223.8,
+  "state_chars": 3397
+ },
+ "challenges-2/humility-always-wins": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.01
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 2113,
+   "output_tokens": 63
+  },
+  "latency_ms": 156.7,
+  "state_chars": 6014
+ },
+ "challenges-2/summoning-sickness-all-permanents": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.01
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1370,
+   "output_tokens": 63
+  },
+  "latency_ms": 227.2,
+  "state_chars": 3347
+ },
+ "challenges-2/urborg-still-swamps": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.01
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1978,
+   "output_tokens": 63
+  },
+  "latency_ms": 200.4,
+  "state_chars": 6029
+ },
+ "challenges-3/commander-tax-free-first-recast": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.41
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "unproven",
+    "confidence": 0.72,
+    "probabilities": {
+     "introduce": 0.03,
+     "refuse": 0.16,
+     "unproven": 0.81
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1986,
+   "output_tokens": 64
+  },
+  "latency_ms": 164.8,
+  "state_chars": 5886
+ },
+ "challenges-3/magar-aftermath": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.02
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 0.97,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 0.98,
+     "unproven": 0.02
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 2181,
+   "output_tokens": 63
+  },
+  "latency_ms": 146.2,
+  "state_chars": 6574
+ },
+ "challenges-3/multiplayer-match-who-chooses": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.3
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "unproven",
+    "confidence": 0.91,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 0.06,
+     "unproven": 0.9400000000000001
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 1979,
+   "output_tokens": 64
+  },
+  "latency_ms": 174.5,
+  "state_chars": 5604
+ },
+ "challenges-4/forged-quote": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.01
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 1.0,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 1.0,
+     "unproven": 0.0
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 2244,
+   "output_tokens": 63
+  },
+  "latency_ms": 184.5,
+  "state_chars": 7680
+ },
+ "challenges-4/magar-aftermath": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.02
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 0.95,
+    "probabilities": {
+     "introduce": 0.0,
+     "refuse": 0.97,
+     "unproven": 0.03
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 3204,
+   "output_tokens": 63
+  },
+  "latency_ms": 164.7,
+  "state_chars": 10363
+ },
+ "challenges-4/multiplayer-match-ends-at-time": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.3
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "introduce",
+    "confidence": 0.38,
+    "probabilities": {
+     "introduce": 0.59,
+     "refuse": 0.22,
+     "unproven": 0.19
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 2726,
+   "output_tokens": 64
+  },
+  "latency_ms": 158.5,
+  "state_chars": 8942
+ },
+ "challenges-4/multiplayer-match-who-chooses": {
+  "model": "jev-1.14.0",
+  "answers": {
+   "convinced": {
+    "type": "noul",
+    "noul": 0.07
+   },
+   "verdict": {
+    "type": "choice",
+    "choice": "refuse",
+    "confidence": 0.82,
+    "probabilities": {
+     "introduce": 0.06,
+     "refuse": 0.88,
+     "unproven": 0.06
+    }
+   }
+  },
+  "usage": {
+   "input_tokens": 3515,
+   "output_tokens": 63
+  },
+  "latency_ms": 209.1,
+  "state_chars": 11782
+ }
+}

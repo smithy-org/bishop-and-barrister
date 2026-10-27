@@ -1,0 +1,69 @@
+=== ITEM q301 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: When Magar of the Magic Strings lets you cast a copy of a split card with aftermath whose name was noted, you can cast the aftermath half (Dawn) of the copy, because the copy has the card's characteristics as they last existed in the graveyard.
+APPLIES WHEN: Magar of the Magic Strings noted the name of a split card with aftermath, and its effect lets you cast a copy of that card
+CLAIM CHALLENGES: Official ruling on aftermath: If another effect allows you to cast a split card with aftermath from any zone other than a graveyard, you can't cast the half with aftermath.
+FACTS:
+  F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name
+  F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it
+  F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name
+  F4: I am casting that copy
+DERIVATION:
+  Step 1 (from F1, F2, F3) per [Oracle text of Magar of the Magic Strings] "you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost" => Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost
+  Step 2 (from S1) per [CR 707.14] "One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule " => The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard
+  Step 3 (from S2) per [CR 709.3c] "That copy retains the characteristics of the two halves separated into the same two halves as the original card." => The copy has the two halves Dusk and Dawn, with Dawn's aftermath
+  Step 4 (from S3, F4) ASSUMPTION (no source) => Because the copy has the card's last-graveyard characteristics, casting Dawn satisfies aftermath's graveyard condition, so I can cast Dawn (the user's position; CR 707.14 gives the copy's characteristics but says nothing about the zone it is cast from, so no faithful quote supports this)
+
+=== ITEM q302 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: If time is called in a four-player match of several games, only completed games count: a game still running is finished first (extra turns, then a draw if undecided), and drawn games count for nobody. The player with the most game wins takes the match; if players tie for the most wins, the match is drawn only among those tied players, and every player outside the tied top has lost. This is a community addendum (level 4) filling a gap, overriding nothing official.
+APPLIES WHEN: a casual, non-elimination, multiplayer match of several games with the same four players
+APPLIES WHEN: time is called before the match is otherwise decided
+CLAIM CHALLENGES: none: a gap
+FACTS:
+  F1: A match of several games is being played
+  F2: Each game of the match begins with four players
+  F3: Time is called (the match time limit is reached)
+  F4: The match is casual, not a sanctioned tournament round, so the MTR does not apply
+  F5: The match is not single-elimination
+  F6: The same four players play every game of the match
+DERIVATION:
+  Step 1 (from F2) per [CR 100.1b] "A multiplayer game is a game that begins with more than two players." => Each game of this match is a multiplayer game
+  Step 2 (from F1, F2, F3, F4, F5, F6, S1) STIPULATION (the rule's own new content, no source) => When time is called, only completed games count (a running game is finished first, with extra turns and then a draw if undecided; drawn games count for nobody). The player with the most game wins takes the match; players tied for the most wins draw the match among themselves, and players outside the tied top lose. This is a community addendum at level 4 filling a gap and overrides nothing official.
+
+=== ITEM q303 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: At the user's own table only, by the players' agreement as a house rule, the additional cost of casting a commander from the command zone is {2} for each previous cast from the command zone that game minus one, and never less than zero. So the first recast costs nothing extra, the second recast costs an additional {2}, the third an additional {4}, and so on. In all other Commander games 903.8 applies unchanged.
+APPLIES WHEN: a commander is cast from the command zone
+APPLIES WHEN: the game is played at the user's own table, whose players have agreed to this house rule
+CLAIM CHALLENGES: CR 903.8: a commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game (challenged only as a house rule for the user's table, not as a change to Commander in general)
+FACTS:
+  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone
+  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game
+  F3: The user's playgroup charges no commander tax on this first recast, and charges {2} on the second recast, {4} on the third, and so on, i.e. {2} for each previous cast from the command zone except one
+  F4: The game is being played at the user's own table, among players who have agreed to this practice
+DERIVATION:
+  Step 1 (from F1, F2) per [CR 903.8] "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game." => Under the official rules, one previous cast makes the first recast cost an additional {2}, and with two previous casts the second recast costs an additional {4}, in every Commander game.
+  Step 2 (from F3, F4, S1) ASSUMPTION (no source) => At the user's table only, the players agree to count one fewer previous cast, so the additional cost is {2} x (previous casts minus 1), minimum 0: the first recast costs nothing extra, the second {2}, the third {4}. It does not change 903.8 for any other game.
+
+=== ITEM q304 ===
+A user wants a new rule introduced into Magic: the Gathering's rules record. Their case, as it stands:
+
+PROPOSED RULE: When Magar of the Magic Strings lets you cast a copy of a split card with aftermath that it noted from your graveyard, you can cast the aftermath half (Dawn), because the copy's copiable values come from the card's characteristics as it last existed in the graveyard (CR 707.14, main source; CR 707.12 supporting).
+APPLIES WHEN: Magar of the Magic Strings's noted card is a split card with aftermath and its trigger lets you cast a copy of it
+CLAIM CHALLENGES: Ruling (2017-04-18, Dusk // Dawn): "If another effect allows you to cast a split card with aftermath from any zone other than a graveyard, you can't cast the half with aftermath." and CR 702.127a
+FACTS:
+  F1: Magar of the Magic Strings's ability noted the name Dusk // Dawn (a split card with aftermath) from the user's graveyard
+  F2: Magar's ability lets the user create a copy of the card with the noted name and cast that copy
+  F3: The Dusk // Dawn card is in the user's graveyard when the copy is created; the copy is made per CR 707.14, not moved from a zone
+  F4: The face-down creature that noted the name dealt the combat damage itself, not a copy of it
+  F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)
+  F6: The copy is cast without paying its mana cost, choosing Dawn
+DERIVATION:
+  Step 1 (from F1, F2) per [Oracle text of Magar of the Magic Strings] "you may create a copy of the card with the noted name. You may cast the copy without paying its mana cost" => Magar's ability allows the user to create a copy of the card with the noted name and cast that copy
+  Step 2 (from S1, F5) per [CR 707.12] "An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving." => The copy is cast following the rules for casting spells, while the trigger is resolving
+  Step 3 (from S1, F1, F3) per [CR 707.14] "use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy" => The copy's copiable values are determined from the characteristics of the card as it last existed in the graveyard
+  Step 4 (from S2, S3, F6) ASSUMPTION (no source) => Because of those graveyard characteristics, the user can cast Dawn (the aftermath half) when casting the copy (the user's conclusion; no source cited)

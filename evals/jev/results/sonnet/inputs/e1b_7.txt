@@ -1,0 +1,60 @@
+=== ITEM q801 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. A trampler with deathtouch still has to assign damage equal to the blocker's toughness before any tramples over: deathtouch makes the damage lethal, it doesn't change how much you must assign. That should be the rule."
+
+Official source text the judges cited:
+[CR 702.2c] "Any nonzero amount of combat damage assigned to a creature by a source with deathtouch is considered to be lethal damage for the purposes of determining if excess damage is being dealt."
+[CR 702.19b] "Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking."
+[CR 702.19b] "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking."
+[CR 702.19b] "any excess damage is assigned as its controller chooses among those blocking creatures and the player"
+[CR 120.4a] "Any amount of damage greater than 1 is excess damage if the source dealing that damage to a creature has deathtouch."
+[Official ruling (Goblin Negotiation (wotc, 2024-11-08))] "Even 1 damage dealt to a creature from a source with deathtouch is considered lethal damage, so any amount greater than that will cause excess damage to be dealt, even if the total amount of damage isn't greater than the creature's toughness"
+[Official ruling (Megatron (wotc, 2022-10-14))] "1 damage is lethal damage, and any amount beyond that is excess damage."
+[CR 704.5h] "If a creature has toughness greater than 0, and it’s been dealt damage by a source with deathtouch since the last time state-based actions were checked, that creature is destroyed."
+
+=== ITEM q802 ===
+A player asks a Magic: the Gathering rules question:
+"I control Torbran, Thane of Red Fell and attack with a red 5/5 that has trample. My opponent blocks with a 2/2. How much damage does the 2/2 take and how much goes to my opponent?"
+
+Official source text:
+[CR 702.19b] "702.19b The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking. When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s ..."
+
+=== ITEM q803 ===
+A player asks a Magic: the Gathering rules question:
+"Competitive REL. Time was called in our match and we were heading for a draw, so my opponent and I rolled a die to decide who wins. A judge saw it. What happens?"
+
+Official source text:
+[IPG 4.3] "[Infraction Procedure Guide, effective September 23, 2024]
+
+4.3  Unsporting Conduct — Improperly Determining a Winner Match Loss
+Definition
+A player uses or offers to use a method that is not part of the current game (including actions not
+legal in the current game) to determine the outcome of a game or match, or uses language
+designed to trick someone who may not know it’s against the rules to make such an offer.
+If the player was aware that what they were doing was against the rules, the infraction is
+Unsporting Conduct — Cheating.
+[left out: Examples, Philosophy; add --all to see them]"
+[MTR 2.5] "[Magic Tournament Rules, effective February 27, 2026]
+
+2.5  Conceding or Intentionally Drawing Games or Matches
+Until the result of a match has been recorded, players may concede or mutually agree to a draw in that game or
+match. If the conceding player won a game in the match, the match must be reported as 2-1. Intentional draws
+where no games were played are always reported as 0-0-3 in EventLink.
+Players may not agree to a concession or draw in exchange for any reward or incentive. Doing so will be
+considered Bribery (see section 5.2).
+If a player refuses to play, it is assumed that they ..."
+
+=== ITEM q804 ===
+A player asks a Magic: the Gathering rules question:
+"I control Blood Artist and two other creatures. My opponent controls two creatures. I cast Wrath of God. How many times does Blood Artist trigger, and what happens?"
+
+Official source text:
+[CR 603.10a] "603.10a Some zone-change triggers look back in time. These are leaves-the-battlefield abilities, abilities that trigger when a player sacrifices a permanent, abilities that trigger when a card leaves a graveyard, and abilities that trigger when an object that all players can see is put into a hand or library.
+Example: Two creatures are on the battlefield along with an artifact that has the ability “Whenever a creature dies, you gain 1 life.” Someone casts a spell that destroys all artifacts, creatures, and enchantments. The artifact’s ability triggers twice, even though the artifact goes to ..."
+
+=== ITEM q805 ===
+A player asks a Magic: the Gathering rules question:
+"I already have a Jace token with 1 loyalty from earlier. Now Arcane Amphisbaena enters and I empower Jace 2. Do I get a second Jace? What's my loyalty, and what can the token do?"
+
+Official source text:
+[CR 701.71a] "701.71a To empower Jace N means “If you don’t control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, ‘[−1]: Surveil 1,’ and ‘[−3]: Draw a card.’ Choose a Jace planeswalker token you control. Put N loyalty counters on it.”"

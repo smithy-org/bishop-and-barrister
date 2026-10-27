@@ -1,0 +1,60 @@
+=== ITEM q201 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. CR 702.19b says a trampler that's blocked by a creature with protection from its color deals all its damage to the player. So protection blockers can't soak trample damage. Make that the rule."
+
+Official source text the judges cited:
+[CR 702.19b] "Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking."
+[CR 702.19b] "The attacking creature’s controller need not assign lethal damage to all those blocking creatures but in that case can’t assign any damage to the player or planeswalker it’s attacking."
+[CR 702.16e] "Any damage that would be dealt by sources that have the stated quality to a permanent or player with protection is prevented."
+[CR 702.19b] "When checking for assigned lethal damage, take into account damage already marked on the creature and damage from other creatures that’s being assigned during the same combat damage step, but not any abilities or effects that might change the amount of damage that’s actually dealt."
+[CR 702.19b] "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it."
+[CR 702.19b] "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking."
+[CR 510.1c] "A blocked creature assigns its combat damage to the creatures blocking it."
+[CR 702.19b] "but not any abilities or effects that might change the amount of damage"
+[CR 702.19b] "but not any abilities or effects that might change the amount of damage that’s actually dealt"
+[CR 702.19b] "but not any abilities or effects that might change the amount of damage that"
+
+=== ITEM q202 ===
+A player asks a Magic: the Gathering rules question:
+"My opponent cast Llanowar Elves and then immediately tapped it for G to help cast another spell the same turn. Can they do that?"
+
+Official source text:
+[CR 302.6] "302.6. A creature’s activated ability with the tap symbol or the untap symbol in its activation cost can’t be activated unless the creature has been under its controller’s control continuously since their most recent turn began. A creature can’t attack unless it has been under its controller’s control continuously since their most recent turn began. This rule is informally called the “summoning sickness” rule."
+
+=== ITEM q203 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. Magar of the Magic Strings noted Dusk // Dawn. When Magar lets me cast a copy, I can cast Dawn because the copy uses the card's characteristics as it last existed in the graveyard. Make that the rule."
+
+Official source text the judges cited:
+[CR 702.127a] "This half of this split card can’t be cast from any zone other than a graveyard"
+[CR 707.12] "the copy is created in the same zone the object is in and then cast while another spell or ability is resolving"
+[Oracle text of Magar of the Magic Strings] "put it onto the battlefield face down"
+[Official ruling (Dusk // Dawn)] "If another effect allows you to cast a split card with aftermath from any zone other than a graveyard, you can't cast the half with aftermath."
+[CR 707.14] "use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy."
+[CR 702.127a] "“This half of this split card can’t be cast from any zone other than a graveyard,”"
+[CR 707.14] "use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy"
+[CR 400.7] "An object that moves from one zone to another becomes a new object with no memory of, or relation to, its previous existence."
+[CR 707.12] "the copy is created in the same zone the object is in"
+[CR 709.3c] "That copy retains the characteristics of the two halves separated into the same two halves as the original card."
+
+=== ITEM q204 ===
+A player asks a Magic: the Gathering rules question:
+"I've got Humility and Opalescence both on the battlefield. What are my enchantments now, power/toughness and abilities?"
+
+(No rule text could be attached.)
+
+=== ITEM q205 ===
+A player proposes this to a Magic: the Gathering rules panel:
+"I want to challenge this. Blood Moon turns Urborg, Tomb of Yawgmoth into a Mountain, but Urborg was on the battlefield first, so its ability still applies and all my lands are still Swamps. I want that to be the rule."
+
+Official source text the judges cited:
+[CR 305.7] "If an effect sets a land’s subtype to one or more of the basic land types, the land no longer has its old land type. It loses all abilities generated from its rules text, its old land types, and any copiable effects affecting that land"
+[Official ruling (Urborg, Tomb of Yawgmoth 2021-03-19)] "If an effect such as that of Magus of the Moon causes Urborg to lose its abilities by setting it to a basic land type not in addition to its other types, it won't turn lands into Swamps, no matter in what order those effects started to apply."
+[Oracle text of Blood Moon] "Nonbasic lands are Mountains."
+[CR 613.8] "If a dependency exists, it will override the timestamp system."
+[CR 305.7] "If an effect sets a land’s subtype to one or more of the basic land types, the land no longer has its old land type. It loses all abilities generated from its rules text"
+[Official ruling (Urborg, Tomb of Yawgmoth 2021-03-19)] "it won't turn lands into Swamps, no matter in what order those effects started to apply."
+[CR 613.7d] "An object receives a timestamp at the time it enters a zone."
+[Oracle text of Urborg, Tomb of Yawgmoth] "Each land is a Swamp in addition to its other land types."
+[CR 613.8a] "An effect is said to “depend on” another if (a) it’s applied in the same layer (and, if applicable, sublayer) as the other effect; (b) applying the other would change the text or the existence of the first effect, what it applies to, or what it does to any of the things it applies to"
+[Official ruling (Blood Moon 2020-08-07)] "Nonbasic lands will lose any other land types and abilities they had. They will gain the land type Mountain and gain the ability "{T}: Add {R}.""

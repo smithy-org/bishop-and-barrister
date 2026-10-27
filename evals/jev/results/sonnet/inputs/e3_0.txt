@@ -1,0 +1,126 @@
+=== ITEM q101 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: The game is played at a Friday Night Magic tournament.
+QUOTED OFFICIAL SOURCE: [MTR F] "Friday Night Magic Regular"
+CLAIMED CONCLUSION: A Friday Night Magic is a Regular Rules Enforcement Level tournament.
+
+=== ITEM q102 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A three-player free-for-all Commander match of several games, each player on their own, one player's turn at a time; the next game is not the first game of the match
+QUOTED OFFICIAL SOURCE: [CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+CLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn
+
+=== ITEM q103 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A three-player Commander match of several games; the next game is not the first game of the match
+QUOTED OFFICIAL SOURCE: [CR 103.1] "In a match of several games, the loser of the previous game chooses who takes the first turn."
+CLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn
+
+=== ITEM q104 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: Dusk // Dawn, a split card with aftermath, was in my graveyard when Magar of the Magic Strings's ability noted its name
+  F2: The creature that dealt combat damage to a player was Magar's own face-down creature, not a copy of it
+  F3: It dealt combat damage to a player and I chose to create the copy of the card with the noted name
+QUOTED OFFICIAL SOURCE: [CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+CLAIMED CONCLUSION: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost
+
+=== ITEM q105 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  S2: Because Urborg was on the battlefield first, its ability still applies even though Blood Moon made it a Mountain
+QUOTED OFFICIAL SOURCE: [Oracle text of Urborg, Tomb of Yawgmoth] "Each land is a Swamp in addition to its other land types."
+CLAIMED CONCLUSION: It is not true that each land is a Swamp in addition to its other land types, so all of the user's lands are still Swamps
+
+=== ITEM q106 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A permanent came under a player's control this turn (the user's stated condition)
+  F2: The permanent has an activated ability with {T} in its cost (the user's stated condition)
+QUOTED OFFICIAL SOURCE: [CR 302.6] "This rule is informally called the “summoning sickness” rule."
+CLAIMED CONCLUSION: Each game of this match is a multiplayer game
+
+=== ITEM q107 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F2: Each game of the match begins with four players
+QUOTED OFFICIAL SOURCE: [CR 100.1b] "A multiplayer game is a game that begins with more than two players."
+CLAIMED CONCLUSION: Each game of this match is a multiplayer game
+
+=== ITEM q108 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A player has cast their commander once from the command zone this game, and it has since returned to the command zone
+  F2: The player now recasts that commander from the command zone for the first time as a recast, which is the second time they cast it from the command zone that game
+QUOTED OFFICIAL SOURCE: [CR 903.8] "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game."
+CLAIMED CONCLUSION: It is not true that under the official rules, the one previous cast from the command zone makes the first recast cost an additional {2}, in every Commander game.
+
+=== ITEM q109 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A Commander match of several games with three players
+  F2: In the previous game, two of the three players lost (at different times) and the third player won
+QUOTED OFFICIAL SOURCE: [CR 903.8] "A commander cast from the command zone costs an additional {2} for each previous time the player casting it has cast it from the command zone that game."
+CLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so players can be out of the game at different times before it ends; F2 states that in this game two players lost at different times.
+
+=== ITEM q110 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A three-player Commander match of several games; the next game is not the first game of the match
+QUOTED OFFICIAL SOURCE: [CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+CLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn
+
+=== ITEM q111 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A Commander match of several games with three players
+  F2: In the previous game, two of the three players lost (at different times) and the third player won
+QUOTED OFFICIAL SOURCE: [CR 707.12] "An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving."
+CLAIMED CONCLUSION: A multiplayer game can continue after a player has left it, so a multiplayer game can end with more than one player having lost, as F2 states.
+
+=== ITEM q112 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  S1: Magar lets me create a copy of Dusk // Dawn and cast that copy without paying its mana cost
+QUOTED OFFICIAL SOURCE: [CR 707.14] "One card (Magar of the Magic Strings) instructs a player to note the name of a particular card in a graveyard and create a copy of the card with the noted name. To do so, use the characteristics of that card as it last existed in the graveyard to determine the copiable values of the copy. (See rule "
+CLAIMED CONCLUSION: The copy's copiable values are determined from the characteristics of Dusk // Dawn as it last existed in the graveyard
+
+=== ITEM q113 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  S1: Magar's ability allows the user to create a copy of the card with the noted name and cast that copy
+  F5: The user does not claim the copy is cast from the graveyard: the copy is created and cast during resolution of Magar's trigger (CR 707.12)
+QUOTED OFFICIAL SOURCE: [CR 707.12] "An effect that instructs a player to cast a copy of an object (and not just copy a spell) follows the rules for casting spells, except that the copy is created in the same zone the object is in and then cast while another spell or ability is resolving."
+CLAIMED CONCLUSION: It is not true that the copy is cast following the rules for casting spells, while the trigger is resolving
+
+=== ITEM q114 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  S1: A Friday Night Magic is run at the Regular Rules Enforcement Level, the listed level being a minimum.
+QUOTED OFFICIAL SOURCE: [MTR 1.12] "Infractions in these tournaments are covered by the Judging at Regular Rules Enforcement Level document"
+CLAIMED CONCLUSION: It is not true that infractions at this tournament are covered by the Judging at Regular REL document.
+
+=== ITEM q115 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: The game is played at a Friday Night Magic tournament that is run at the Regular Rules Enforcement Level.
+QUOTED OFFICIAL SOURCE: [CR 103.1] "In a match of several games, the loser of the previous game chooses who takes the first turn."
+CLAIMED CONCLUSION: Infractions at this Regular-level Friday Night Magic are covered by the Judging at Regular REL document.
+
+=== ITEM q116 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: An attacking creature has both trample and deathtouch
+  F2: It is blocked by one or more creatures, so it assigns combat damage to them
+QUOTED OFFICIAL SOURCE: [CR 702.19b] "The controller of an attacking creature with trample first assigns damage to the creature(s) blocking it. Once all those blocking creatures are assigned lethal damage, any excess damage is assigned as its controller chooses among those blocking creatures and the player, planeswalker, or battle the creature is attacking."
+CLAIMED CONCLUSION: A trampler must assign lethal damage to all its blockers before any excess goes to the player, planeswalker or battle
+
+=== ITEM q117 ===
+A step in a Magic: the Gathering rules argument.
+PREMISES:
+  F1: A three-player free-for-all Commander match of several games, each player on their own; the next game is not the first game of the match
+QUOTED OFFICIAL SOURCE: [CR 103.1] "If the previous game was a draw, the player who made the choice in that game makes the choice in this game."
+CLAIMED CONCLUSION: In a match of several games, the loser of the previous game chooses who takes the first turn
