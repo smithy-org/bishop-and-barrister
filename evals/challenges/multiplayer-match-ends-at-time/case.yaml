@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: multiplayer-match-ends-at-time
+expected_state: introduced
+kind: a gap: should be introduced
+expected_outcome: |
+  Introduced (a real gap). MTR 2.1's match result rule is written for two players; no official rule says how a multiplayer match of several games ends. The proposal extends MTR 2.1's 'more game wins' without contradicting it.
+  Deciding: the step showing MTR 2.1 is written for two players and nothing official covers multiplayer.
