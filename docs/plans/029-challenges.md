@@ -1,6 +1,9 @@
 # 029 — Challenges: the only way a rule enters the record
 
-**Status:** design for review. Nothing here is built.
+**Status:** built (phases 1 to 6, merged 2026-10-26 to 27). **Revised 2026-10-27: the panel is five judges, not
+seven**, at the maintainer's request, to cut the cost of a challenge (each judge is an agent, and starting any agent
+costs about 60k tokens before it does any work). The five lenses are the original seven merged by their overlap, in
+the table below. Everything else, unanimity included, is unchanged; where this document still says seven, read five.
 **Decided with the user (2026-10-26):**
 
 - **Nothing the skill answers enters the database.** Established rules are only what official sources say:
@@ -8,7 +11,7 @@
   `review` are retired.
 - **The only way in is a challenge**: the user puts forward a case for a rule. Challenging is a **separate
   part of the skill** (`CHALLENGE.md`, `challenge/`, `scripts/challenge.py`), apart from everyday answering.
-- **A panel of seven agents judges it.** They use the skill itself (`lookup.py`, `card.py`, `judge.py search`,
+- **A panel of five agents judges it.** They use the skill itself (`lookup.py`, `card.py`, `judge.py search`,
   the tournament documents) to verify the case and **argue fervently against it, with evidence**. The user
   argues back.
 - **If every agent is convinced, the new rule is introduced**, in a file named after its challenge
@@ -67,14 +70,14 @@ be stored only as a **house rule**, marked as departing from the official rules,
 | Role | Lens | Job |
 | --- | --- | --- |
 | **Clerk** | The case as stated | Puts the case in the proof standard, lists missing facts, asks the user before the panel runs |
-| **Seven adversarial judges** | 1. the CR's text; 2. Oracle text and card wording; 3. Wizards' rulings and precedent from analogous cards; 4. game-state simulation (stack, priority, state-based actions, step by step); 5. counterexamples: other situations where the proposed rule fails; 6. the tournament documents and formats; 7. logic: hidden assumptions, circular steps, gaps between steps | Each, **blind to the others in the first round**, uses the skill to try to refute the case and writes a refutation in the proof standard, or concedes a step it cannot refute |
+| **Five adversarial judges** | 1. the CR's text; 2. cards and their rulings: Oracle text and wording, and Wizards' rulings and precedent from analogous cards; 3. game-state simulation (stack, priority, state-based actions, step by step); 4. counterexamples and logic: other situations where the proposed rule fails, and hidden assumptions, circular steps and gaps between steps; 5. the tournament documents and formats | Each, **blind to the others in the first round**, uses the skill to try to refute the case and writes a refutation in the proof standard, or concedes a step it cannot refute |
 | **Verifier** (a script, `challenge.py verify`) | | Checks every citation in the case and every refutation: the source exists, the quote matches the pinned text, the Oracle text is current, every premise refers to a real fact or step. A failed step cannot be relied on by anyone |
 
 **The rounds:**
 
 1. **Clerk's brief** → the user confirms or corrects the facts and the proposed rule.
-2. **Round 1, blind:** the seven judges attack the case independently.
-3. **Verifier** checks the case and all seven refutations.
+2. **Round 1, blind:** the five judges attack the case independently.
+3. **Verifier** checks the case and all five refutations.
 4. **The user answers** the verified refutations, step by step: concede, fix the case, or rebut (in the same
    shape, with sources).
 5. **Next round:** each judge sees the user's answers and the other judges' verified refutations, and attacks
@@ -102,7 +105,7 @@ where it is. Part by part:
 | **Documents** (`sources.py`) | Yes, but only "which version is installed" | **Plain data** (`sources.json`, `version.json`). Install-or-not has no lifecycle worth a machine |
 | **Sync** (`judge.py sync`, auto-sync) | Yes, per device | **Operational status, not a machine.** Today it's scattered (`pulled_at`, `uploaded_head`, `notice`). Make it one explicit field: `ok`, `paused: unreachable`, `paused: public bucket`, `blocked: conflict` (blocked stops auto-pull from retrying a known conflict until it's settled). Still derived from facts, so it can't drift |
 | **Introduced rules** | Yes, for years | **A small state machine** (below): a rule can go stale when its sources change and must win again |
-| **Challenges** | Yes: rounds span sessions, days and devices, with the user and seven judges acting in turn | **A full state machine** (below). This is where statefulness earns its keep: a new session must know exactly what happens next, and nothing may skip verification or voting |
+| **Challenges** | Yes: rounds span sessions, days and devices, with the user and five judges acting in turn | **A full state machine** (below). This is where statefulness earns its keep: a new session must know exactly what happens next, and nothing may skip verification or voting |
 
 So the skill stays mostly stateless; the two entities with a life of their own get explicit state machines,
 enforced by `challenge.py` rather than by the agent remembering what to do.
@@ -117,21 +120,21 @@ who owes it** (the user, judge *k*, the verifier, or the panel), so any session,
 | --- | --- | --- | --- |
 | `draft` | User (with the clerk) | Clerk writes the brief | `briefed` |
 | `briefed` | User | Confirms facts and the proposed rule / edits them | `attack(n=1)` / `briefed` |
-| `attack(n)` | The seven judges, blind; each judge's refutation or concession is a separate event | All seven filed | `verify(n)` |
+| `attack(n)` | The five judges, blind; each judge's refutation or concession is a separate event | All five filed | `verify(n)` |
 | `verify(n)` | Verifier (script) | Report filed | `answer(n)`, or `voting` if no verified refutation stands |
 | `answer(n)` | User | Answers each verified refutation (concede, fix the case, rebut) / withdraws | `verify-answers(n)` / `withdrawn` |
 | `verify-answers(n)` | Verifier | Report filed | `attack(n+1)` if n < cap; `open` if the cap is reached with refutations standing |
-| `voting` | The seven judges, blind to each other's votes | All seven voted | `introduced` if every guard holds; else `refuted` |
+| `voting` | The five judges, blind to each other's votes | All five voted | `introduced` if every guard holds; else `refuted` |
 | `introduced` | | Terminal for the challenge; creates a rule (below) | |
 | `refuted` | | Terminal. Optionally the user asks to keep it as a house rule | `house-rule` |
 | `open` | User | Returns with new facts or sources | `briefed` |
 | `withdrawn`, `house-rule` | | Terminal | |
 
 **Guards** (checked by `challenge.py`, not the agent):
-- `voting` → `introduced` only if all seven votes are "convinced", the final case passes the verifier with no
+- `voting` → `introduced` only if all five votes are "convinced", the final case passes the verifier with no
   unsupported step, it contradicts no level 1 source, and the panel was independent (not the claude.ai
   single-agent fallback).
-- A judge can't see other judges' round-*n* refutations or votes until all seven have filed (the event files
+- A judge can't see other judges' round-*n* refutations or votes until all five have filed (the event files
   are hidden from the prompt until the state advances).
 - Every transition records who made it: a judge, the verifier, or the user in their own words.
 
@@ -174,7 +177,7 @@ SHA-256 of its opening event (the user's case as first stated, with the device a
   so every rule traces to the challenge that introduced it, wherever the file travels (the local record, the
   synced bucket, an upload). The rule file carries its provenance:
   - the challenge id, and the hash of the final `introduced` event, which pins it to the exact verified history;
-  - the seven judges' votes and the verifier's final report hash;
+  - the five judges' votes and the verifier's final report hash;
   - the devices and dates of opening and introduction;
   - the sources it relies on, pinned by hash.
   `challenge.py trace challenge-<id>` checks a rule file against its challenge: the id recomputes from the
@@ -191,7 +194,7 @@ SHA-256 of its opening event (the user's case as first stated, with the device a
 
 ## A separate part of the skill
 
-- **`CHALLENGE.md`** at the skill's root: the challenge procedure, the proof standard, the seven judges'
+- **`CHALLENGE.md`** at the skill's root: the challenge procedure, the proof standard, the five judges'
   prompts, how to run rounds. SKILL.md gets only a short pointer: "if the user wants to challenge a rule or
   introduce a new one, read `CHALLENGE.md`". Everyday answering is unchanged and stays cheap.
 - **`challenge/`**: the Lean 4 core (see "Implementation language"): the challenge and rule state machines,
@@ -212,7 +215,7 @@ programming language and a proof assistant in one.
 - **Illegal states can't be written down.** States and events are inductive types; the transition function is
   total, and the compiler rejects a state × event case left unhandled.
 - **The guarantees are proved, not only tested.** Theorems in the code, checked on every build:
-  1. **No unearned rule:** `replay events = introduced` implies all seven judges voted convinced, the final
+  1. **No unearned rule:** `replay events = introduced` implies all five judges voted convinced, the final
      verifier report passed, no level 1 conflict was found, and the panel was independent.
   2. **Determinism:** replay is a pure function of the events, so every device computes the same state.
   3. **Terminal states are final:** no event leaves `introduced`, `refuted`, `withdrawn` or `house-rule`.
@@ -266,7 +269,7 @@ the binary needs no extra libraries.
    `open/brief/confirm/add/verify/status`, citation pinning through `judge.py`; tests (a forged quote, a step
    with no source, a premise pointing nowhere, a fork from two devices after a sync). Sync status made explicit
    in `judge.py` (`ok` / `paused` / `blocked: conflict`).
-4. **`CHALLENGE.md` and the panel:** the clerk and seven judge prompts, rounds, blind voting, `vote/close`, the
+4. **`CHALLENGE.md` and the panel:** the clerk and five judge prompts, rounds, blind voting, `vote/close`, the
    unanimity rule, the single-agent marking.
 5. **The record:** retire `record`/`review` with migration; the `rule` kind in search, index, recheck (reopen
    on change) and sync; SKILL.md pointer.
