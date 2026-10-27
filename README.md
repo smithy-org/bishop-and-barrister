@@ -30,6 +30,23 @@ python ~/.claude/skills/bishop-and-barrister/scripts/judge.py build
 
 Needs Python 3.10 or later, git, and `pypdf` for the tournament documents.
 
+### Challenges (optional)
+
+Everyday answering needs nothing more. To let a user challenge a ruling or argue for a new rule, the skill uses a
+small program, `bab-challenge`, built for Linux, macOS and Windows. The first time a challenge runs, the skill
+downloads the one for your machine from this repository's latest release and refuses it unless its SHA-256
+matches the one recorded in `challenge/binaries.json`. If there is none for your machine, or no network,
+challenges say so and everything else keeps working. A challenge uses a few million tokens at most, so the skill
+tells you the cost and asks first. See `CHALLENGE.md`.
+
+### On claude.ai
+
+Zip this repository and add it as a custom skill in claude.ai's skills settings. This has not been tested
+there yet. The skill fetches card data from scryfall.com and the rules documents from media.wizards.com, and a
+challenge downloads its program from GitHub; if the sandbox blocks any of them, the script that needed it
+reports the failure and the rest still works. Without independent subagents, claude.ai can open and refute a
+challenge as a single-agent panel but cannot introduce a rule.
+
 ### Optional: sync across your devices
 
 By default everything stays on your machine. To share your rulings between devices, point the skill at a
@@ -69,6 +86,7 @@ stays the copy the skill works from; the bucket is a synced copy. A RustFS to tr
 | `tests/`                         | Tests: `python -m unittest discover -s tests`                         |
 | `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |
 | `docs/ROADMAP.md`                | Everything planned but not done yet, and who or what it waits on      |
+| `docs/RELEASING.md`              | How a version is numbered and released                                |
 
 ## Status
 
