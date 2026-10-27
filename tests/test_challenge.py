@@ -78,9 +78,23 @@ REFUTE = {"type": "file", "round": 1, "refutations": [{
     "target": 1, "ground": "counterexample", "argument": "It says nothing about three players",
     "steps": [step(1, ["C1"], source("100.1"))]}]}
 VOTE = {"type": "vote", "convinced": True, "reason": "step 1 settled it", "evidence": EVIDENCE}
-ANSWER = {"type": "answer", "round": 1, "words": "103.1a covers any match", "replies": [{
-    "judge": 1, "index": 1, "kind": "rebut", "words": "103.1a covers any match",
-    "steps": [step(1, ["C1"], source("103.1a"))]}]}
+
+
+def answer(judges=(1,), kind="rebut", **extra):
+    """The user's answer to round 1: one reply to each of these judges' refutations."""
+    replies = [{"judge": k, "index": 1, "kind": kind, "words": "103.1a covers any match",
+                **({"steps": [step(1, ["C1"], source("103.1a"))]} if kind == "rebut" else {})} for k in judges]
+    return {"type": "answer", "round": 1, "words": "103.1a covers any match", "replies": replies, **extra}
+
+
+ANSWER = answer()
+OPINION = {"type": "opinion", "revision": 0, "holding": case()["rule"],
+           "steps": [step(1, ["F1"], source("103.1a", "the loser of the previous game chooses"))]}
+
+
+def response(stance="join", revision=0, **extra):
+    return {"type": "respond", "revision": revision, "stance": stance,
+            "reason": f"the opinion states the rule ({stance})", "evidence": EVIDENCE, **extra}
 
 
 @unittest.skipUnless(HAVE_CORE, "set BISHOP_AND_BARRISTER_CHALLENGE_BIN to a bab-challenge binary")
@@ -137,34 +151,47 @@ class ChallengeTest(unittest.TestCase):
     def vote(self, cid, k, convinced=True):
         return self.ok("add", cid, self.write("vote.json", {**VOTE, "convinced": convinced}), "--as", f"judge-{k}")
 
-    def introduce(self, cid=None):
-        """Every judge concedes on the unchanged case, so their concessions are their settled positions."""
+    def settle(self, cid=None):
+        """Every judge concedes on the unchanged case, so their concessions are their settled positions: the judges
+        are settled, and the opinion of the court is drafted next."""
         cid = cid or self.to_attack()
         for k in range(1, 6):
             self.file(cid, k)
         self.ok("verify", cid)
         return cid
 
-    def to_voting(self):
-        """Judge 1 refutes, the user rebuts with a source, the case is unchanged: the judges settle."""
+    def draft(self, cid, event=OPINION, k=1):
+        return self.ok("add", cid, self.write("opinion.json", event), "--as", f"judge-{k}")
+
+    def respond(self, cid, k, stance="join", revision=0):
+        return self.ok("add", cid, self.write(f"response-{k}.json", response(stance, revision)), "--as", f"judge-{k}")
+
+    def introduce(self, cid=None):
+        """The judges settle, one drafts the opinion and all five join it."""
+        cid = self.settle(cid)
+        self.draft(cid)
+        for k in range(1, 6):
+            self.respond(cid, k)
+        return cid
+
+    def to_voting(self, refuters=(1,)):
+        """These judges refute, the user rebuts with a source, the case is unchanged: the judges who didn't concede
+        settle."""
         cid = self.to_attack()
-        self.file(cid, 1, REFUTE)
-        for k in range(2, 6):
-            self.file(cid, k)
+        for k in range(1, 6):
+            self.file(cid, k, REFUTE if k in refuters else CONCEDE)
         self.ok("verify", cid)
-        self.ok("add", cid, self.write("answer.json", ANSWER), "--as", "user")
+        self.ok("add", cid, self.write("answer.json", answer(refuters)), "--as", "user")
         self.ok("verify", cid)
         return cid
 
-    def to_conceded(self):
-        """The user concedes the standing refutation and revises nothing: the judges settle with it standing."""
+    def to_conceded(self, refuters=(1, 2, 3)):
+        """The user concedes the standing refutations and revises nothing: the judges who didn't concede settle."""
         cid = self.to_attack()
-        self.file(cid, 1, REFUTE)
-        for k in range(2, 6):
-            self.file(cid, k)
+        for k in range(1, 6):
+            self.file(cid, k, REFUTE if k in refuters else CONCEDE)
         self.ok("verify", cid)
-        concede = {"type": "answer", "round": 1, "words": "Fair, it doesn't cover three players",
-                   "replies": [{"judge": 1, "index": 1, "kind": "concede", "words": "Fair point"}]}
+        concede = answer(refuters, kind="concede", words="Fair, it doesn't cover three players")
         self.ok("add", cid, self.write("answer.json", concede), "--as", "user")
         self.ok("verify", cid)
         return cid
@@ -182,20 +209,31 @@ class ChallengeTest(unittest.TestCase):
             self.file(cid, k)
         out = self.ok("verify", cid)
         self.assertIn("Case passes; 0 refutation(s) standing", out)
-        self.assertEqual(self.status(cid)["state"], "introduced")  # no separate vote: the concessions are the votes
+        # No separate vote: the concessions are the settled positions. The opinion of the court is next.
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["next"]), ("drafting", ["judge-1"]))
+        self.assertIn("writes the Opinion of the Court", self.ok("status", cid))
+        self.draft(cid)
+        self.assertEqual(self.status(cid)["state"], "joining")
+        for k in range(1, 5):
+            self.respond(cid, k)
+        self.assertEqual(self.status(cid)["state"], "joining")
+        self.respond(cid, 5)
+        self.assertEqual(self.status(cid)["state"], "introduced")
         self.assertIn("traces", self.ok("trace", cid))
         log = self.git_log()
         self.assertIn(f"{cid}: Open a challenge", log)
         self.assertIn('Decided-by: user ("Yes, that\'s my case")', log)
         self.assertIn("Decided-by: panel", log)
 
-    def test_a_vote_introduces_the_rule_when_all_five_are_convinced(self):
+    def test_a_vote_settles_the_judge_who_refuted_and_then_the_opinion_is_drafted(self):
         cid = self.to_voting()
-        self.assertEqual(self.status(cid)["state"], "voting")
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["next"]), ("voting", ["judge-1"]))  # the four concessions already count
         self.assertIn("The judges settle", self.ok("status", cid))
-        for k in range(1, 6):
-            self.vote(cid, k)
-        self.assertEqual(self.status(cid)["state"], "introduced")
+        self.assertIn("has already settled", self.refused("add", cid, self.write("v.json", VOTE), "--as", "judge-2"))
+        self.vote(cid, 1)
+        self.assertEqual(self.status(cid)["state"], "drafting")
 
     def test_the_brief_pins_its_sources(self):
         cid = self.open_briefed()
@@ -237,7 +275,7 @@ class ChallengeTest(unittest.TestCase):
     def test_conceding_a_refutation_sends_the_case_to_the_judges_to_settle(self):
         cid = self.to_conceded()
         self.assertEqual(self.status(cid)["state"], "voting")  # nothing closes the case for the judges
-        for k in range(1, 6):
+        for k in (1, 2, 3):
             self.vote(cid, k, convinced=False)
         state = self.status(cid)
         self.assertEqual(state["state"], "refuted")
@@ -290,7 +328,7 @@ class ChallengeTest(unittest.TestCase):
 
     def test_a_judge_cannot_vote_during_an_attack(self):
         cid = self.to_attack()
-        self.assertIn("each judge files refutations or concedes",
+        self.assertIn("each convened judge files refutations or concedes",
                       self.refused("add", cid, self.write("vote.json", VOTE), "--as", "judge-1"))
 
     def test_a_source_that_changed_fails_the_verifier(self):
@@ -366,6 +404,13 @@ class ChallengeTest(unittest.TestCase):
         self.assertEqual(rule["stipulations"], [])
         self.assertEqual(len(rule["verifier_report_sha256"]), 64)
         self.assertEqual(rule["rule"], case()["rule"])
+        opinion = rule["opinion"]
+        self.assertEqual((opinion["author"], opinion["revision"], opinion["holding"]), (1, 0, case()["rule"]))
+        self.assertEqual([j["judge"] for j in opinion["joined"]], [1, 2, 3, 4, 5])
+        self.assertTrue(all(j["reason"] and j["evidence"] for j in opinion["joined"]))
+        self.assertEqual((opinion["concurrences"], opinion["dissents"]), ([], []))
+        self.assertEqual(opinion["steps"][0]["source"]["doc"], "cr")
+        self.assertEqual(len(opinion["steps"][0]["source"]["text_sha256"]), 64)  # the opinion's sources are pinned
         self.assertIn("Decided-by: panel", self.git_log())
         self.assertIn("the rule file matches its final event", self.ok("trace", cid))
 
@@ -401,13 +446,16 @@ class ChallengeTest(unittest.TestCase):
                              text=True, encoding="utf-8").stdout
         self.assertIn(f'id="{cid}" kind="rule" level="5" state="current"', out)
         self.assertIn("<rule>The player who lost game 1", out)
+        self.assertIn('<opinion author="1" revision="0">', out)
+        self.assertIn("<holding>The player who lost game 1", out)
+        self.assertIn("introduced by an opinion of the court that all five judges joined", out)
         self.assertIn(f"challenge.py trace {cid}", out)
         self.assertIn(cid, subprocess.run([*judge_py, "search", "--rule", "103.1a"], env=self.env, capture_output=True,
                                           text=True, encoding="utf-8").stdout)
 
     def test_a_refuted_challenge_can_be_kept_as_a_house_rule(self):
         cid = self.to_conceded()
-        for k in range(1, 6):
+        for k in (1, 2, 3):
             self.vote(cid, k, convinced=False)
         self.assertEqual(self.status(cid)["state"], "refuted")
         self.assertFalse((self.home / "rules" / f"{cid}.json").exists())
@@ -419,9 +467,9 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn("traces", self.ok("trace", cid))  # trace accepts a house rule's rule file
 
     def test_an_open_challenge_can_be_kept_as_a_house_rule_too(self):
-        cid = self.to_voting()
-        for k in range(1, 6):
-            self.vote(cid, k, convinced=k > 3)  # three not convinced, nothing standing: unproven
+        cid = self.to_voting(refuters=(1, 2, 3))
+        for k in (1, 2, 3):
+            self.vote(cid, k, convinced=False)  # three not convinced, nothing standing: unproven
         self.assertEqual(self.status(cid)["state"], "open")
         self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "At our table, yes"}), "--as", "user")
         self.assertEqual(self.status(cid)["state"], "house-rule")
@@ -430,22 +478,39 @@ class ChallengeTest(unittest.TestCase):
     # --- consensus: the thresholds, the split, evidence, stipulations -----------------------
 
     def test_three_not_convinced_refuse_the_case_as_unproven(self):
-        cid = self.to_voting()
-        for k in range(1, 6):
-            self.vote(cid, k, convinced=k > 3)
+        cid = self.to_voting(refuters=(1, 2, 3))
+        for k in (1, 2, 3):
+            self.vote(cid, k, convinced=False)
         state = self.status(cid)
         self.assertEqual(state["state"], "open")
         self.assertIn("3 of 5 judges were not convinced and no refutation stands", state["why"])
 
+    def test_a_refused_case_leaves_a_per_curiam_record_assembled_from_the_judges_positions(self):
+        cid = self.to_conceded()
+        for k in (1, 2, 3):
+            self.vote(cid, k, convinced=False)
+        path = self.home / "challenges" / cid / "record" / "per-curiam.json"
+        record = json.loads(path.read_text(encoding="utf-8"))
+        self.assertEqual((record["outcome"], record["final_hash"]), ("refuted", self.status(cid)["head"]))
+        self.assertEqual([(p["judge"], p["convinced"]) for p in record["positions"]],
+                         [(1, False), (2, False), (3, False), (4, True), (5, True)])
+        self.assertTrue(all(p["reason"] and p["evidence"] for p in record["positions"]))
+        self.assertTrue(record["text"].startswith("Per curiam. The court refused the rule"))
+        self.assertIn("Not convinced (3)", record["text"])
+        self.assertIn("CR 103.1", record["text"])
+        self.assertIn("record/per-curiam.json", self.ok("status", cid))
+        self.assertIn("Per curiam record", self.git_log())
+        self.assertIn("traces", self.ok("trace", cid))  # the record folder isn't an event
+
     def test_a_split_calls_another_round_until_the_limit(self):
         cid = self.to_voting()
-        for k in range(1, 6):
-            self.vote(cid, k, convinced=k != 5)  # one dissenter: no consensus
+        self.vote(cid, 1, convinced=False)  # one dissenter: no consensus
         state = self.status(cid)
         self.assertEqual((state["state"], state["round"]), ("attack", 2))
+        self.assertEqual(state["convened"], [1, 2, 3, 4, 5])
         # The dissenter's reasoning is visible to the judges in the next round.
-        seen = json.loads(self.ok("show", cid, "--judge", "1"))
-        self.assertIn("vote", [e["type"] for e in seen if e["actor"] == "judge-5"])
+        seen = json.loads(self.ok("show", cid, "--judge", "2"))
+        self.assertIn("vote", [e["type"] for e in seen if e["actor"] == "judge-1"])
 
     def test_a_position_needs_evidence(self):
         cid = self.to_voting()
@@ -469,9 +534,19 @@ class ChallengeTest(unittest.TestCase):
             self.file(cid, k)
         out = self.ok("verify", cid)
         self.assertIn("Case passes", out)
+        self.assertEqual(self.status(cid)["state"], "drafting")
+        # The opinion must state the rule's stipulation, and no other.
+        none = {**OPINION}
+        self.assertIn("leaves out the stipulation", self.refused("add", cid, self.write("o.json", none), "--as", "judge-1"))
+        extra = {**OPINION, "steps": [*self.stip_case()["steps"], step(3, ["F1"], None, stipulation=True)]}
+        self.assertIn("which the case doesn't", self.refused("add", cid, self.write("o.json", extra), "--as", "judge-1"))
+        self.draft(cid, {**OPINION, "steps": self.stip_case()["steps"]})
+        for k in range(1, 6):
+            self.respond(cid, k)
         self.assertEqual(self.status(cid)["state"], "introduced")
         rule = json.loads((self.home / "rules" / f"{cid}.json").read_text(encoding="utf-8"))
         self.assertEqual(rule["stipulations"], ["conclusion 2"])
+        self.assertEqual(rule["opinion"]["stipulations"], ["conclusion 2"])
         judge_py = [sys.executable, str(CHALLENGE.parent / "judge.py")]
         shown = subprocess.run([*judge_py, "show", cid, "--agent"], env=self.env, capture_output=True, text=True,
                                encoding="utf-8").stdout
@@ -589,12 +664,149 @@ class ChallengeTest(unittest.TestCase):
         self.file(cid, 5)
         self.assertIn(f"challenge.py verify {cid}", self.ok("status", cid))
         self.ok("verify", cid)
-        self.assertIn(f"{cid}  introduced", self.ok("list"))
+        self.assertIn(f"{cid}  drafting; next: judge-1", self.ok("list"))
+        self.assertIn(f"challenge.py add {cid} opinion.json --as judge-<k>", self.ok("status", cid))
 
     def test_status_names_the_judges_still_to_settle(self):
         cid = self.to_voting()
         self.assertIn("The judges settle", self.ok("status", cid))
         self.assertIn(f"{cid}  voting; next: judge-1", self.ok("list"))
+
+    # --- the opinion of the court -------------------------------------------------------------
+
+    def test_only_the_lowest_numbered_convinced_judge_drafts(self):
+        cid = self.settle()
+        out = self.refused("add", cid, self.write("o.json", OPINION), "--as", "judge-2")
+        self.assertIn("judge 1, the lowest-numbered convinced judge, writes the opinion", out)
+        self.assertIn("only a judge writes", self.refused("add", cid, self.write("o.json", OPINION), "--as", "user"))
+
+    def test_the_opinion_must_state_the_cases_rule_with_sourced_steps(self):
+        cid = self.settle()
+        self.assertIn("the holding must be the case's rule", self.refused(
+            "add", cid, self.write("o.json", {**OPINION, "holding": "The youngest player always goes first"}), "--as", "judge-1"))
+        self.assertIn("an assumption can't support a rule", self.refused(
+            "add", cid, self.write("o.json", {**OPINION, "steps": [step(1, ["F1"], None, assumption=True)]}), "--as", "judge-1"))
+        forged = {**OPINION, "steps": [step(1, ["F1"], source("103.1", "the youngest player always goes first"))]}
+        self.assertIn("the quote isn't in CR 103.1", self.refused("add", cid, self.write("o.json", forged), "--as", "judge-1"))
+        self.assertIn("revision 0", self.refused("add", cid, self.write("o.json", {**OPINION, "revision": 1}), "--as", "judge-1"))
+        self.assertEqual(self.status(cid)["state"], "drafting")
+
+    def test_a_response_is_a_position_with_reasoning_and_evidence(self):
+        cid = self.settle()
+        self.draft(cid)
+        no_reason = {"type": "respond", "revision": 0, "stance": "join", "reason": "", "evidence": EVIDENCE}
+        self.assertIn("a response needs its reasoning", self.refused("add", cid, self.write("r.json", no_reason), "--as", "judge-2"))
+        no_evidence = {"type": "respond", "revision": 0, "stance": "join", "reason": "fine"}
+        self.assertIn("a response needs evidence", self.refused("add", cid, self.write("r.json", no_evidence), "--as", "judge-2"))
+        forged = response(evidence=[source("103.1", "the youngest player always goes first")])
+        self.assertIn("the quote isn't in CR 103.1", self.refused("add", cid, self.write("r.json", forged), "--as", "judge-2"))
+        self.assertIn("unknown stance", self.refused("add", cid, self.write("r.json", response("abstain")), "--as", "judge-2"))
+        self.assertIn("revision 0", self.refused("add", cid, self.write("r.json", response(revision=1)), "--as", "judge-2"))
+        self.respond(cid, 2)
+        self.assertIn("has already answered", self.refused("add", cid, self.write("r.json", response()), "--as", "judge-2"))
+
+    def test_a_concurrence_is_not_a_join_so_the_author_revises(self):
+        cid = self.settle()
+        self.draft(cid)
+        for k, stance in ((1, "join"), (2, "join"), (3, "concur"), (4, "join"), (5, "join")):
+            self.respond(cid, k, stance)
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["revision"], state["next"]), ("drafting", 1, ["judge-1"]))
+        # The author sees every response to the first draft.
+        seen = json.loads(self.ok("show", cid, "--judge", "1"))
+        self.assertEqual(len([e for e in seen if e["type"] == "respond"]), 5)
+        revised = {**OPINION, "revision": 1, "steps": [step(1, ["F1"], source("103.1a")), step(2, ["F1", "S1"], source("103.1"))]}
+        self.draft(cid, revised)
+        for k in range(1, 6):
+            self.respond(cid, k, revision=1)
+        self.assertEqual(self.status(cid)["state"], "introduced")
+        rule = json.loads((self.home / "rules" / f"{cid}.json").read_text(encoding="utf-8"))
+        opinion = rule["opinion"]
+        self.assertEqual((opinion["revision"], opinion["revisions"], len(opinion["steps"])), (1, 1, 2))
+        self.assertEqual([j["judge"] for j in opinion["joined"]], [1, 2, 3, 4, 5])
+        self.assertEqual([(c["judge"], c["revision"]) for c in opinion["concurrences"]], [(3, 0)])
+        self.assertIn("traces", self.ok("trace", cid))
+
+    def test_a_dissent_sends_the_draft_back_and_three_dissents_refuse_the_case(self):
+        cid = self.settle()
+        self.draft(cid)
+        for k, stance in ((1, "join"), (2, "dissent"), (3, "dissent"), (4, "dissent"), (5, "join")):
+            self.respond(cid, k, stance)
+        state = self.status(cid)
+        self.assertEqual(state["state"], "open")
+        self.assertIn("3 of 5 judges dissented from the opinion", state["why"])
+        self.assertFalse((self.home / "rules" / f"{cid}.json").exists())
+        record = json.loads((self.home / "challenges" / cid / "record" / "per-curiam.json").read_text(encoding="utf-8"))
+        self.assertEqual([p["how"] for p in record["positions"] if not p["convinced"]], ["dissent"] * 3)
+        self.assertIn("Not convinced (3)", record["text"])
+        self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "We play it this way"}), "--as", "user")
+        self.assertEqual(self.status(cid)["state"], "house-rule")
+
+    def test_two_revisions_without_five_joins_leave_the_case_open(self):
+        cid = self.settle()
+        self.draft(cid)
+        for revision in range(3):
+            if revision:
+                self.draft(cid, {**OPINION, "revision": revision})
+            for k in range(1, 6):
+                self.respond(cid, k, "concur" if k == 5 else "join", revision)
+        state = self.status(cid)
+        self.assertEqual(state["state"], "open")
+        self.assertIn("after 2 revisions", state["why"])
+        self.assertFalse((self.home / "rules" / f"{cid}.json").exists())
+        self.assertTrue((self.home / "challenges" / cid / "record" / "per-curiam.json").exists())
+        self.assertIn("the challenge is open", self.refused("add", cid, self.write("o.json", {**OPINION, "revision": 3}),
+                                                           "--as", "judge-1"))
+
+    def test_responses_are_hidden_from_the_other_judges_until_all_have_answered(self):
+        cid = self.settle()
+        self.draft(cid)
+        self.respond(cid, 1)
+        self.respond(cid, 2, "dissent")
+        seen = json.loads(self.ok("show", cid, "--judge", "5"))
+        self.assertIn("opinion", [e["type"] for e in seen])  # the draft is for all to read
+        self.assertEqual([e["type"] for e in seen if e["type"] == "respond"], [])
+        seen = json.loads(self.ok("show", cid, "--judge", "2"))
+        self.assertEqual([e["actor"] for e in seen if e["type"] == "respond"], ["judge-2"])
+
+    # --- targeted rounds ---------------------------------------------------------------------
+
+    def test_a_revision_convenes_only_the_judges_whose_refutation_it_answered(self):
+        cid = self.to_attack()
+        self.assertEqual(self.status(cid)["convened"], [1, 2, 3, 4, 5])
+        self.file(cid, 1, REFUTE)
+        for k in range(2, 6):
+            self.file(cid, k)
+        self.ok("verify", cid)
+        revised = case()
+        revised["steps"][0]["conclusion"] = "In a match of several games, the loser of the previous game chooses"
+        fix = answer(kind="fix", case=revised, words="I've reworded step 1")
+        self.ok("add", cid, self.write("answer.json", fix), "--as", "user")
+        self.ok("verify", cid)
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["round"], state["convened"], state["next"]),
+                         ("attack", 2, [1], ["judge-1"]))
+        self.assertIn("isn't convened in round 2", self.refused("add", cid, self.write("f.json", {**CONCEDE, "round": 2}),
+                                                                 "--as", "judge-2"))
+        self.assertIn("only the judges whose refutation it answered are convened", self.ok("status", cid))
+        # Judge 1 concedes the revised case. Judges 2 to 5 last looked before the revision, so they must look
+        # again: a concession on the older case is not their position on this one.
+        self.file(cid, 1, {**CONCEDE, "round": 2})
+        self.ok("verify", cid)
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["voted"], state["next"]),
+                         ("voting", [1], ["judge-2", "judge-3", "judge-4", "judge-5"]))
+        self.assertIn("has already settled", self.refused("add", cid, self.write("v.json", VOTE), "--as", "judge-1"))
+        for k in (2, 3, 4, 5):
+            self.vote(cid, k)
+        self.assertEqual(self.status(cid)["state"], "drafting")
+        # The settled positions in the rule are the judges' last ones: judge 1's concession, the others' votes.
+        self.draft(cid)
+        for k in range(1, 6):
+            self.respond(cid, k)
+        rule = json.loads((self.home / "rules" / f"{cid}.json").read_text(encoding="utf-8"))
+        self.assertEqual([(v["judge"], v["how"]) for v in rule["votes"]],
+                         [(1, "filing"), (2, "vote"), (3, "vote"), (4, "vote"), (5, "vote")])
 
     # --- the binary --------------------------------------------------------------------------
 
