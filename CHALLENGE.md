@@ -92,6 +92,11 @@ The case and every refutation and rebuttal have the same shape. `challenge.py` p
 python scripts/challenge.py open --statement "<the user's case, as they said it>"
 ```
 
+**Say what a challenge costs before you open one, and wait for a yes.** It runs a clerk and five judges as
+separate agents, and each further round adds judges. Typically 0.5 to 2 million tokens (a few dollars), which
+is 7 to 30 times an ordinary answer at about 75,000. A case the official sources already settle is cheaper to
+answer the ordinary way.
+
 On claude.ai, or anywhere you can't launch independent subagents, add `--panel single-agent` and tell the user
 up front that a single-agent panel **can refute a case but can never introduce a rule**. It can be reopened
 later with an independent panel.
