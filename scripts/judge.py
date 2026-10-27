@@ -480,7 +480,7 @@ def render_rule(r: dict) -> str:
         f"<step {attrs(n=st['id'], premises=' '.join(st.get('premises', [])), doc=(st.get('source') or {}).get('doc'), ref=(st.get('source') or {}).get('ref'))}>"
         f"{escape((st.get('source') or {}).get('excerpt', ''))} → {escape(st.get('conclusion', ''))}</step>" for st in r.get("steps", [])) + "</steps>")
     how = ("kept as a house rule after its challenge was refuted" if r.get("house_rule")
-           else "introduced by a unanimous panel of seven judges")
+           else "introduced by a unanimous panel of five judges")
     out.append(f"  <provenance>{escape(how)}; python scripts/challenge.py trace {escape(r['challenge'])}</provenance>")
     out.append("</ruling>")
     return "\n".join(out)

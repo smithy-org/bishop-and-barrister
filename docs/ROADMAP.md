@@ -37,14 +37,14 @@ In order; each phase is one pull request or more.
 ## To build (plan 029: challenges)
 
 The design is [plan 029](plans/029-challenges.md): nothing the skill answers enters the record; a rule gets in
-only through a challenge that seven adversarial judges all accept. In order; one pull request each.
+only through a challenge that five adversarial judges all accept. In order; one pull request each.
 
 | Phase | Ships | Waits on |
 | ----- | ----- | -------- |
 | 1 | Merged 2026-10-26 (#6): plan 029 | Done |
 | 2 | The Lean 4 core in `challenge/`: the challenge and rule state machines, `replay`, guards, fork detection, what each judge may see, structural derivation checks, the six theorems proved; the `bab-challenge` CLI; release binaries for five platforms. Merged 2026-10-26 (#7) | Done |
 | 3 | `scripts/challenge.py`: the event store, the pinned binary download, `open/brief/confirm/add/verify/status/show/list/withdraw/trace`; sync status as one field in `judge.py`. Merged 2026-10-26 (#8), without the sync status, which belongs to the experimental sync in #5 | Done |
-| 4 | `CHALLENGE.md`: the clerk and seven judge prompts, rounds, blind voting, unanimity, the single-agent marking. Merged 2026-10-26 (#9) | Done |
+| 4 | `CHALLENGE.md`: the clerk and five judge prompts, rounds, blind voting, unanimity, the single-agent marking. Merged 2026-10-26 (#9) | Done |
 | 5 | `record`/`review` retired with migration; introduced rules in `rules/challenge-<id>.json`; the `rule` kind in search, index and recheck (and in sync, which is experimental); SKILL.md pointer. Merged 2026-10-26 (#10) | Done |
 | 6 | The challenge eval set (10 cases, `evals/challenges/`) against a single agent and a three-answer majority vote. Built in #11; not yet run | A release with binaries, and the decision to spend the tokens |
 

@@ -36,7 +36,7 @@ Official Wizards rulings (`kind="official"`, level 1) come first, then rules the
 (`kind="rule"`, level 5), house rules, and Scryfall's notes.
 
 - **An official ruling that fits** can be the answer, but still check the cards and the rules it cites.
-- **A rule** (`kind="rule"`) won a challenge before seven adversarial judges. It fits only if every
+- **A rule** (`kind="rule"`) won a challenge before five adversarial judges. It fits only if every
   `applies_when` fact holds; it never overrides level 1 text.
 - **`sources_changed="true"`:** a cited rule or Oracle text changed since. Treat it as no match.
 - **`house_rule="true"`:** the user's own departure from the rules. Give the official answer and mention it.

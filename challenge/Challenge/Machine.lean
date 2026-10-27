@@ -6,7 +6,7 @@ import Challenge.Check
 Every challenge is in exactly one `Phase`. Two guarantees are carried by the types themselves, so no code path
 can break them:
 
-* `Phase.introduced` holds an `Earned`, which can only be built from seven convinced votes, a passing verifier
+* `Phase.introduced` holds an `Earned`, which can only be built from five convinced votes, a passing verifier
   report with no level 1 conflict, a case with no unsupported step, and an independent panel.
 * `Phase.attack` and `Phase.voting` hold a proof that some judge has yet to act; the round advances the moment
   the last one does.
@@ -116,14 +116,14 @@ def withdrawBy (s : State) (x : Entry) (words : String) : Except String State :=
   if x.actor = Actor.user ∧ words ≠ "" then .ok { s with phase := .withdrawn }
   else .error "only the user withdraws a challenge, in their own words"
 
-/-- The verdict once all seven have voted. -/
+/-- The verdict once all five have voted. -/
 def close (c : Case) (r : Report) (vs : List Vote) (full : missingVoters vs = []) (p : Panel) : Phase :=
   if hc : vs.all (fun v => v.convinced) = true then
     if hp : r.passed = true then
       if hn : r.level1Conflict = false then
         if hs : c.steps.all (fun st => st.source.isSome) = true then
           if hi : p = Panel.independent then .introduced ⟨c, r, vs, p, full, hc, hp, hn, hs, hi⟩
-          else .open_ c "all seven were convinced, but by a single-agent panel: only an independent panel can introduce a rule"
+          else .open_ c "all five were convinced, but by a single-agent panel: only an independent panel can introduce a rule"
         else .refuted c "the case relies on an assumption"
       else .refuted c "the case contradicts a level 1 source"
     else .refuted c "the final case didn't pass the verifier"

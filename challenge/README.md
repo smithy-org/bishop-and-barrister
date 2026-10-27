@@ -21,7 +21,7 @@ Users don't need Lean: the binary is downloaded from the release, checked agains
 
 ## The guarantees
 
-1. **No unearned rule.** `Phase.introduced` holds an `Earned`, which can only be built from seven convinced
+1. **No unearned rule.** `Phase.introduced` holds an `Earned`, which can only be built from five convinced
    votes, a passing verifier report, no level 1 conflict, no unsupported step and an independent panel.
 2. **Determinism.** `replay` gives the same result for any order of the same events (`determinism`).
 3. **Terminal states are final.** No event leaves `introduced`, `withdrawn` or `house-rule`; `refuted` leaves

@@ -528,7 +528,7 @@ NEXT = {
     "draft": "The clerk writes the brief in the proof standard: challenge.py brief {id} case.json",
     "briefed": "The user confirms the brief (challenge.py confirm {id} --user-said ...) or corrects it (edit)",
     "attack": "Round {round}: {waiting} still to file. Each judge files refutations or concedes (challenge.py add {id} filing.json "
-              "--as judge-<k>). They can't see each other's filings until all seven have filed",
+              "--as judge-<k>). They can't see each other's filings until all five have filed",
     "verify": "The verifier checks round {round}'s refutations: challenge.py verify {id}",
     "answer": "The user answers each verified refutation still standing ({standing}): concede, fix the case, or "
               "rebut (challenge.py add {id} answer.json --as user)",
