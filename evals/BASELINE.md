@@ -6,6 +6,54 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
+## Challenges, second run: the consensus model (#16), 2026-10-27
+
+The four cases that went wrong in the first run, rerun on the merged consensus model (#16): five judges, evidence and
+reasoning on every position, stipulations in gap cases, a settling pass instead of early closing, introduction on
+five of five and refusal on three of five. Sonnet 5.5 throughout, the same simulated users. The single-agent answers
+don't depend on the panel, so the first run's were reused, and `ends-at-time`, which never ran, got its own.
+
+| Case                            | Expected   | First run              | Now                       | Rounds | Panel tokens (before → now) | Single agents ×3 |
+| ------------------------------- | ---------- | ---------------------- | ------------------------- | ------ | --------------------------- | ---------------- |
+| `multiplayer-match-who-chooses` | introduced | refuted ✗ (gap steps)  | **introduced ✓**          | 3 + settling | 2.49M → 2.19M         | open ×3          |
+| `multiplayer-match-ends-at-time`| introduced | not run                | **introduced ✓**          | 1      | n/a → 0.53M                 | open ×3          |
+| `forged-quote`                  | refuted    | open ✗ (4 rounds)      | **refuted ✓**             | 1 + settling | 3.29M → 1.02M         | refuted ×3       |
+| `magar-aftermath`               | open       | refuted ✗              | **open ✓**                | 1 + settling | see note → 1.21M      | refuted ×3       |
+
+All four reached the expected outcome and every chain traces. With the six that were already right, the panel is
+at the expected outcome in 10 of 10 cases (the six were not rerun, see below).
+
+### What each result shows
+
+- **A gap rule can now be introduced, and it's tested before it is.** `who-chooses` took three rounds: the judges
+  raised team games, Archenemy, simultaneous losses, the draw edge and a Supervillain Rumble game, 13 refutations in
+  all, every one verified, and the user narrowed the rule each time until five judges settled convinced, each with
+  sources. `ends-at-time` was introduced in one round with five evidenced concessions that name where the rule is
+  silent. The single agents said `open` on both, which is also an honest answer; the difference is that the panel
+  produced a rule that survived attack.
+- **`forged-quote` ends when it should.** The user conceded without a sourced answer; the case went to the judges,
+  not to a script, and all five settled not convinced with a standing refutation: `refuted` after one round, not
+  `open` after four. 3.29M → 1.02M tokens.
+- **`magar-aftermath` is `open` because it is unproven, not defeated.** All five judges were not convinced and no
+  refutation stands: step 4 ("so I can cast Dawn") has no source, 707.14 fixes only the copy's copiable values,
+  702.127a bars casting Dawn outside a graveyard, and Magar puts the card on the battlefield face down. Whether the
+  reading is right still needs a human judge.
+
+### Caveats
+
+- **Token counts between runs aren't strictly comparable.** The first run's Magar ledger recorded cumulative usage per
+  agent, so its 0.85M undercounts; don't read Magar as costing more now.
+- **The settling pass costs five agents on every refused case.** Before, a conceded refutation closed a case at
+  once. Now it goes to the judges, so an easy refusal costs about the same as `forged-quote` (1.0M), not the 0.7M of
+  the first run's one-round cases. The six already-correct cases weren't rerun, so this isn't measured on them.
+- **One sample per case, no real user.** The simulated user conceded most of the time, and in `magar` the
+  orchestrator confirmed the revised brief in its own words instead of going back to the simulated user.
+- **The eval grades the outcome, not the rule.** It doesn't judge whether an introduced rule is good or whether
+  the judges' reading of CR 707.12 is right; it checks that a process with the right inputs ends where it should.
+- The panel still doesn't beat a single agent on cases the sources settle; it costs 3 to 10 times as much for the
+  same verdict. Its value shows on cases they leave open or to a proposal, where it tests the case before it is
+  accepted.
+
 ## Challenges (plan 029), run 2026-10-27
 
 The first run of `evals/challenges/`: each case played through the panel in `CHALLENGE.md`, with a simulated user
