@@ -1,7 +1,7 @@
 # Roadmap
 
 Everything planned for Bishop & Barrister that is not done yet, grouped by what it waits on. The design behind
-most of it is [plan 028](plans/028-rules-library-and-judge.md). Last updated 2026-10-25.
+most of it is [plan 028](plans/028-rules-library-and-judge.md). Last updated 2026-10-26.
 
 ## Done
 
@@ -34,6 +34,20 @@ In order; each phase is one pull request or more.
 | 4     | Two storage modes: local only (the default), or local plus a remote RustFS store. The local record stays the working copy; the remote is a synced copy, never read live. Sync goes through a RustFS endpoint the user configures, local or remote (the skill ships no server or default; 1.0.4 or later; HTTPS for anything not local; the bucket checked to be private): (a) `judge.py sync --setup`, then `judge.py sync` with one git bundle per device, merged, never rebased; `config.json` gitignored, keys from the environment; S3 signed with the standard library. (b) Every CR, MTR, IPG and JAR release kept in the object store by hash, and citations record the release they used. (c) Objects synced by hash. Tested against a local RustFS container. The bucket stays private: a public one would republish Scryfall's and Wizards' files | Nothing |
 | 5     | The release: the tip link, a version tag, install notes for Claude Code and claude.ai                                                                                                                                                                                                                                                                                                                                                                                     | The tip link above                  |
 
+## To build (plan 029: challenges)
+
+The design is [plan 029](plans/029-challenges.md): nothing the skill answers enters the record; a rule gets in
+only through a challenge that seven adversarial judges all accept. In order; one pull request each.
+
+| Phase | Ships | Waits on |
+| ----- | ----- | -------- |
+| 1 | Plan 029, for review | The maintainer's review |
+| 2 | The Lean 4 core in `challenge/`: the challenge and rule state machines, `replay`, guards, fork detection, what each judge may see, structural derivation checks, the six theorems proved; the `bab-challenge` CLI; release binaries for five platforms | Phase 1 |
+| 3 | `scripts/challenge.py`: the event store, the pinned binary download, `open/brief/confirm/add/verify/status/show/list/withdraw/trace`; sync status as one field in `judge.py` | Phase 2 |
+| 4 | `CHALLENGE.md`: the clerk and seven judge prompts, rounds, blind voting, unanimity, the single-agent marking | Phase 3 |
+| 5 | `record`/`review` retired with migration; introduced rules in `rules/challenge-<id>.json`; the `rule` kind in search, index, recheck and sync; SKILL.md pointer | Phase 4 |
+| 6 | The challenge eval set (about 10 cases) against a single agent and a three-answer majority vote | Phase 5 |
+
 ## To check before building
 
 Facts the plan relies on that were not confirmed on 2026-10-25.
@@ -54,5 +68,6 @@ Facts the plan relies on that were not confirmed on 2026-10-25.
 ## Later (ideas, not planned)
 
 - A public website where rulings are challenged and settled socially, reopening a settled ruling once enough
-  challenges pile up. See plan 028's "Later" section for what it would need first.
+  challenges pile up. See plan 028's "Later" section for what it would need first; it would build on plan 029's
+  challenges.
 - Search by meaning (`sqlite-vec`), only if the evals show the index missing paraphrased questions.
