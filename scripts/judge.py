@@ -39,21 +39,14 @@ from pathlib import Path
 from xml.sax.saxutils import escape, quoteattr
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import paths  # noqa: E402  (where the user's data lives)
 import card as scryfall  # noqa: E402  (the skill's Scryfall client, card.py)
 import lookup  # noqa: E402  (the skill's own CR reader)
 import s3  # noqa: E402  (the optional remote store's client)
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
-HOME = lookup.HOME
-CR_FILE = Path(os.environ.get("BISHOP_AND_BARRISTER_CR") or lookup.RULES_FILE)
-CR_VERSION = CR_FILE.parent / "version.json"
 OFFLINE = os.environ.get("BISHOP_AND_BARRISTER_OFFLINE") == "1"
 
-RULINGS_DIR = HOME / "rulings"
-DELIBERATION_DIR = HOME / "deliberation"
-OBJECTS_DIR = HOME / "objects"
-MANIFEST = HOME / "sources" / "manifest.json"
-INDEX = HOME / "index.sqlite"
 
 API = scryfall.API
 
@@ -62,7 +55,6 @@ CONFIDENCE = {"certain", "likely", "unsure"}
 # Search order: official Wizards rulings, then rules introduced by challenge, then the user's house rules
 # (from before challenges), then Scryfall's own rulings (level 4).
 RANK = {("official", 1): 0, ("rule", 5): 1, ("reviewed", 5): 2, ("official", 4): 3}
-RULES_DIR = HOME / "rules"
 
 
 def now() -> str:
@@ -105,12 +97,12 @@ def git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
     Raises:
         subprocess.CalledProcessError: When git fails and check is set.
     """
-    return subprocess.run(["git", "-C", str(HOME), *args], capture_output=True, text=True, encoding="utf-8", check=check)
+    return subprocess.run(["git", "-C", str(paths.home()), *args], capture_output=True, text=True, encoding="utf-8", check=check)
 
 
 # Kept out of the record: the object store (synced by hash, not git), the rebuildable index, the sync
 # settings, which name the user's own endpoint and must never be committed or uploaded, and the downloaded
-# rules documents (lookup.DATA_DIR), which are Wizards' material and each device downloads its own.
+# rules documents (paths.documents()), which are Wizards' material and each device downloads its own.
 IGNORED = ("objects/", "index.sqlite", "config.json", "documents/")
 
 
@@ -119,15 +111,15 @@ def ensure_home() -> None:
 
     A record made before a pattern joined IGNORED gets that pattern added to its .gitignore.
     """
-    for d in (RULINGS_DIR, DELIBERATION_DIR, OBJECTS_DIR, MANIFEST.parent):
+    for d in (paths.rulings(), paths.deliberation(), paths.objects(), paths.manifest().parent):
         d.mkdir(parents=True, exist_ok=True)
-    if not (HOME / ".git").exists():
-        subprocess.run(["git", "init", "-q", str(HOME)], check=True)
-        (HOME / ".gitignore").write_text("".join(f"{p}\n" for p in IGNORED), encoding="utf-8")
-        if not MANIFEST.exists():
-            MANIFEST.write_text(json.dumps({"objects": {}}, indent=2) + "\n", encoding="utf-8")
+    if not (paths.home() / ".git").exists():
+        subprocess.run(["git", "init", "-q", str(paths.home())], check=True)
+        (paths.home() / ".gitignore").write_text("".join(f"{p}\n" for p in IGNORED), encoding="utf-8")
+        if not paths.manifest().exists():
+            paths.manifest().write_text(json.dumps({"objects": {}}, indent=2) + "\n", encoding="utf-8")
         commit("Start the rulings record", drafted_by="judge")
-    ignore = HOME / ".gitignore"
+    ignore = paths.home() / ".gitignore"
     lines = ignore.read_text(encoding="utf-8").splitlines() if ignore.exists() else []
     missing = [p for p in IGNORED if p not in lines]
     if missing:  # a record made before a pattern was added
@@ -169,24 +161,24 @@ def commit(message: str, drafted_by: str | None = None, decided_by: str | None =
     if decided_by:
         trailers.append(f"Decided-by: {decided_by}")
     body = message + ("\n\n" + "\n".join(trailers) if trailers else "")
-    subprocess.run(["git", "-C", str(HOME), "commit", "-q", "-F", "-"], input=body, text=True, encoding="utf-8", check=True)
+    subprocess.run(["git", "-C", str(paths.home()), "commit", "-q", "-F", "-"], input=body, text=True, encoding="utf-8", check=True)
     return True
 
 
 def load_manifest() -> dict:
     """Read sources/manifest.json, which records each object downloaded and which one is current."""
-    return json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {"objects": {}}
+    return json.loads(paths.manifest().read_text(encoding="utf-8")) if paths.manifest().exists() else {"objects": {}}
 
 
 def save_manifest(manifest: dict) -> None:
     """Write sources/manifest.json."""
-    MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    paths.manifest().write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def store_object(data: bytes) -> str:
     """Keep data in objects/<sha256>, outside git, and return its hash."""
     digest = hashlib.sha256(data).hexdigest()
-    path = OBJECTS_DIR / digest
+    path = paths.objects() / digest
     if not path.exists():
         path.write_bytes(data)
     return digest
@@ -255,9 +247,9 @@ def cr_rules() -> dict[str, str]:
     global _RULES
     if _RULES is None:
         lookup.adopt_legacy_documents()
-        if not CR_FILE.exists():
+        if not paths.cr_file().exists():
             die("The Comprehensive Rules aren't downloaded. Run: python scripts/sources.py update")
-        lines = CR_FILE.read_text(encoding="utf-8-sig").splitlines()
+        lines = paths.cr_file().read_text(encoding="utf-8-sig").splitlines()
         _RULES = {}
         for line in lines[lookup.body_start(lines):]:
             m = lookup.RULE_LINE.match(line)
@@ -268,8 +260,8 @@ def cr_rules() -> dict[str, str]:
 
 def cr_effective() -> str | None:
     """Return the downloaded CR's effective date, as update_rules.py recorded it, or None."""
-    if CR_VERSION.exists():
-        return json.loads(CR_VERSION.read_text(encoding="utf-8")).get("effective_date")
+    if paths.cr_version().exists():
+        return json.loads(paths.cr_version().read_text(encoding="utf-8")).get("effective_date")
     return None
 
 
@@ -278,7 +270,7 @@ def cr_effective() -> str | None:
 
 def ruling_path(rid: str) -> Path:
     """Return where a ruling's file lives in the record."""
-    return RULINGS_DIR / f"{rid}.json"
+    return paths.rulings() / f"{rid}.json"
 
 
 def load_ruling(rid: str) -> dict:
@@ -300,7 +292,7 @@ def save_ruling(ruling: dict) -> None:
 
 def load_deliberation(rid: str) -> list[dict]:
     """Read a ruling's deliberation log, one entry per line; empty when it has none."""
-    path = DELIBERATION_DIR / f"{rid}.jsonl"
+    path = paths.deliberation() / f"{rid}.jsonl"
     if not path.exists():
         return []
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -324,7 +316,7 @@ def validate_citation(c: dict, label: str) -> list[str]:
         if c.get("ref") not in cr_rules():
             return [f"{label} cites CR {c.get('ref')}, which doesn't exist in the current CR"]
     elif doc in lookup.DOCS:
-        if not (lookup.DOCS_DIR / f"{doc}.json").exists():
+        if not (paths.docs_dir() / f"{doc}.json").exists():
             return [f"{label} cites the {lookup.DOCS[doc]}, which isn't downloaded (python scripts/sources.py update {doc})"]
         if not lookup.doc_section(doc, str(c.get("ref", ""))):
             return [f"{label} cites {doc.upper()} {c.get('ref')!r}, which doesn't name exactly one section of the current "
@@ -379,7 +371,7 @@ CREATE INDEX IF NOT EXISTS citations_ref ON citations(ref);
 
 def connect() -> sqlite3.Connection:
     """Open the search index, creating its tables if they're missing."""
-    conn = sqlite3.connect(INDEX)
+    conn = sqlite3.connect(paths.index())
     conn.executescript(SCHEMA)
     return conn
 
@@ -447,13 +439,13 @@ def index_rule(conn: sqlite3.Connection, rule: dict) -> None:
 
 def live_rules() -> list[dict]:
     """Return the rules search shows: current, or stale and reopened (flagged as unconfirmed)."""
-    rules = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(RULES_DIR.glob("*.json"))]
+    rules = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(paths.rules().glob("*.json"))]
     return [r for r in rules if r.get("state") in ("current", "stale", "reopened")]
 
 
 def reindex_rules() -> None:
     """Bring the index's rules up to date with rules/, without rebuilding the official rulings."""
-    if not INDEX.exists():
+    if not paths.index().exists():
         return
     conn = connect()
     for table, column in (("rulings", "id"), ("ruling_cards", "ruling_id"), ("citations", "ruling_id"), ("rulings_fts", "id")):
@@ -466,7 +458,7 @@ def reindex_rules() -> None:
 
 def legacy_rulings() -> list[dict]:
     """Return the rulings written by the retired `record` that haven't been migrated: everything but house rules."""
-    rulings = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(RULINGS_DIR.glob("*.json"))]
+    rulings = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(paths.rulings().glob("*.json"))]
     return [r for r in rulings if not (r.get("kind") == "reviewed" and r.get("house_rule"))]
 
 
@@ -518,23 +510,23 @@ def rebuild_index() -> tuple[int, int]:
         (official rulings indexed, the user's house rules and rules indexed).
     """
     names = {}
-    if INDEX.exists():
-        old = sqlite3.connect(INDEX)
+    if paths.index().exists():
+        old = sqlite3.connect(paths.index())
         try:
             names = dict(old.execute("SELECT oracle_id, name FROM card_names"))
         except sqlite3.DatabaseError:
             pass
         old.close()
-        INDEX.unlink()
+        paths.index().unlink()
     conn = connect()
     conn.executemany("INSERT OR REPLACE INTO card_names VALUES (?,?)", names.items())
     official = 0
     current = load_manifest().get("scryfall_rulings")
-    if current and (OBJECTS_DIR / current).exists():
-        official = index_official(conn, (OBJECTS_DIR / current).read_bytes())
+    if current and (paths.objects() / current).exists():
+        official = index_official(conn, (paths.objects() / current).read_bytes())
     user = 0
     # Of the rulings from before challenges, only house rules are still the user's; the rest wait for `migrate`.
-    for path in sorted(RULINGS_DIR.glob("*.json")):
+    for path in sorted(paths.rulings().glob("*.json")):
         r = json.loads(path.read_text(encoding="utf-8"))
         if r.get("kind") == "reviewed" and r.get("house_rule"):
             index_user_ruling(conn, r)
@@ -709,12 +701,12 @@ def cmd_build(args) -> int:
                f"Object {digest[:12]}, {len(data)} bytes. Rulings with source wotc load as level 1, source scryfall as level 4.",
                drafted_by="judge")
     eff = cr_effective()
-    if eff and CR_FILE.exists():
+    if eff and paths.cr_file().exists():
         tag = "cr-" + datetime.strptime(eff, "%B %d, %Y").strftime("%Y-%m-%d")
         if not git("tag", "--list", tag).stdout.strip():
             git("tag", "-a", tag, "-m", f"Rulings as of the Comprehensive Rules effective {eff}")
     official, user = rebuild_index()
-    print(f"Index built: {official} official rulings, {user} of your rulings. Record: {HOME}")
+    print(f"Index built: {official} official rulings, {user} of your rulings. Record: {paths.home()}")
     return 0
 
 
@@ -766,7 +758,7 @@ def cmd_search(args) -> int:
     Raises:
         SystemExit: Via die() when there is no index yet.
     """
-    if not INDEX.exists():
+    if not paths.index().exists():
         die("No index yet. Run: python scripts/judge.py build")
     conn = connect()
     oracle_ids, by_name = set(), set()
@@ -890,12 +882,12 @@ def cmd_migrate(args) -> int:
             cid, _ = challenge.propose(None, "user", {
                 "type": "open", "statement": statement, "panel": "independent",
                 "migrated_from": {"ruling": r, "deliberation": entries}}, f"Open from reviewed ruling {rid}", words=said or None)
-            dest, outcome = HOME / "rulings-migrated", f"now challenge {cid}"
+            dest, outcome = paths.home() / "rulings-migrated", f"now challenge {cid}"
         else:
-            dest, outcome = HOME / "rulings-retired", "set aside (unreviewed)"
+            dest, outcome = paths.home() / "rulings-retired", "set aside (unreviewed)"
         dest.mkdir(exist_ok=True)
         ruling_path(rid).replace(dest / f"{rid}.json")
-        talk = DELIBERATION_DIR / f"{rid}.jsonl"
+        talk = paths.deliberation() / f"{rid}.jsonl"
         if talk.exists():
             talk.replace(dest / f"{rid}.jsonl")
         done.append(f"- {rid}: {outcome}")
@@ -920,14 +912,14 @@ def cmd_show(args) -> int:
     Raises:
         SystemExit: Via die() when no ruling has that id.
     """
-    rule =RULES_DIR / f"{args.id}.json"
+    rule = paths.rules() / f"{args.id}.json"
     if rule.exists():
         r = json.loads(rule.read_text(encoding="utf-8"))
         print(render_agent(r) if args.agent else json.dumps(r, indent=2, ensure_ascii=False))
         return 0
     if ruling_path(args.id).exists():
         r = load_ruling(args.id)
-        conn = connect() if INDEX.exists() else None
+        conn = connect() if paths.index().exists() else None
         if args.agent:
             print(render_agent(r, conn, with_deliberation=args.deliberation))
         else:
@@ -936,7 +928,7 @@ def cmd_show(args) -> int:
                 for e in load_deliberation(r["id"]):
                     print(json.dumps(e, ensure_ascii=False))
         return 0
-    if INDEX.exists():
+    if paths.index().exists():
         conn = connect()
         row = conn.execute("SELECT json, oracle_id, source, level FROM rulings WHERE id = ?", (args.id,)).fetchone()
         if row:
@@ -961,14 +953,14 @@ def cmd_recheck(args) -> int:
     ensure_home()
     rules = cr_rules()
     changed = []
-    for path in sorted(RULINGS_DIR.glob("*.json")):
+    for path in sorted(paths.rulings().glob("*.json")):
         r = json.loads(path.read_text(encoding="utf-8"))
         reasons = []
         for c in r["citations"]:
             doc = c.get("doc", "cr")
             if doc == "cr":
                 text = rules.get(c["ref"])
-            elif doc in lookup.DOCS and (lookup.DOCS_DIR / f"{doc}.json").exists():
+            elif doc in lookup.DOCS and (paths.docs_dir() / f"{doc}.json").exists():
                 # Find the section by its heading first: numbers shift when sections are added.
                 section = (lookup.doc_section(doc, c["heading"]) if c.get("heading") else None) or lookup.doc_section(doc, c["ref"])
                 text = section["text"] if section else None
@@ -994,7 +986,7 @@ def cmd_recheck(args) -> int:
         commit(f"Recheck: {len(changed)} ruling(s) need review\n\n{lines}\n\nAgainst CR {cr_effective() or 'unknown'}.", drafted_by="judge")
         print(f"{len(changed)} ruling(s) marked needs-recheck:\n{lines}")
     reopened = []
-    if any(RULES_DIR.glob("challenge-*.json")):
+    if any(paths.rules().glob("challenge-*.json")):
         import challenge  # noqa: PLC0415  (challenge.py imports this module)
         reopened = challenge.recheck_rules(offline=args.offline or OFFLINE)
         for rid, why, cid in reopened:
@@ -1016,8 +1008,6 @@ def cmd_recheck(args) -> int:
 # merges the other devices' bundles in (never rebases, so commits and their trailers keep one identity) and
 # uploads this device's. No two devices write the same key, so no locking is needed.
 
-CONFIG = HOME / "config.json"
-SYNC_STATE = HOME / ".git" / "bishop-and-barrister-sync.json"  # inside .git, so never committed
 
 
 def load_config() -> dict | None:
@@ -1030,7 +1020,7 @@ def load_config() -> dict | None:
         OSError: When config.json can't be read.
         ValueError: When config.json isn't JSON.
     """
-    cfg = json.loads(CONFIG.read_text(encoding="utf-8")) if CONFIG.exists() else {}
+    cfg = json.loads(paths.config().read_text(encoding="utf-8")) if paths.config().exists() else {}
     for key in ("endpoint", "bucket"):
         if os.environ.get(f"BISHOP_AND_BARRISTER_S3_{key.upper()}"):
             cfg[key] = os.environ[f"BISHOP_AND_BARRISTER_S3_{key.upper()}"]
@@ -1141,9 +1131,9 @@ def sync_setup(args) -> int:
         die(f"Not saved: {endpoint} refused the request ({err}). Check the endpoint, bucket and keys.")
     except OSError as err:
         die(f"Not saved: couldn't reach {endpoint} ({err}).")
-    CONFIG.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+    paths.config().write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
     devices = [o["key"][len("record/"):-len(".bundle")] for o in others if o["key"].endswith(".bundle")]
-    print(f"Saved {CONFIG}: {endpoint}, bucket {args.bucket!r}, this device {cfg['device']!r}.")
+    print(f"Saved {paths.config()}: {endpoint}, bucket {args.bucket!r}, this device {cfg['device']!r}.")
     print(f"The bucket is private. Devices already syncing there: {', '.join(devices) or 'none'}.")
     server = client.server()
     print(f"Server: {server}. Make sure it's RustFS 1.0.4 or later." if server else
@@ -1203,24 +1193,24 @@ def merge_device(device: str, ref: str) -> bool:
             lines = []
             for stage in (":2:.gitignore", ":3:.gitignore"):
                 lines += [l for l in git("show", stage).stdout.splitlines() if l and l not in lines]
-            (HOME / ".gitignore").write_text("".join(f"{l}\n" for l in lines), encoding="utf-8")
+            (paths.home() / ".gitignore").write_text("".join(f"{l}\n" for l in lines), encoding="utf-8")
         git("add", *conflicted)
-        subprocess.run(["git", "-C", str(HOME), "commit", "-q", "--no-edit"], check=True, capture_output=True)
+        subprocess.run(["git", "-C", str(paths.home()), "commit", "-q", "--no-edit"], check=True, capture_output=True)
         return True
     git("merge", "--abort", check=False)
     raise SyncStop(f"Sync stopped: {device} changed the same ruling(s) as this device: {', '.join(conflicted)}. "
-                   f"Nothing was merged or uploaded. Settle it with the user: compare `git -C {HOME} diff HEAD {ref}`, "
+                   f"Nothing was merged or uploaded. Settle it with the user: compare `git -C {paths.home()} diff HEAD {ref}`, "
                    "edit the ruling to the version they choose, then run `judge.py sync` again.")
 
 
 def load_state() -> dict:
     """Read this device's sync state: the bundle ETags it has merged, what it last uploaded, and when it last pulled."""
-    return json.loads(SYNC_STATE.read_text(encoding="utf-8")) if SYNC_STATE.exists() else {"fetched": {}}
+    return json.loads(paths.sync_state().read_text(encoding="utf-8")) if paths.sync_state().exists() else {"fetched": {}}
 
 
 def save_state(state: dict) -> None:
     """Write this device's sync state."""
-    SYNC_STATE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+    paths.sync_state().write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
 def remote_bundles(client: s3.S3) -> dict:
@@ -1365,7 +1355,7 @@ def auto_sync(command: str) -> None:
         cfg = load_config()
     except (OSError, ValueError):
         return
-    if not cfg or cfg.get("auto_sync") is False or not (HOME / ".git").exists():
+    if not cfg or cfg.get("auto_sync") is False or not (paths.home() / ".git").exists():
         return
     state = load_state()
     if command in READS and time.time() - state.get("pulled_at", 0) < SYNC_INTERVAL:

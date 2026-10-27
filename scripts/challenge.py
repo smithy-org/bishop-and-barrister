@@ -38,12 +38,10 @@ import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import paths  # noqa: E402  (where the user's data lives)
 import judge  # noqa: E402  (the record: git, citations, the index)
 import lookup  # noqa: E402
 
-CHALLENGES_DIR = judge.HOME / "challenges"
-RULES_DIR = judge.HOME / "rules"
-BIN_DIR = judge.HOME / "bin"
 BINARIES = Path(os.environ.get("BISHOP_AND_BARRISTER_BINARIES") or judge.SKILL_DIR / "challenge" / "binaries.json")
 RELEASES = os.environ.get("BISHOP_AND_BARRISTER_RELEASES") or "https://github.com/smithy-org/bishop-and-barrister/releases/download"
 # A locally built core (challenge/.lake/build/bin/bab-challenge), for working on the core itself. Not checked.
@@ -96,7 +94,7 @@ def find_binary() -> Path:
     entry = (pins.get("binaries") or {}).get(key or "")
     if not pins.get("release") or not entry:
         raise Unavailable(f"there's no released challenge core for this platform ({key or platform.platform()}) yet")
-    path = BIN_DIR / entry["sha256"] / entry["file"]
+    path = paths.bin_dir() / entry["sha256"] / entry["file"]
     if path.exists() and sha256_file(path) == entry["sha256"]:
         return path
     url = f"{RELEASES}/{pins['release']}/{entry['file']}"
@@ -151,13 +149,13 @@ def ensure_store() -> None:
     rewrites their line endings.
     """
     judge.ensure_home()
-    CHALLENGES_DIR.mkdir(exist_ok=True)
-    ignore = judge.HOME / ".gitignore"
+    paths.challenges().mkdir(exist_ok=True)
+    ignore = paths.home() / ".gitignore"
     lines = ignore.read_text(encoding="utf-8").splitlines() if ignore.exists() else []
     if "bin/" not in lines:
         ignore.write_text("\n".join([*lines, "bin/"]) + "\n", encoding="utf-8")
     # An event's hash is taken over its exact bytes, so git must never change their line endings.
-    attributes = judge.HOME / ".gitattributes"
+    attributes = paths.home() / ".gitattributes"
     lines = attributes.read_text(encoding="utf-8").splitlines() if attributes.exists() else []
     if "challenges/** -text" not in lines:
         attributes.write_text("\n".join([*lines, "challenges/** -text"]) + "\n", encoding="utf-8")
@@ -177,7 +175,7 @@ def challenge_dir(cid: str) -> Path:
     """
     if not ID.fullmatch(cid):
         judge.die(f"{cid!r} isn't a challenge id (challenge-<YYYYMMDD>-<12 hex>).")
-    path = CHALLENGES_DIR / cid
+    path = paths.challenges() / cid
     if not path.is_dir():
         judge.die(f"No challenge {cid} in the record (python scripts/challenge.py list).")
     return path
@@ -289,7 +287,7 @@ def propose(cid: str | None, actor: str, fields: dict, message: str, words: str 
         judge.die("Refused:\n" + "\n".join(f"- {r}" for r in verdict.get("reasons", [verdict])))
     new_state = verdict["state"]
     cid = cid or new_state["id"]
-    folder = CHALLENGES_DIR / cid
+    folder = paths.challenges() / cid
     folder.mkdir(parents=True, exist_ok=True)
     (folder / f"{event['seq']:04d}-{actor}-{event['device']}.json").write_bytes(text.encode("utf-8"))
     drafted, decided = actor, (f'user ("{words}")' if words else None)
@@ -333,7 +331,7 @@ def load_rule(path: Path) -> dict:
 
 def save_rule(rule: dict, path: Path) -> None:
     """Write a rule file, creating rules/ if needed."""
-    RULES_DIR.mkdir(exist_ok=True)
+    paths.rules().mkdir(exist_ok=True)
     path.write_text(json.dumps(rule, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
@@ -526,7 +524,7 @@ def settle(cid: str, state: dict) -> str | None:
     """
     reopens = events_in_order(cid)[0].get("reopens")
     if reopens and state["state"] in ("introduced", "refuted", "withdrawn"):
-        path = RULES_DIR / f"{reopens}.json"
+        path = paths.rules() / f"{reopens}.json"
         rule = load_rule(path)
         if state["state"] == "introduced":
             fresh = rule_from(cid, state, house_rule=False)
@@ -541,14 +539,14 @@ def settle(cid: str, state: dict) -> str | None:
         save_rule(rule, path)
         return f"Rule {reopens} is now {rule['state']}."
     if state["state"] == "introduced":
-        save_rule(rule_from(cid, state, house_rule=False), RULES_DIR / f"{cid}.json")
+        save_rule(rule_from(cid, state, house_rule=False), paths.rules() / f"{cid}.json")
         return f"Introduces rules/{cid}.json."
     if state["state"] == "house-rule":
-        save_rule(rule_from(cid, state, house_rule=True), RULES_DIR / f"house-{cid}.json")
+        save_rule(rule_from(cid, state, house_rule=True), paths.rules() / f"house-{cid}.json")
         return f"Kept as a house rule: rules/house-{cid}.json."
     if state["state"] in ("refuted", "open"):
         path = write_per_curiam(cid, state)
-        return f"Per curiam record: {path.relative_to(judge.HOME).as_posix()}."
+        return f"Per curiam record: {path.relative_to(paths.home()).as_posix()}."
     return None
 
 
@@ -568,7 +566,7 @@ def recheck_rules(offline: bool = False) -> list[tuple[str, list[str], str]]:
         SystemExit: Via judge.die() when the core refuses a transition or the new challenge.
     """
     reopened = []
-    for path in sorted(RULES_DIR.glob("challenge-*.json")):
+    for path in sorted(paths.rules().glob("challenge-*.json")):
         rule = load_rule(path)
         if rule["state"] != "current":
             continue
@@ -666,11 +664,11 @@ def official_ruling_with(excerpt: str) -> bool:
     Returns:
         True when an official ruling contains them; False when none does or there's no index.
     """
-    if not judge.INDEX.exists():
+    if not paths.index().exists():
         return False
     needle = " ".join(excerpt.split()).lower()
     probe = max(re.split(r"[%_\"\\]", needle), key=len)[:60]
-    conn = sqlite3.connect(judge.INDEX)
+    conn = sqlite3.connect(paths.index())
     try:
         rows = conn.execute("SELECT json FROM rulings WHERE kind = 'official' AND lower(json) LIKE ?",
                             (f"%{probe}%",)).fetchall()
@@ -699,7 +697,7 @@ def source_text(src: dict) -> tuple[str | None, str | None]:
         text = judge.cr_rules().get(ref)
         return (text, None) if text is not None else (None, f"CR {ref} doesn't exist in the current CR")
     if doc in lookup.DOCS:
-        if not (lookup.DOCS_DIR / f"{doc}.json").exists():
+        if not (paths.docs_dir() / f"{doc}.json").exists():
             return None, f"the {lookup.DOCS[doc]} isn't downloaded (python scripts/sources.py update {doc})"
         section = lookup.doc_section(doc, ref)
         return (section["text"], None) if section else (None, f"{doc.upper()} {ref!r} doesn't name one section")
@@ -947,7 +945,7 @@ def status_text(cid: str, state: dict) -> str:
         lines.append(f"Why: {state['why']}")
     if state.get("revision"):
         lines.append(f"The opinion is on revision {state['revision']} (at most 2).")
-    if state["state"] in ("refuted", "open") and (CHALLENGES_DIR / cid / "record" / "per-curiam.json").exists():
+    if state["state"] in ("refuted", "open") and (paths.challenges() / cid / "record" / "per-curiam.json").exists():
         lines.append(f"A per curiam record of the judges' positions is in challenges/{cid}/record/per-curiam.json.")
     if state["settled"]:
         lines.append("Settled: nothing more happens." if state["state"] != "refuted" else
@@ -1151,10 +1149,10 @@ def cmd_list(args) -> int:
     Returns:
         The exit status.
     """
-    if not CHALLENGES_DIR.exists():
+    if not paths.challenges().exists():
         print("No challenges yet.")
         return 0
-    for folder in sorted(p for p in CHALLENGES_DIR.iterdir() if p.is_dir() and ID.fullmatch(p.name)):
+    for folder in sorted(p for p in paths.challenges().iterdir() if p.is_dir() and ID.fullmatch(p.name)):
         state = replay(folder.name)
         if state.get("ok"):
             owed = "" if state["settled"] else f"; next: {', '.join(state['next'])}"
@@ -1254,8 +1252,8 @@ def cmd_trace(args) -> int:
     state = replay(args.id)
     if not state.get("ok"):
         problems.append(describe_failure(state))
-    rule = next((p for p in (RULES_DIR / f"{args.id}.json", RULES_DIR / f"house-{args.id}.json") if p.exists()),
-                RULES_DIR / f"{args.id}.json")
+    rule = next((p for p in (paths.rules() / f"{args.id}.json", paths.rules() / f"house-{args.id}.json") if p.exists()),
+                paths.rules() / f"{args.id}.json")
     if rule.exists():
         data = json.loads(rule.read_text(encoding="utf-8"))
         if data.get("challenge") != args.id:

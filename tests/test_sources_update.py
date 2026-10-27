@@ -7,6 +7,7 @@ Wizards' pages and PDFs are replaced by fakes; the PDF is a small one built here
 
 import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -17,6 +18,7 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import lookup  # noqa: E402
+import paths  # noqa: E402
 import sources  # noqa: E402
 
 try:
@@ -66,20 +68,18 @@ WPN_PAGE = ('{"link":"https:\\u002F\\u002Fmedia.wizards.com\\u002FContentResourc
 class SourcesUpdateTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        ref = Path(self.tmp.name) / "reference"
-        (ref / "formats").mkdir(parents=True)
+        root = Path(self.tmp.name)
+        (root / "reference" / "formats").mkdir(parents=True)
         patches = [
-            mock.patch.object(lookup, "REFERENCE_DIR", ref),
-            mock.patch.object(lookup, "DATA_DIR", ref),
-            mock.patch.object(lookup, "DOCS_DIR", ref / "docs"),
-            mock.patch.object(lookup, "RULES_FILE", ref / "MagicCompRules.txt"),
-            mock.patch.object(sources, "REGISTRY", ref / "sources.json"),
-            mock.patch.object(sources, "FORMATS_DIR", ref / "formats"),
+            mock.patch.dict(os.environ, {"BISHOP_AND_BARRISTER_HOME": str(root / "home")}),
+            mock.patch.object(lookup, "REFERENCE_DIR", root / "reference"),
+            mock.patch.object(sources, "FORMATS_DIR", root / "reference" / "formats"),
         ]
         for p in patches:
             p.start()
             self.addCleanup(p.stop)
-        self.ref = ref
+        self.data = paths.documents()
+        self.data.mkdir(parents=True)
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -107,7 +107,7 @@ class SourcesUpdateTest(unittest.TestCase):
 
     @unittest.skipUnless(HAVE_PYPDF, "needs pypdf")
     def test_reads_bold_headings_and_drops_page_numbers(self):
-        pdf = self.ref / "jar.pdf"
+        pdf = self.data / "jar.pdf"
         pdf.write_bytes(JAR_PDF)
         lines = sources.pdf_lines(pdf)
         self.assertIn(("Common Issues", True), lines)
@@ -128,7 +128,7 @@ class SourcesUpdateTest(unittest.TestCase):
             self.assertEqual(status, 0)
             self.assertIn("Judging at Regular REL: installed, effective August 5, 2024", out)
             recheck.assert_called_once()  # a new version flags rulings that cite it
-            self.assertTrue((self.ref / "docs" / "jar.json").exists())
+            self.assertTrue((self.data / "docs" / "jar.json").exists())
             _, out = self.run_cmd("update", "jar")
             self.assertIn("up to date", out)
         changed = make_pdf([("Judging at Regular Rules Enforcement Level", True), ("Updated May 1, 2026", False),
@@ -140,14 +140,14 @@ class SourcesUpdateTest(unittest.TestCase):
 
     @unittest.skipUnless(HAVE_PYPDF, "needs pypdf")
     def test_list_and_convert(self):
-        (self.ref / "version.json").write_text(json.dumps({"effective_date": "September 25, 2026", "sha256": "ab" * 32}))
+        (self.data / "version.json").write_text(json.dumps({"effective_date": "September 25, 2026", "sha256": "ab" * 32}))
         _, out = self.run_cmd("list")
         self.assertIn("cr   Comprehensive Rules: effective September 25, 2026", out)
         self.assertIn("mtr  Magic Tournament Rules: not downloaded", out)
         _, out = self.run_cmd("convert", "jar")
         self.assertIn("no PDF kept", out)
-        (self.ref / "docs").mkdir()
-        (self.ref / "docs" / "jar.pdf").write_bytes(JAR_PDF)
+        (self.data / "docs").mkdir()
+        (self.data / "docs" / "jar.pdf").write_bytes(JAR_PDF)
         _, out = self.run_cmd("convert", "jar")
         self.assertIn("Judging at Regular REL: 3 sections.", out)
 
@@ -156,8 +156,8 @@ class SourcesUpdateTest(unittest.TestCase):
 
         def fake_run(args, check):
             calls.append(args)
-            lookup.RULES_FILE.parent.mkdir(parents=True, exist_ok=True)
-            lookup.RULES_FILE.write_text("new rules", encoding="utf-8")
+            paths.rules_file().parent.mkdir(parents=True, exist_ok=True)
+            paths.rules_file().write_text("new rules", encoding="utf-8")
         with mock.patch.object(subprocess, "run", fake_run):
             self.assertTrue(sources.update_cr(check=True, force=False))
             self.assertFalse(sources.update_cr(check=False, force=True))  # same text again: unchanged
@@ -165,9 +165,9 @@ class SourcesUpdateTest(unittest.TestCase):
         self.assertIn("--force", calls[1])
 
     def test_stale_format_files_are_reported(self):
-        (self.ref / "version.json").write_text(json.dumps({"effective_date": "November 14, 2026"}))
-        (self.ref / "formats" / "commander.md").write_text("---\nchecked: 2026-10-26\nsources:\n  cr: September 25, 2026\n---\n",
-                                                            encoding="utf-8")
+        (self.data / "version.json").write_text(json.dumps({"effective_date": "November 14, 2026"}))
+        (sources.FORMATS_DIR / "commander.md").write_text("---\nchecked: 2026-10-26\nsources:\n  cr: September 25, 2026\n---\n",
+                                                          encoding="utf-8")
         out = io.StringIO()
         with redirect_stdout(out):
             sources.report_stale_formats()

@@ -27,13 +27,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import paths  # noqa: E402  (where the user's data lives)
 import lookup  # noqa: E402  (where the downloaded documents live)
 
 RULES_PAGE = "https://magic.wizards.com/en/rules"
-# Outside the skill's folder (see lookup.DATA_DIR), so a plugin update keeps the download.
-DATA_DIR = lookup.DATA_DIR
-RULES_FILE = lookup.RULES_FILE
-META_FILE = DATA_DIR / "version.json"
+# Outside the skill's folder (see paths.documents()), so a plugin update keeps the download.
 
 UA = "Mozilla/5.0 (compatible; bishop-and-barrister/1.0)"
 TXT_LINK = re.compile(
@@ -140,10 +138,10 @@ def local_state() -> dict | None:
         The saved metadata when version.json matches the file on disk, metadata rebuilt
         from the file otherwise ("source" says which), or None when there is no local copy.
     """
-    if not RULES_FILE.exists():
+    if not paths.rules_file().exists():
         return None
 
-    text = RULES_FILE.read_text(encoding="utf-8-sig")
+    text = paths.rules_file().read_text(encoding="utf-8-sig")
     state = {
         "sha256": digest(text),
         "effective_date": effective_date(text),
@@ -153,9 +151,9 @@ def local_state() -> dict | None:
         "source": "reconstructed from local file",
     }
 
-    if META_FILE.exists():
+    if paths.version_file().exists():
         try:
-            saved = json.loads(META_FILE.read_text())
+            saved = json.loads(paths.version_file().read_text())
             if saved.get("sha256") == state["sha256"]:
                 saved["source"] = "version.json"
                 return saved
@@ -175,7 +173,7 @@ def write_meta(text: str, url: str, probe: dict) -> None:
         url: Where it was downloaded from.
         probe: The result of head(), stored so a later --check can skip the download; may be empty.
     """
-    META_FILE.write_text(
+    paths.version_file().write_text(
         json.dumps(
             {
                 "sha256": digest(text),
@@ -261,12 +259,12 @@ def main() -> int:
         print("Run without --check to install it.")
         return 0
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    RULES_FILE.write_text(text, encoding="utf-8")
+    paths.documents().mkdir(parents=True, exist_ok=True)
+    paths.rules_file().write_text(text, encoding="utf-8")
     write_meta(text, url, probe)
 
     size_kb = len(text.encode("utf-8")) / 1024
-    print(f"\nSaved {RULES_FILE} ({size_kb:.0f} KB)")
+    print(f"\nSaved {paths.rules_file()} ({size_kb:.0f} KB)")
     print(f"Effective {effective_date(text)}, posted {posted_date(url)}, sha256 {remote_hash[:12]}.")
     return 0
 

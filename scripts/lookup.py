@@ -20,24 +20,21 @@ Usage:
 
 import argparse
 import json
-import os
 import re
 import shutil
 import sys
 from pathlib import Path
 
+import paths  # where the user's data lives
+
 # What ships with the skill (the format files, templates) stays in its own folder. What sources.py downloads
 # lives outside it, in the user's home for the skill, so a plugin update (which replaces the skill's folder)
 # never throws the documents away.
 REFERENCE_DIR = Path(__file__).resolve().parent.parent / "reference"
-HOME = Path(os.environ.get("BISHOP_AND_BARRISTER_HOME") or Path.home() / ".claude" / "bishop-and-barrister")
-DATA_DIR = HOME / "documents"
-RULES_FILE = DATA_DIR / "MagicCompRules.txt"
-DOCS_DIR = Path(os.environ.get("BISHOP_AND_BARRISTER_DOCS") or DATA_DIR / "docs")
 # Earlier versions downloaded into the skill's own reference/ folder.
 LEGACY = ("MagicCompRules.txt", "version.json", "sources.json", "docs")
 # The tournament documents (level 2). Each is converted by sources.py into
-# DOCS_DIR/<key>.json: {"title", "effective", "sections": [{"key", "heading", "text"}]}.
+# paths.docs_dir()/<key>.json: {"title", "effective", "sections": [{"key", "heading", "text"}]}.
 DOCS = {
     "mtr": "Magic Tournament Rules",
     "ipg": "Infraction Procedure Guide",
@@ -49,9 +46,9 @@ SECTION_LINE = re.compile(r"^(\d{3})\.\s+(\S.*)$")
 
 
 def adopt_legacy_documents() -> list[str]:
-    """Copy documents an earlier version downloaded into the skill folder to DATA_DIR.
+    """Copy documents an earlier version downloaded into the skill folder to paths.documents().
 
-    Only what DATA_DIR lacks is copied, and the originals are left in place: a plugin's folder may be
+    Only what paths.documents() lacks is copied, and the originals are left in place: a plugin's folder may be
     read-only, and a later update replaces it anyway. Nothing has to be downloaded again.
 
     Returns:
@@ -59,9 +56,9 @@ def adopt_legacy_documents() -> list[str]:
     """
     copied = []
     for name in LEGACY:
-        old, new = REFERENCE_DIR / name, DATA_DIR / name
+        old, new = REFERENCE_DIR / name, paths.documents() / name
         if old.exists() and not new.exists():
-            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            paths.documents().mkdir(parents=True, exist_ok=True)
             if old.is_dir():
                 shutil.copytree(old, new)
             else:
@@ -77,12 +74,12 @@ def load() -> list[str]:
         SystemExit: When the rules haven't been downloaded.
     """
     adopt_legacy_documents()
-    if not RULES_FILE.exists():
+    if not paths.rules_file().exists():
         sys.exit(
             "Rules file not found. Download it first:\n"
             "    python scripts/sources.py update"
         )
-    return RULES_FILE.read_text(encoding="utf-8-sig").splitlines()
+    return paths.rules_file().read_text(encoding="utf-8-sig").splitlines()
 
 
 def body_start(lines: list[str]) -> int:
@@ -328,7 +325,7 @@ def load_doc(doc: str) -> dict:
         SystemExit: When the document hasn't been downloaded.
     """
     adopt_legacy_documents()
-    path = DOCS_DIR / f"{doc}.json"
+    path = paths.docs_dir() / f"{doc}.json"
     if not path.exists():
         sys.exit(f"The {DOCS[doc]} isn't downloaded. Download it first:\n    python scripts/sources.py update {doc}")
     return json.loads(path.read_text(encoding="utf-8"))
