@@ -8,9 +8,9 @@ on:
   push:
     branches: [main]
     tags: ['v*']
-    paths: ['challenge/**', '.github/workflows/challenge.yml']
+    paths: ['challenge/**', 'scripts/**', 'tests/test_challenge.py', '.github/workflows/challenge.yml']
   pull_request:
-    paths: ['challenge/**', '.github/workflows/challenge.yml']
+    paths: ['challenge/**', 'scripts/**', 'tests/test_challenge.py', '.github/workflows/challenge.yml']
   workflow_dispatch:
 
 permissions:
@@ -41,6 +41,11 @@ jobs:
       - name: The CLI answers
         run: |
           echo '{"events": []}' | .lake/build/bin/bab-challenge replay
+      - name: The Python wrapper's tests, against this core
+        working-directory: .
+        env:
+          BISHOP_AND_BARRISTER_CHALLENGE_BIN: ${{ github.workspace }}/challenge/.lake/build/bin/bab-challenge
+        run: python3 -m unittest tests.test_challenge -v
 
   # On a tag the binaries go to the release; run by hand, they are kept as the run's artifacts.
   binaries:
@@ -102,3 +107,30 @@ jobs:
         run: |
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes "" || true
           gh release upload "$GITHUB_REF_NAME" "$ASSET" "$ASSET.sha256" --clobber
+
+  # The pins for challenge/binaries.json: each binary's file name and SHA-256, attached as pins.json.
+  pins:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: binaries
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Collect the SHA-256s
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" -p '*.sha256' -D sums
+          python3 - <<'PY'
+          import json, os, pathlib, re
+          binaries = {}
+          for f in sorted(pathlib.Path("sums").glob("*.sha256")):
+              digest, name = f.read_text().split()[:2]
+              name = name.lstrip("*")
+              target = re.fullmatch(r"bab-challenge-(.+?)(\.exe)?", name).group(1)
+              binaries[target] = {"file": name, "sha256": digest}
+          pins = {"release": os.environ["GITHUB_REF_NAME"], "binaries": binaries}
+          pathlib.Path("pins.json").write_text(json.dumps(pins, indent=2) + "\n")
+          print(json.dumps(pins, indent=2))
+          PY
+          gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" pins.json --clobber
