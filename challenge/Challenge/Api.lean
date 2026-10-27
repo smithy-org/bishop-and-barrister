@@ -1,4 +1,5 @@
-import Lean.Data.Json
+import Lean.Data.Json.Parser
+import Lean.Data.Json.FromToJson
 import Challenge.Parse
 import Challenge.Chain
 import Challenge.Rule
