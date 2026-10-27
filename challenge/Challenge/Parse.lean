@@ -132,6 +132,12 @@ def parseStage : String → Except String Stage
   | "answers" => .ok .answers
   | s => .error s!"unknown stage \"{s}\"; \"attack\" or \"answers\""
 
+def parseStance : String → Except String Stance
+  | "join" => .ok .join
+  | "concur" => .ok .concur
+  | "dissent" => .ok .dissent
+  | s => .error s!"unknown stance \"{s}\"; \"join\", \"concur\" or \"dissent\""
+
 def parseReplyKind : String → Except String ReplyKind
   | "concede" => .ok .concede
   | "fix" => .ok .fix
@@ -195,6 +201,13 @@ def parseEvent (actor : Actor) (j : Json) : Except String Event := do
   | "vote" =>
     pure (.vote { judge := judgeOf, convinced := ← getBool j "convinced", reason := ← getStr j "reason",
                   evidence := ← parseSources j "evidence" })
+  | "opinion" =>
+    pure (.opinion { author := judgeOf, revision := ← getNat j "revision", holding := ← getStr j "holding",
+                     steps := ← parseSteps j "steps" })
+  | "respond" =>
+    pure (.respond { judge := judgeOf, revision := ← getNat j "revision",
+                     stance := ← parseStance (← getStr j "stance"), reason := ← getStr j "reason",
+                     evidence := ← parseSources j "evidence" })
   | "withdraw" => pure (.withdraw (← getStr j "words"))
   | "house-rule" => pure (.houseRule (← getStr j "words"))
   | "reopen" =>

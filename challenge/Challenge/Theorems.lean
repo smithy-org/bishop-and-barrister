@@ -8,6 +8,8 @@ Checked on every build; `Audit.lean` fails the build if any of them is missing o
 1. `no_unearned_rule`: an introduced challenge had five convinced judges, each with evidence; a passing verifier
    report with no level 1 conflict and nothing standing; every step sourced or a stipulation; and an independent
    panel. `stipulations_only_in_gaps`: a stipulation can only be in a rule that fills a gap.
+   `introduced_has_opinion`: and an opinion of the court, written by a convinced judge, that each of the five
+   judges joined as written.
 2. `determinism`: the state depends only on which events there are, not the order the files are read in, so
    every device holding the same events computes the same state.
 3. `terminal_final_*`, `refuted_only_to_house_rule`: no event leaves `introduced`, `withdrawn` or `house-rule`;
@@ -50,6 +52,44 @@ theorem stipulations_only_in_gaps {evs : List Entry} {s : State} {tags : List (N
     (_hr : replay evs = .state s tags) (_hp : s.phase = .introduced e) :
     e.claim.steps.all (fun st => !st.stipulation || isGap e.claim.challenges) = true :=
   e.gapOnly
+
+theorem every_judge_joined (e : Earned) :
+    ∀ k ∈ judges, ∃ r ∈ e.joins, r.judge = k ∧ r.stance = Stance.join := by
+  intro k hk
+  have hfull := e.fullJoins
+  unfold missingResponders at hfull
+  rw [List.filter_eq_nil_iff] at hfull
+  have hr : respondedBy e.joins k = true := by simpa using hfull k hk
+  unfold respondedBy at hr
+  rw [List.any_eq_true] at hr
+  obtain ⟨r, hmem, hj⟩ := hr
+  have hall := e.allJoin
+  rw [List.all_eq_true] at hall
+  exact ⟨r, hmem, by simpa using hj, by simpa using hall r hmem⟩
+
+theorem author_was_convinced (e : Earned) :
+    ∃ v ∈ e.votes, v.judge = e.opinion.author ∧ v.convinced = true := by
+  have h := e.authorConvinced
+  rw [List.any_eq_true] at h
+  obtain ⟨v, hmem, hv⟩ := h
+  have hv' := hv
+  simp only [Bool.and_eq_true, beq_iff_eq] at hv'
+  exact ⟨v, hmem, hv'.1, hv'.2⟩
+
+theorem five_distinct_judges : judges.length = 5 ∧ judges.Nodup := ⟨by decide, by decide⟩
+
+/-- An introduced rule has an opinion of the court: written by one of the convinced judges, stating the case's
+rule and nothing new, and joined as written by each of the five judges (distinct, as there are five of them). A
+concurrence is not a join, so a rule with any concurrence or dissent is never introduced. -/
+theorem introduced_has_opinion {evs : List Entry} {s : State} {tags : List (Nat × Entry)} {e : Earned}
+    (_hr : replay evs = .state s tags) (_hp : s.phase = .introduced e) :
+    (∀ k ∈ judges, ∃ r ∈ e.joins, r.judge = k ∧ r.stance = Stance.join) ∧
+    judges.length = 5 ∧ judges.Nodup ∧
+    (∃ v ∈ e.votes, v.judge = e.opinion.author ∧ v.convinced = true) ∧
+    (e.opinion.holding == e.claim.rule) = true ∧
+    e.opinion.steps.all (fun st => st.source.isSome || st.stipulation) = true :=
+  ⟨every_judge_joined e, five_distinct_judges.1, five_distinct_judges.2, author_was_convinced e, e.holdsRule,
+    e.opinionGrounded⟩
 
 /-! ## 2. Determinism -/
 

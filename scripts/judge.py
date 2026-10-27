@@ -482,8 +482,20 @@ def render_rule(r: dict) -> str:
     out.append("  <steps>" + "".join(
         f"<step {attrs(n=st['id'], premises=' '.join(st.get('premises', [])), doc=(st.get('source') or {}).get('doc'), ref=(st.get('source') or {}).get('ref'))}>"
         f"{escape((st.get('source') or {}).get('excerpt', ''))} → {escape(st.get('conclusion', ''))}</step>" for st in r.get("steps", [])) + "</steps>")
+    op = r.get("opinion")
+    if op:
+        out.append(f"  <opinion {attrs(author=op['author'], revision=op['revision'])}>")
+        out.append(f"    <holding>{escape(op['holding'])}</holding>")
+        out.append("    <reasoning>" + "".join(
+            f"<step {attrs(n=st['id'], doc=(st.get('source') or {}).get('doc'), ref=(st.get('source') or {}).get('ref'), stipulation='true' if st.get('stipulation') else None)}>"
+            f"{escape((st.get('source') or {}).get('excerpt', ''))} → {escape(st.get('conclusion', ''))}</step>" for st in op["steps"]) + "</reasoning>")
+        out.append("    <joined>" + "".join(
+            f"<judge {attrs(n=j['judge'])}>{escape(j['reason'])}</judge>" for j in op.get("joined", [])) + "</joined>")
+        for tag, key in (("concurrence", "concurrences"), ("dissent", "dissents")):
+            out += [f"    <{tag} {attrs(judge=j['judge'], revision=j['revision'])}>{escape(j['reason'])}</{tag}>" for j in op.get(key, [])]
+        out.append("  </opinion>")
     how = ("kept as a house rule after its challenge was refuted" if r.get("house_rule")
-           else "introduced by a unanimous panel of five judges")
+           else "introduced by an opinion of the court that all five judges joined")
     out.append(f"  <provenance>{escape(how)}; python scripts/challenge.py trace {escape(r['challenge'])}</provenance>")
     out.append("</ruling>")
     return "\n".join(out)

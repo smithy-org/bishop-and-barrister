@@ -12,13 +12,19 @@ The design and its reasons are in `docs/plans/029-challenges.md`. In short:
 - **The judges close the case, by consensus, and never early.** A judge is *settled* when its latest position is
   on the final version of the case and carries **evidence** (pinned sources the core and the verifier check) and
   **reasoning**. No script and no round limit closes a challenge for them.
-- **A rule is introduced only if all five judges are convinced**, the verifier passes the final case, nothing
-  stands unanswered, it contradicts no level 1 source, and the panel was independent. A single judge who isn't
-  convinced blocks it: that judge is the correct minority, and unanimity lets it win.
-- **A case is refused when three or more judges are not convinced.** It ends `refuted` if a verified refutation
-  stands (or the case contradicts a level 1 source), and `open` if it is merely unproven. With one or two not
-  convinced there is no consensus yet, so the judges see each other's reasons and a new round runs, up to three
-  rounds, after which the case stays `open`.
+- **A rule is introduced only by an Opinion of the Court that all five judges join.** First all five must be
+  convinced, the verifier must pass the final case, nothing may stand unanswered, it may contradict no level 1
+  source, and the panel must have been independent. Then one judge writes the opinion and each of the five joins
+  it, concurs in the judgment only, or dissents. A single judge who isn't convinced blocks the rule, and so does a
+  single concurrence: that judge is the correct minority, and unanimity lets it win.
+- **A case is refused when three or more judges are not convinced** (or three dissent from the opinion). It ends
+  `refuted` if a verified refutation stands (or the case contradicts a level 1 source), and `open` if it is
+  merely unproven. With one or two not convinced there is no consensus yet, so the judges see each other's
+  reasons and a new round runs, up to three rounds, after which the case stays `open`. A refused case needs no
+  agents to be written up: the script assembles a short per curiam record from the judges' own positions.
+- **After the first round, only the judges whose refutation was answered attack again.** The others' earlier
+  concessions stand for now, but every judge's last position must be on the final version of the case, so any
+  judge who last looked before the final revision looks again at the end.
 - **`scripts/challenge.py` enforces all of this.** Every step is an event that the Lean core (`bab-challenge`)
   accepts or refuses, so you never need to remember what is allowed next: `challenge.py status <id>` says.
 
@@ -93,8 +99,10 @@ python scripts/challenge.py open --statement "<the user's case, as they said it>
 ```
 
 **Say what a challenge costs before you open one, and wait for a yes.** It runs a clerk and five judges as
-separate agents, and each further round adds judges. Typically 0.5 to 2 million tokens (a few dollars), which
-is 7 to 30 times an ordinary answer at about 75,000. A case the official sources already settle is cheaper to
+separate agents, and each further round adds judges (only those whose refutation was answered). A rule that is
+introduced also needs an Opinion of the Court: one judge drafts it and all five answer it, about six more agent
+runs, and each revision of the draft six more. Typically 0.5 to 2.5 million tokens (a few dollars), which is 7 to
+35 times an ordinary answer at about 75,000. A case the official sources already settle is cheaper to
 answer the ordinary way.
 
 On claude.ai, or anywhere you can't launch independent subagents, add `--panel single-agent` and tell the user
@@ -214,9 +222,11 @@ python scripts/challenge.py verify <id>
 
 It re-checks every source in the case and in every refutation: the rule or section still exists, its text
 still hashes to what was pinned, and the quote is in it. A refutation with any failed source is dropped. The
-rest are **verified, and stand** until the user answers them. If none stands and every judge conceded on the
-unchanged case, their concessions are their settled positions and the challenge closes at once: all five
-convinced introduces the rule. If none stands but a judge's refutation was dropped, the judges settle (step 7).
+rest are **verified, and stand** until the user answers them. If none stands and no judge filed a refutation in the
+round (not even one that was dropped), the concessions are the judges' settled positions on the case as it now
+stands, and no separate vote runs for them. Every other judge settles in step 7: all the judges of a round in which
+any judge filed a refutation, and any judge whose last look was at an earlier version of the case. When all five
+are settled and convinced, the opinion is drafted (step 8).
 
 ### 5. The user answers
 
@@ -249,23 +259,33 @@ is closed for them.
 Help the user find sources if they ask, but the argument is theirs. Never write a rebuttal they didn't make, and
 never concede for them. They can also withdraw: `challenge.py withdraw <id> --user-said "..."`.
 
-### 6. The next round
+### 6. The next round: only the judges whose refutation was answered
 
-Each judge now sees the user's answers and the other judges' verified refutations from the round before (their
-`show --judge k` includes them). Run the five again with the same shared brief and lens, adding:
+A new attack round runs only when the user revised the case, and it **convenes only the judges whose refutation
+the user answered with a fix** (`status` lists them under "Owed by", and the core refuses a filing from anyone
+else). The other judges' earlier concessions stand for now; they are not asked again here. Each convened judge
+sees the user's answers and the other judges' verified refutations from the round before (their `show --judge k`
+includes them). Run just those judges, with the same shared brief and lens, adding:
 
-> This is round {n}. The user has answered the last round's refutations; you can now also see the other judges'
-> filings from that round. Attack again where the case, as it now stands, can still be defeated: a rebuttal that
-> doesn't hold, a fix that breaks another step, or a new weakness. Don't repeat a refutation the user has
-> answered unless you can show that the answer fails. Concede if nothing remains.
+> This is round {n}. The user has answered your refutation by revising the case; you can now also see the other
+> judges' filings from the last round. Attack again where the case, as it now stands, can still be defeated: a
+> fix that doesn't answer your refutation, a fix that breaks another step, or a new weakness. Don't repeat a
+> refutation the user has answered unless you can show that the answer fails. Concede if nothing remains.
 
-A new attack round runs only when the user revised the case. After three rounds the judges settle however
-the case stands. The user can withdraw at any point they are asked to act.
+If the revision answered nobody's refutation (every reply conceded or rebutted), nobody is convened and the
+judges settle. After three rounds the judges settle however the case stands. The user can withdraw at any point
+they are asked to act.
+
+**The soundness rule.** Every judge's last position must be on the final version of the case. When no refutation
+stands, a judge whose last look was at an earlier version of the case (a concession in round 1, say, before a
+later revision) settles again in step 7; a judge who conceded on the final version, in a round where no judge filed a refutation, is already
+settled. A concession in a round with any refutation settles nobody.
 
 ### 7. The judges settle: five blind positions, each with evidence and reasoning
 
-When `status` says the judges settle, launch the five again as subagents, in one message, each with its own view
-(which never shows another judge's position) and this prompt:
+When `status` says the judges settle, launch **the judges it lists under "Owed by"** (all five, unless a round
+without refutations already settled some on the final case) as subagents, in one message, each with its
+own view (which never shows another judge's position) and this prompt:
 
 > Judge {k}, settle your position on the case as it now stands. Be convinced only if no verified refutation you
 > know of still stands and the derivation holds step by step, and every stipulation is something you accept as
@@ -280,25 +300,88 @@ When `status` says the judges settle, launch the five again as subagents, in one
 python scripts/challenge.py add <id> vote-3.json --as judge-3
 ```
 
-The core refuses a position with no reasoning, no evidence or an unpinnable quote. The fifth position closes the
+The core refuses a position with no reasoning, no evidence or an unpinnable quote. The last position closes the
 step, and the judges' consensus decides the outcome:
 
 | Positions | Outcome |
 | --- | --- |
-| All five convinced, every guard holds | **Introduced** |
+| All five convinced, every guard holds | **Settled**: the opinion of the court is drafted (step 8) |
 | Three or more not convinced, a verified refutation stands (or a level 1 conflict) | **Refuted** |
 | Three or more not convinced, nothing stands | **Open**: unproven |
 | One or two not convinced | No consensus: another round (the dissent is visible to all); **open** after three |
 | All convinced but a guard fails (an unsourced step, a single-agent panel) | **Open**; **refuted** if a verified refutation stands |
 
-### 8. Tell the user
+### 8. The Opinion of the Court: draft, then join, concur or dissent
+
+When all five are settled and convinced, `status` says `drafting`. **The lowest-numbered convinced judge writes the
+opinion** (in practice judge 1, as all five are convinced; the core refuses anyone else). Launch that one judge
+as a subagent with its own view and this prompt:
+
+> Judge {k}, you and the other four judges are convinced of the case as it now stands. Write the Opinion of the
+> Court: the writing that, if all five join it, becomes the rule. It has three parts:
+> - the **holding**: the case's rule, word for word (`rule` in the case);
+> - the **reasoning**: the steps, in the proof standard, that lead to the holding, each quoting one pinned source
+>   and citing its premises as `F<n>` (a fact) or `S<n>` (an earlier step of the opinion). Every step needs a
+>   source; an opinion can't rest on an assumption;
+> - the **stipulations**: if the case fills a gap, state each of the case's stipulations as a step with
+>   `"stipulation": true` and no source, exactly as the case words it (its `conclusion`). State all of them and
+>   add none: the judges joined that content, not other content.
+> Write for the four other judges, who will each answer it; answer the objections you already saw in the record.
+> Return only JSON:
+> `{"type": "opinion", "revision": {r}, "holding": "...", "steps": [{"id": 1, "premises": ["F1"], "source": {"doc": "cr", "ref": "103.1a", "excerpt": "..."}, "assumption": false, "conclusion": "..."}]}`.
+> {on a revision: Your last draft drew these responses (you can see them in your view): ... Revise to win
+> the joins of the judges who concurred or dissented, but never at the cost of the holding or by adding content
+> the judges didn't settle on.}
+
+```bash
+python scripts/challenge.py add <id> opinion.json --as judge-1
+```
+
+The core refuses a holding that isn't the case's rule, a step with no source, an unpinnable quote, and
+stipulations that differ from the case's. Then `status` says `joining`: launch **all five** judges (the author
+too) as subagents in one message, each with its own view (which holds the draft but never another judge's
+response), and this prompt:
+
+> Judge {k}, answer the draft Opinion of the Court in your view, with exactly one of:
+> - **join**: you adopt the opinion as written. The holding, each step and each stipulation is something you
+>   accept as the rule, and the reasoning is yours as well;
+> - **concur**: the rule is right, but not for the reasons the opinion gives. State yours and the sources;
+> - **dissent**: you are not convinced the rule should be introduced on this opinion: the step that fails or the
+>   evidence that is missing, with the sources you checked.
+> Every answer is a position, so it carries **reasoning and evidence** (the pinned sources you checked). Answer
+> from the evidence, not from what you expect the others to do. A concurrence is *not* a join: the rule is
+> introduced only if all five join the same opinion, so concur only if you truly would not adopt this
+> reasoning. Return only JSON:
+> `{"type": "respond", "revision": {r}, "stance": "join", "reason": "...", "evidence": [{"doc": "cr", "ref": "103.1", "excerpt": "..."}]}`.
+
+```bash
+python scripts/challenge.py add <id> response-3.json --as judge-3
+```
+
+When the fifth answer is in, the core decides:
+
+| Answers | Outcome |
+| --- | --- |
+| Five joins | **Introduced**: the rule is in the record, with the opinion and who joined it |
+| Any concurrence or dissent, fewer than three dissents | The draft goes back to its author for a **revision** (judges see the responses). At most two revisions |
+| Three or more dissents | **Open**: unproven. A per curiam record is written from the judges' positions |
+| No five joins after two revisions | **Open**: every judge must join the same opinion |
+
+The introduced rule's file (`rules/challenge-<id>.json`) stores the opinion (`opinion`: author, revision, holding,
+reasoning, stipulations, `joined`, and every `concurrences` and `dissents` the drafts drew); `judge.py` shows it
+with the rule.
+
+### 9. Tell the user
 
 Report the outcome, the deciding steps or the refutation that defeated the case, and each judge's reason in a
 line. Then:
 
-- **Introduced:** the rule is now in the record. `challenge.py trace <id>` checks it against its challenge.
-- **Refuted** (or **open**): the established answer stands. If the user still wants their rule, it can be kept
-  only as a **house rule**, marked as departing from the official rules:
+- **Introduced:** the rule is now in the record, with its Opinion of the Court. `challenge.py trace <id>` checks
+  it against its challenge.
+- **Refuted** (or **open**): the established answer stands. A **per curiam record** has been written for you, with
+  no agent involved, to `challenges/<id>/record/per-curiam.json` (its `text` field is the short opinion: the
+  judges who weren't convinced and why, with their evidence); quote it. If the user still wants their rule, it
+  can be kept only as a **house rule**, marked as departing from the official rules:
   `challenge.py add <id> house-rule.json --as user` with `{"type": "house-rule", "words": "<their words>"}`.
 - **Open:** unproven or no consensus. Say what would settle it (a missing fact, an official ruling Wizards
   hasn't made). The user can return with new facts or sources (a `reopen` event), or keep it as a house rule.
@@ -318,6 +401,8 @@ Tell the user this when you open it.
 - No judge sees another judge's filing in its own round, or another judge's position, before all five have acted.
 - No script or round limit closes a challenge for the judges: only their settled positions, each with evidence
   and reasoning, do.
+- No rule is introduced on a concurrence. Five joins to the same opinion, and nothing less, introduce it.
+- No judge sees another judge's response to the draft opinion before all five have answered.
 - Nothing is decided for the user: they confirm the brief, answer the refutations, pick a side of a fork and
   ask for a house rule, each in their own words.
 - No event file is edited or deleted. A fork's unchosen branch is moved to `discarded/`, never removed.

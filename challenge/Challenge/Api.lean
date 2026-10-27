@@ -22,21 +22,42 @@ def challengeId (opening : Entry) : String :=
   s!"challenge-{date}-{opening.hash.take 12}"
 
 def Phase.filed : Phase → List Nat
-  | .attack _ _ fs _ | .verify _ _ fs | .answer _ _ fs _ | .verifyAnswers _ _ fs _ => fs.map (·.judge)
+  | .attack _ _ _ _ fs _ | .verify _ _ _ fs | .answer _ _ _ fs _ | .verifyAnswers _ _ _ fs _ => fs.map (·.judge)
   | _ => []
 
+/-- The judges who attack in the attack round in progress: all five in the first, then only those whose refutation
+the user's revision answered. -/
+def Phase.convened : Phase → List Nat
+  | .attack _ _ cv _ _ _ => cv
+  | _ => []
+
+/-- The judges whose position is on record: voted, conceded on the final case, or both. -/
 def Phase.voted : Phase → List Nat
   | .voting _ _ vs _ => vs.map (·.judge)
+  | .drafting st _ => st.votes.map (·.judge)
+  | .joining st _ _ _ _ => st.votes.map (·.judge)
   | .introduced e => e.votes.map (·.judge)
   | _ => []
 
+/-- The judges who have answered the draft opinion in the phase in progress. -/
+def Phase.responded : Phase → List Nat
+  | .joining _ _ _ rs _ => rs.map (·.judge)
+  | .introduced e => e.joins.map (·.judge)
+  | _ => []
+
+/-- The revision of the opinion being drafted or answered (0 for the first draft). -/
+def Phase.revision : Phase → Option Nat
+  | .drafting _ r => some r
+  | .joining _ _ r _ _ => some r
+  | _ => none
+
 def Phase.standing : Phase → List Slot
-  | .answer _ _ _ r => r.standing
+  | .answer _ _ _ _ r => r.standing
   | _ => []
 
 def Phase.why : Phase → Option String
   | .refuted _ w | .open_ _ w => some w
-  | .introduced _ => some "all five judges were convinced"
+  | .introduced _ => some "all five judges joined the opinion of the court"
   | _ => none
 
 def panelName : Panel → String
@@ -59,7 +80,10 @@ def stateJson (s : State) (tags : List (Nat × Entry)) : Json :=
     ("settled", toJson s.phase.settled),
     ("why", toJson s.phase.why),
     ("filed", toJson s.phase.filed.toArray),
+    ("convened", toJson s.phase.convened.toArray),
     ("voted", toJson s.phase.voted.toArray),
+    ("revision", toJson s.phase.revision),
+    ("responded", toJson s.phase.responded.toArray),
     ("standing", Json.arr (s.phase.standing.map slotJson).toArray),
     ("head", toJson s.head),
     ("next_seq", toJson entries.length),
