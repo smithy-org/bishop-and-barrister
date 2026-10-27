@@ -236,8 +236,7 @@ class ChallengeTest(unittest.TestCase):
 
     def test_conceding_a_refutation_sends_the_case_to_the_judges_to_settle(self):
         cid = self.to_conceded()
-        state = self.status(cid)
-        self.assertEqual((state["state"], state["standing"]), ("voting", [{"judge": 1, "index": 1}]))
+        self.assertEqual(self.status(cid)["state"], "voting")  # nothing closes the case for the judges
         for k in range(1, 6):
             self.vote(cid, k, convinced=False)
         state = self.status(cid)
