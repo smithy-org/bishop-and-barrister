@@ -21,6 +21,7 @@ elab "#assert_proved " ids:ident* : command => do
 
 #assert_proved
   Challenge.no_unearned_rule
+  Challenge.stipulations_only_in_gaps
   Challenge.determinism
   Challenge.terminal_final_introduced
   Challenge.terminal_final_withdrawn

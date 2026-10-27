@@ -9,9 +9,16 @@ The design and its reasons are in `docs/plans/029-challenges.md`. In short:
 - **The user carries the burden.** The established answer stands unless the case survives every attack.
 - **Five adversarial judges** each try to defeat the case through a different lens, with evidence from the
   skill's own sources. In the first round they can't see each other's work.
-- **A rule is introduced only if all five are convinced**, the verifier passes the final case with no
-  unsupported step, it contradicts no level 1 source, and the panel was independent. A single judge with a
-  verified refutation still standing defeats it. That judge is the correct minority, and unanimity lets it win.
+- **The judges close the case, by consensus, and never early.** A judge is *settled* when its latest position is
+  on the final version of the case and carries **evidence** (pinned sources the core and the verifier check) and
+  **reasoning**. No script and no round limit closes a challenge for them.
+- **A rule is introduced only if all five judges are convinced**, the verifier passes the final case, nothing
+  stands unanswered, it contradicts no level 1 source, and the panel was independent. A single judge who isn't
+  convinced blocks it: that judge is the correct minority, and unanimity lets it win.
+- **A case is refused when three or more judges are not convinced.** It ends `refuted` if a verified refutation
+  stands (or the case contradicts a level 1 source), and `open` if it is merely unproven. With one or two not
+  convinced there is no consensus yet, so the judges see each other's reasons and a new round runs, up to three
+  rounds, after which the case stays `open`.
 - **`scripts/challenge.py` enforces all of this.** Every step is an event that the Lean core (`bab-challenge`)
   accepts or refuses, so you never need to remember what is allowed next: `challenge.py status <id>` says.
 
@@ -58,11 +65,20 @@ The case and every refutation and rebuttal have the same shape. `challenge.py` p
 - **`challenges`** names the established answer being challenged (an official ruling, a CR or document
   section, or Oracle text), or says `none: a gap`.
 - **Each step** has its premises (`F<n>` for a fact, `S<n>` for an earlier step; in a refutation or rebuttal
-  also `C<n>` for a step of the case), **one** quoted source, and the conclusion that source licenses. A step
-  with no source must say `"assumption": true`. A case with an assumption step can't be introduced.
-- **Sources** (`doc`): `cr` (ref = rule number), `oracle` (ref = card name, `excerpt` = the words relied on),
-  `ruling` (the official ruling's words as `excerpt`; it must be in the record), `mtr`, `ipg`, `jar`
-  (ref = section). Add `"excerpt"` to quote part of a long rule.
+  also `C<n>` for a step of the case, never a bare number), **one** quoted source, and the conclusion that source
+  licenses. A step with no source must say `"assumption": true`, and a case with an assumption step can't be
+  introduced.
+- **A stipulation** (`"stipulation": true`, no source) is the rule's own new content, and only a case that fills
+  a gap (`"challenges": "none: a gap"`) can have one. Nothing official can support it, because it is what the
+  user proposes; the judges attack it on its merits (does it contradict a rule, does it fail on a counterexample,
+  does it leave a game type uncovered) and vote on accepting exactly that. It can never quote a source, be an
+  assumption, or appear in a refutation. Claims about how the existing rules work are not stipulations: they
+  need sources.
+- **Sources** (`doc`): `cr` (ref = rule number), `oracle` (ref = the exact card name, `excerpt` = words from its
+  rules text only, never the type line), `ruling` (the official ruling's words as `excerpt`; it must be in the
+  record), `mtr`, `ipg`, `jar` (ref = section). Add `"excerpt"` to quote part of a long rule, and quote only the
+  rule's own paragraph, never its `Example:` lines or a section heading: those aren't in the pinned text, and the
+  core refuses the quote.
 - **Precedence**, when sources conflict: card text over rules (CR 101.1), "can't" over "can" (101.2), the
   specific over the general, and level 1 over level 2 over level 4 (plan 028). A case can never contradict
   level 1 text on the same facts. If the user still wants such a rule, it can only be kept as a **house rule**
@@ -89,6 +105,9 @@ Play the clerk yourself, with this brief:
 > on, and the record (`judge.py search`) for the established answer it challenges. Number the facts. List every
 > fact the case needs that the user hasn't stated as an open question; never assume one. Write the derivation
 > so each step quotes one source. Label any step you can't source as an assumption, and tell the user it is one.
+> If the case fills a gap (nothing official covers it), the rule's own new content goes in steps marked
+> `"stipulation": true`, with `"challenges": "none: a gap"`; everything about how the existing rules work still
+> needs a source. Include `"open_questions"` (an empty list is fine).
 
 Write the case to a file, then:
 
@@ -145,13 +164,19 @@ reasons back to that judge only, and add its corrected filing.
 > derivation in the proof standard. At least one step must quote a source; refer to the case's steps as `C<n>`
 > and its facts as `F<n>`.
 >
-> If you honestly cannot refute it through your lens after trying, concede, and say what you tried. A weak
-> refutation is worse than an honest concession: the verifier checks every quote, and a refutation that fails
-> verification counts for nothing.
+> If you honestly cannot refute it through your lens after trying, concede. A concession is a position, so like
+> a refutation it needs **evidence and reasoning**: the pinned sources you checked, and why they leave the case
+> standing. A weak refutation is worse than an honest concession: the verifier checks every quote, and a
+> refutation that fails verification counts for nothing. A stipulation (the rule's own new content, in a gap
+> case) can't be refuted for lacking a source; attack what it says.
+>
+> Write premises as `F1`, `S1` or `C1`, never bare numbers. Quote only a rule's own paragraph (not its
+> `Example:` lines or a heading), and an Oracle excerpt only from the card's rules text.
 >
 > Return only JSON:
 > `{"type": "file", "round": {n}, "refutations": [{"target": 2, "ground": "...", "argument": "...", "steps": [...]}], "concedes": ""}`
-> or, to concede, `{"type": "file", "round": {n}, "refutations": [], "concedes": "what you tried, and why it failed"}`.
+> or, to concede,
+> `{"type": "file", "round": {n}, "refutations": [], "concedes": "why the case stands", "concede_evidence": [{"doc": "cr", "ref": "103.1"}]}`.
 >
 > The challenge so far (everything you may see): {the output of show --judge k}
 
@@ -184,18 +209,19 @@ python scripts/challenge.py verify <id>
 
 It re-checks every source in the case and in every refutation: the rule or section still exists, its text
 still hashes to what was pinned, and the quote is in it. A refutation with any failed source is dropped. The
-rest are **verified, and stand** until the user answers them. If none stands, the challenge goes straight to the
-vote.
+rest are **verified, and stand** until the user answers them. If none stands and every judge conceded on the
+unchanged case, their concessions are their settled positions and the challenge closes at once: all five
+convinced introduces the rule. If none stands but a judge's refutation was dropped, the judges settle (step 7).
 
 ### 5. The user answers
 
 Show the user each standing refutation in plain words: which step it attacks, on what ground, and its evidence.
 For each one, the user chooses, and you write down their choice in their words:
 
-- **concede**: they accept it. Unless the same answer also gives a revised case, the challenge is refuted as
-  soon as the verifier has checked the answers. Say so to the user before they concede.
-- **fix**: they change the case. Give the revised case as `"case"`; the fix holds only if it changes or removes
-  the step that was attacked.
+- **concede**: they accept it. The refutation keeps standing unless the same answer also gives a revised case.
+- **fix**: they change the case. Give the whole revised case at the answer's top level as `"case"` (not inside
+  the reply, and with `"open_questions"`); the fix holds only if it changes or removes the step that was
+  attacked.
 - **rebut**: they argue back, in the proof standard, with sources. It holds only if every source checks.
 
 ```json
@@ -210,6 +236,11 @@ python scripts/challenge.py add <id> answer.json --as user
 python scripts/challenge.py verify <id>        # the verifier checks the answers
 ```
 
+After the verifier checks the answers, `status` says what happens next. **A revised case is attacked again**
+(step 6). **An unchanged case goes to the judges to settle** (step 7), whether the refutations were rebutted,
+conceded or simply left standing: there is nothing new to attack, so the judges decide on the evidence. Nothing
+is closed for them.
+
 Help the user find sources if they ask, but the argument is theirs. Never write a rebuttal they didn't make, and
 never concede for them. They can also withdraw: `challenge.py withdraw <id> --user-said "..."`.
 
@@ -223,28 +254,37 @@ Each judge now sees the user's answers and the other judges' verified refutation
 > doesn't hold, a fix that breaks another step, or a new weakness. Don't repeat a refutation the user has
 > answered unless you can show that the answer fails. Concede if nothing remains.
 
-Rounds repeat until no verified refutation stands, or the user withdraws. After four rounds with refutations
-still standing, the challenge stays **open**. It's a gap the user can return to with new facts or sources (a
-`reopen` event with the revised case).
+A new attack round runs only when the user revised the case. After three rounds the judges settle however
+the case stands. The user can withdraw at any point they are asked to act.
 
-### 7. The verdict: five blind votes
+### 7. The judges settle: five blind positions, each with evidence and reasoning
 
-When `status` says the panel votes, launch the five again as subagents, in one message, each with its own view
-(which never shows another judge's vote) and this prompt:
+When `status` says the judges settle, launch the five again as subagents, in one message, each with its own view
+(which never shows another judge's position) and this prompt:
 
-> Judge {k}, vote on the case as it now stands. Be convinced only if no verified refutation you know of still
-> stands and the derivation holds step by step. If you're convinced, name the step that settled it for you. If
-> not, name the refutation or step that still defeats it. Vote on the evidence, not on what you expect the
-> others to do. Return only JSON: `{"type": "vote", "convinced": true, "reason": "..."}`.
+> Judge {k}, settle your position on the case as it now stands. Be convinced only if no verified refutation you
+> know of still stands and the derivation holds step by step, and every stipulation is something you accept as
+> the rule. Your position must carry **evidence and reasoning**:
+> - if convinced, the pinned sources behind the step that settled it for you, and why they are enough;
+> - if not convinced, the verified refutation that stands, or the specific evidence that is missing, with the
+>   sources you checked, and why the case fails without it.
+> Settle on the evidence, not on what you expect the others to do. Return only JSON:
+> `{"type": "vote", "convinced": true, "reason": "...", "evidence": [{"doc": "cr", "ref": "103.1", "excerpt": "..."}]}`.
 
 ```bash
 python scripts/challenge.py add <id> vote-3.json --as judge-3
 ```
 
-The fifth vote closes the challenge on its own. The core introduces the rule only if every guard holds
-(all five convinced, the last report passed, no level 1 conflict, no assumption step, an independent panel).
-Otherwise the challenge is **refuted**, with the reason, or stays **open** if a single-agent panel was
-convinced.
+The core refuses a position with no reasoning, no evidence or an unpinnable quote. The fifth position closes the
+step, and the judges' consensus decides the outcome:
+
+| Positions | Outcome |
+| --- | --- |
+| All five convinced, every guard holds | **Introduced** |
+| Three or more not convinced, a verified refutation stands (or a level 1 conflict) | **Refuted** |
+| Three or more not convinced, nothing stands | **Open**: unproven |
+| One or two not convinced | No consensus: another round (the dissent is visible to all); **open** after three |
+| All convinced but a guard fails (an unsourced step, a single-agent panel) | **Open**; **refuted** if a verified refutation stands |
 
 ### 8. Tell the user
 
@@ -252,10 +292,11 @@ Report the outcome, the deciding steps or the refutation that defeated the case,
 line. Then:
 
 - **Introduced:** the rule is now in the record. `challenge.py trace <id>` checks it against its challenge.
-- **Refuted:** the established answer stands. If the user still wants their rule, it can be kept only as a
-  **house rule**, marked as departing from the official rules:
+- **Refuted** (or **open**): the established answer stands. If the user still wants their rule, it can be kept
+  only as a **house rule**, marked as departing from the official rules:
   `challenge.py add <id> house-rule.json --as user` with `{"type": "house-rule", "words": "<their words>"}`.
-- **Open:** say what would settle it (a missing fact, an official ruling Wizards hasn't made).
+- **Open:** unproven or no consensus. Say what would settle it (a missing fact, an official ruling Wizards
+  hasn't made). The user can return with new facts or sources (a `reopen` event), or keep it as a house rule.
 
 ## On claude.ai: a single-agent panel
 
@@ -269,7 +310,9 @@ Tell the user this when you open it.
 
 - No answer, conversation or agent's opinion becomes a rule except through a challenge that the core closes as
   introduced.
-- No judge sees another judge's filing in its own round, or another judge's vote, before all five have acted.
+- No judge sees another judge's filing in its own round, or another judge's position, before all five have acted.
+- No script or round limit closes a challenge for the judges: only their settled positions, each with evidence
+  and reasoning, do.
 - Nothing is decided for the user: they confirm the brief, answer the refutations, pick a side of a fork and
   ask for a house rule, each in their own words.
 - No event file is edited or deleted. A fork's unchosen branch is moved to `discarded/`, never removed.

@@ -5,8 +5,9 @@ import Challenge.Chain
 
 Checked on every build; `Audit.lean` fails the build if any of them is missing or rests on `sorry`.
 
-1. `no_unearned_rule`: an introduced challenge had five convinced judges, a passing verifier report, no level 1
-   conflict, no unsupported step and an independent panel.
+1. `no_unearned_rule`: an introduced challenge had five convinced judges, each with evidence; a passing verifier
+   report with no level 1 conflict and nothing standing; every step sourced or a stipulation; and an independent
+   panel. `stipulations_only_in_gaps`: a stipulation can only be in a rule that fills a gap.
 2. `determinism`: the state depends only on which events there are, not the order the files are read in, so
    every device holding the same events computes the same state.
 3. `terminal_final_*`, `refuted_only_to_house_rule`: no event leaves `introduced`, `withdrawn` or `house-rule`;
@@ -39,9 +40,16 @@ theorem every_judge_convinced (e : Earned) :
 theorem no_unearned_rule {evs : List Entry} {s : State} {tags : List (Nat × Entry)} {e : Earned}
     (_hr : replay evs = .state s tags) (_hp : s.phase = .introduced e) :
     (∀ k ∈ judges, ∃ v ∈ e.votes, v.judge = k ∧ v.convinced = true) ∧
-    e.report.passed = true ∧ e.report.level1Conflict = false ∧
-    e.claim.steps.all (fun st => st.source.isSome) = true ∧ e.panel = Panel.independent :=
-  ⟨every_judge_convinced e, e.passed, e.noConflict, e.sourced, e.independent⟩
+    e.report.passed = true ∧ e.report.level1Conflict = false ∧ e.report.standing.isEmpty = true ∧
+    e.votes.all (fun v => !v.evidence.isEmpty) = true ∧
+    e.claim.steps.all (fun st => st.source.isSome || st.stipulation) = true ∧ e.panel = Panel.independent :=
+  ⟨every_judge_convinced e, e.passed, e.noConflict, e.noStanding, e.evidenced, e.grounded, e.independent⟩
+
+/-- A stipulation can only be in a rule that fills a gap, never one that challenges an official answer. -/
+theorem stipulations_only_in_gaps {evs : List Entry} {s : State} {tags : List (Nat × Entry)} {e : Earned}
+    (_hr : replay evs = .state s tags) (_hp : s.phase = .introduced e) :
+    e.claim.steps.all (fun st => !st.stipulation || isGap e.claim.challenges) = true :=
+  e.gapOnly
 
 /-! ## 2. Determinism -/
 

@@ -2,7 +2,8 @@
 # The shapes of a challenge
 
 A case and every refutation use one proof standard (plan 029): numbered facts, the proposed rule, and a
-derivation whose every step names its premises and quotes one pinned source, or is labelled an assumption.
+derivation whose every step names its premises and quotes one pinned source, or is labelled an assumption, or, in a
+case that fills a gap, is a stipulation: the rule's own new content.
 -/
 
 namespace Challenge
@@ -10,8 +11,11 @@ namespace Challenge
 /-- The panel has five judges, numbered 1 to 5. -/
 def panelSize : Nat := 5
 
-/-- After this many attack rounds a challenge with refutations still standing stays open. -/
-def roundCap : Nat := 4
+/-- After this many attack rounds the judges settle the case, however it stands. -/
+def roundCap : Nat := 3
+
+/-- A rule is introduced only if every judge is convinced; a case is refused when this many are not. -/
+def refuseNeeds : Nat := 3
 
 def judges : List Nat := List.range' 1 panelSize
 
@@ -37,6 +41,8 @@ structure Step where
   premises : List Ref
   source : Option Source
   assumption : Bool
+  /-- The rule's own new content, in a case that fills a gap. It quotes no source: it is what the judges vote on. -/
+  stipulation : Bool
   conclusion : String
   deriving Repr
 
@@ -79,6 +85,8 @@ structure Filing where
   round : Nat
   refutations : List Refutation
   concedes : String
+  /-- What a concession rests on: the pinned sources the judge checked. -/
+  concedeEvidence : List Source
   deriving Repr
 
 /-- A refutation, by its judge and its number (1, 2...) in that judge's filing. -/
@@ -127,6 +135,8 @@ structure Vote where
   judge : Nat
   convinced : Bool
   reason : String
+  /-- What the position rests on: the pinned sources relied on or checked. Never empty. -/
+  evidence : List Source
   deriving Repr
 
 /-- `singleAgent` is claude.ai's fallback, where one agent plays every judge: it can open and refute a
