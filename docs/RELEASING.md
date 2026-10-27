@@ -2,7 +2,8 @@
 
 A release is a git tag named `vMAJOR.MINOR.PATCH`, such as `v0.1.0`. Pushing the tag builds the challenge program
 `bab-challenge` for five platforms and attaches the binaries, with their SHA-256 sums and a `pins.json`, to a
-GitHub release. Nothing else needs releasing: everyday answering is just the files in the repository.
+GitHub release, then attaches `bishop-and-barrister.zip`, the skill for claude.ai's skills settings. Claude Code
+users who installed the plugin get the new version when `.claude-plugin/plugin.json` changes.
 
 ## What each number means
 
@@ -20,16 +21,18 @@ what 1.0.0 will keep.
 
 ## The procedure
 
-1. **Bump the version** in `challenge/Main.lean` (`def version`, the number after `bab-challenge`). Merge it to
-   `main` through a pull request with the checks green.
+1. **Bump the version** in `challenge/Main.lean` (`def version`, the number after `bab-challenge`) and in
+   `.claude-plugin/plugin.json` (`version`), to the same number. Merge it to `main` through a pull request with
+   the checks green; a test fails if the two differ.
 2. **Tag that commit** and push the tag:
    ```bash
    git tag v0.1.0 && git push origin v0.1.0
    ```
-   The `challenge` workflow refuses a tag that isn't `v` plus the number the built program reports, so a
-   forgotten bump fails before anything is published.
+   The `challenge` workflow refuses a tag that isn't `v` plus the number the built program and the plugin
+   report, so a forgotten bump fails before anything is published.
 3. **Wait for the release build.** It proves the theorems, runs the tests, builds five binaries, attaches them to
-   the release and attaches `pins.json` (each file's name and SHA-256).
+   the release and attaches `pins.json` (each file's name and SHA-256), then builds `bishop-and-barrister.zip`
+   with those pins (`tools/package_skill.py`) and attaches it.
 4. **Pin the binaries.** Copy the release's `pins.json` into `challenge/binaries.json` and merge that through a
    pull request. Until then `challenge.py` says there is no released program for the platform.
 5. **Check a real download** on at least one platform: with no `BISHOP_AND_BARRISTER_CHALLENGE_BIN` set, run

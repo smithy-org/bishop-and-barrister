@@ -5,15 +5,35 @@ current Oracle card text instead of from memory, and cites the rules it relies o
 
 ## Install
 
-Clone it into your Claude Code skills folder:
+### Claude Code: as a plugin (recommended)
+
+```
+/plugin install bishop-and-barrister --marketplace smithy-org/bishop-and-barrister
+```
+
+On Claude Code before 2.1.275, add the marketplace first, then install:
+
+```
+/plugin marketplace add smithy-org/bishop-and-barrister
+/plugin install bishop-and-barrister@smithy-org
+```
+
+Updates arrive with each release. Third-party marketplaces don't update by themselves unless you turn it on:
+`/plugin`, Marketplaces, `smithy-org`, Enable auto-update.
+
+### Claude Code: from a clone
 
 ```bash
 git clone https://github.com/smithy-org/bishop-and-barrister ~/.claude/skills/bishop-and-barrister
 ```
 
-Then fetch the rules documents once: the Comprehensive Rules, the Magic Tournament Rules, the Infraction
-Procedure Guide and Judging at Regular REL. They are not bundled, because they belong to Wizards of the Coast
-and change several times a year. The three tournament documents are PDFs, read with `pypdf`:
+### Then, either way: the rules documents
+
+Fetch the rules documents once: the Comprehensive Rules, the Magic Tournament Rules, the Infraction Procedure
+Guide and Judging at Regular REL. They are not bundled, because they belong to Wizards of the Coast and change
+several times a year. They're kept in `~/.claude/bishop-and-barrister/documents/`, outside the skill's folder,
+so updating the skill keeps them. The three tournament documents are PDFs, read with `pypdf`. With the plugin,
+ask Claude to run `scripts/sources.py update` from the skill's folder; with a clone:
 
 ```bash
 pip install pypdf
@@ -41,8 +61,14 @@ tells you the cost and asks first. See `CHALLENGE.md`.
 
 ### On claude.ai
 
-Zip this repository and add it as a custom skill in claude.ai's skills settings. This has not been tested
-there yet. The skill fetches card data from scryfall.com and the rules documents from media.wizards.com, and a
+1. Download `bishop-and-barrister.zip` from the [latest release](https://github.com/smithy-org/bishop-and-barrister/releases/latest).
+   Don't use GitHub's "Download ZIP": its folder is named `bishop-and-barrister-main`, and claude.ai needs the
+   folder to match the skill's name. To build the zip yourself: `python tools/package_skill.py`.
+2. Turn on code execution: Settings, Capabilities, "Code execution and file creation". On Team and Enterprise
+   plans an owner enables code execution and skills in the organization settings first.
+3. Upload the zip under Skills in the same settings.
+
+This has not been tested there yet. The skill fetches card data from scryfall.com and the rules documents from media.wizards.com, and a
 challenge downloads its program from GitHub; if the sandbox blocks any of them, the script that needed it
 reports the failure and the rest still works. Without independent subagents, claude.ai can open and refute a
 challenge as a single-agent panel but cannot introduce a rule.

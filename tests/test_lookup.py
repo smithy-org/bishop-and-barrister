@@ -87,7 +87,8 @@ class LookupTest(unittest.TestCase):
         docs = root / "docs"
         docs.mkdir()
         (docs / "ipg.json").write_text(json.dumps(IPG), encoding="utf-8")
-        for p in (mock.patch.object(lookup, "RULES_FILE", cr), mock.patch.object(lookup, "DOCS_DIR", docs)):
+        for p in (mock.patch.object(lookup, "RULES_FILE", cr), mock.patch.object(lookup, "DOCS_DIR", docs),
+                  mock.patch.object(lookup, "REFERENCE_DIR", root / "reference"), mock.patch.object(lookup, "DATA_DIR", root)):
             p.start()
             self.addCleanup(p.stop)
 
@@ -205,6 +206,27 @@ class LookupTest(unittest.TestCase):
         status, _, err = self.run_lookup("--doc", "ipg", "glossary", "Warning")
         self.assertEqual(status, 2)
         self.assertIn("glossary is only in the CR", err)
+
+
+class LegacyDocumentsTest(unittest.TestCase):
+    """Documents an earlier version downloaded into the skill folder move to the data folder on first use."""
+
+    def test_copies_what_is_missing_and_keeps_the_originals(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            old, new = Path(tmp) / "reference", Path(tmp) / "home" / "documents"
+            (old / "docs").mkdir(parents=True)
+            (old / "MagicCompRules.txt").write_text("old rules", encoding="utf-8")
+            (old / "docs" / "ipg.json").write_text("{}", encoding="utf-8")
+            new.mkdir(parents=True)
+            (new / "sources.json").write_text('{"newer": true}', encoding="utf-8")
+            (old / "sources.json").write_text('{"older": true}', encoding="utf-8")
+            with mock.patch.object(lookup, "REFERENCE_DIR", old), mock.patch.object(lookup, "DATA_DIR", new):
+                self.assertEqual(sorted(lookup.adopt_legacy_documents()), ["MagicCompRules.txt", "docs"])
+                self.assertEqual(lookup.adopt_legacy_documents(), [])  # once only
+            self.assertEqual((new / "MagicCompRules.txt").read_text(encoding="utf-8"), "old rules")
+            self.assertTrue((new / "docs" / "ipg.json").exists())
+            self.assertIn("newer", (new / "sources.json").read_text(encoding="utf-8"))  # never overwritten
+            self.assertTrue((old / "MagicCompRules.txt").exists())  # the skill folder is left as it was
 
 
 if __name__ == "__main__":

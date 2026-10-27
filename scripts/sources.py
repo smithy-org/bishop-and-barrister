@@ -11,8 +11,10 @@
 Every PDF is downloaded from Wizards' own host, media.wizards.com; the pages
 above only say which file is current. None of these documents ships with the
 skill: they belong to Wizards and change several times a year, so each copy
-downloads its own. A PDF is kept in reference/docs/<key>.pdf and converted to
-reference/docs/<key>.json (sections, for lookup.py --doc). reference/sources.json
+downloads its own. They live outside the skill's folder, in documents/ in the
+skill's home (lookup.DATA_DIR), so a plugin update keeps them. A PDF is kept in
+documents/docs/<key>.pdf and converted to documents/docs/<key>.json (sections,
+for lookup.py --doc). documents/sources.json
 records the version of each.
 
 When a document changes, the judge's record is rechecked (judge.py recheck
@@ -45,7 +47,7 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 import lookup  # noqa: E402  (DOCS and DOCS_DIR)
 
-REGISTRY = lookup.REFERENCE_DIR / "sources.json"
+REGISTRY = lookup.DATA_DIR / "sources.json"
 UA = "bishop-and-barrister/1.0"
 PDF_HOST = "https://media.wizards.com/"
 PAGES = {
@@ -77,12 +79,12 @@ def now() -> str:
 
 
 def load_registry() -> dict:
-    """Read reference/sources.json, or an empty registry if nothing has been installed."""
+    """Read documents/sources.json, or an empty registry if nothing has been installed."""
     return json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {}
 
 
 def save_registry(registry: dict) -> None:
-    """Write reference/sources.json."""
+    """Write documents/sources.json."""
     REGISTRY.write_text(json.dumps(registry, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
@@ -301,7 +303,7 @@ def convert(doc: str, pdf: Path) -> dict:
 
 
 def install(doc: str, data: bytes, url: str) -> dict:
-    """Keep a downloaded PDF and its conversion in reference/docs/.
+    """Keep a downloaded PDF and its conversion in documents/docs/.
 
     Args:
         doc: The document key.
@@ -399,7 +401,7 @@ FORMATS_DIR = lookup.REFERENCE_DIR / "formats"
 def installed_versions() -> dict:
     """Return the effective date of each installed document, as `list` prints it, by key."""
     versions = {doc: info.get("effective") for doc, info in load_registry().items()}
-    cr = lookup.REFERENCE_DIR / "version.json"
+    cr = lookup.DATA_DIR / "version.json"
     if cr.exists():
         versions["cr"] = json.loads(cr.read_text(encoding="utf-8")).get("effective_date")
     return {doc: v for doc, v in versions.items() if v}
@@ -491,7 +493,7 @@ def cmd_list(args) -> int:
         The exit status.
     """
     registry = load_registry()
-    cr = lookup.REFERENCE_DIR / "version.json"
+    cr = lookup.DATA_DIR / "version.json"
     if cr.exists():
         v = json.loads(cr.read_text(encoding="utf-8"))
         print(f"cr   Comprehensive Rules: effective {v.get('effective_date')}, sha256 {v.get('sha256', '')[:12]}")
@@ -550,6 +552,7 @@ def main() -> int:
     p.add_argument("docs", nargs="*", choices=list(lookup.DOCS))
     p.set_defaults(func=cmd_convert)
     args = parser.parse_args()
+    lookup.adopt_legacy_documents()  # documents downloaded into the skill folder by an earlier version
     return args.func(args)
 
 
