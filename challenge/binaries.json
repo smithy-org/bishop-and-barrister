@@ -1,26 +1,26 @@
 {
   "comment": "The bab-challenge binaries challenge.py downloads, from this release of smithy-org/bishop-and-barrister, refused unless the SHA-256 matches. Filled in from a release's pins.json (the challenge workflow attaches it); null until the first release.",
-  "release": "v0.1.0",
+  "release": "v0.2.0",
   "binaries": {
     "linux-arm64": {
       "file": "bab-challenge-linux-arm64",
-      "sha256": "c6d567bf25f150cfaa7f7fd3442244dee4bfaf429d6eed73d8529db8befab54d"
+      "sha256": "4772d858f5e153feb6a56f233b5c7229cd21f681c1288d95cf6e9b6a642cda77"
     },
     "linux-x64": {
       "file": "bab-challenge-linux-x64",
-      "sha256": "eb6572f6a603c444ad7124f747d36beb6682c472a99be94123661de5bba6b129"
+      "sha256": "d4fea61fa095465069b5736e2067c9d6c614213d684d51637d35cd4d6f3a104d"
     },
     "macos-arm64": {
       "file": "bab-challenge-macos-arm64",
-      "sha256": "42ca57214108f2cc5778a6fefb1910dc2b8d4af3d7c5bd7bc2889ee0c8fd22bd"
+      "sha256": "ab27b95daca15e88db411b7e4f00a3fb2d633048b9764b68ea69f4c513d91283"
     },
     "macos-x64": {
       "file": "bab-challenge-macos-x64",
-      "sha256": "a6a09dee59a8f949269a2c04f80260da1d452877de363d09ff303557b5854514"
+      "sha256": "bc0b85c9c9d619227f9399b373320d6dcedcce7aa0e3eeefc87c8ec01d6e8d7a"
     },
     "windows-x64": {
       "file": "bab-challenge-windows-x64.exe",
-      "sha256": "25ed37ac51b452cb0d0157eb6945c1b32a846571c8575890c7f277cf1b726eff"
+      "sha256": "ac712fabadf3b2bd99db2631ad3801904793edb7220ea506ec872aafb2d1e742"
     }
   }
 }
