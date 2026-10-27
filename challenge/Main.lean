@@ -8,7 +8,7 @@ def usage : String :=
   view    stdin {\"events\": [...]}                                 → the event files judge k may see
   rule    stdin {\"state\": \"current\", \"event\": \"source-changed\"} → the rule's next state"
 
-def version : String := "bab-challenge 0.1.0 (challenge format v1)"
+def version : String := "bab-challenge 0.2.0 (challenge format v1)"
 
 partial def readAll (h : IO.FS.Stream) (acc : String) : IO String := do
   let line ← h.getLine
