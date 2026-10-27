@@ -527,13 +527,13 @@ def build_report(cid: str, state: dict) -> dict:
 NEXT = {
     "draft": "The clerk writes the brief in the proof standard: challenge.py brief {id} case.json",
     "briefed": "The user confirms the brief (challenge.py confirm {id} --user-said ...) or corrects it (edit)",
-    "attack": "Round {round}: judges {waiting} each file refutations or concede (challenge.py add {id} filing.json "
+    "attack": "Round {round}: {waiting} still to file. Each judge files refutations or concedes (challenge.py add {id} filing.json "
               "--as judge-<k>). They can't see each other's filings until all seven have filed",
     "verify": "The verifier checks round {round}'s refutations: challenge.py verify {id}",
     "answer": "The user answers each verified refutation still standing ({standing}): concede, fix the case, or "
               "rebut (challenge.py add {id} answer.json --as user)",
     "verify-answers": "The verifier checks the user's answers to round {round}: challenge.py verify {id}",
-    "voting": "Judges {waiting} vote, blind to each other's votes (challenge.py add {id} vote.json --as judge-<k>)",
+    "voting": "The panel votes, blind to each other's votes; {waiting} still to vote (challenge.py add {id} vote.json --as judge-<k>)",
     "open": "Open: the user can return with new facts or sources (add a reopen event) or withdraw it",
 }
 
@@ -549,7 +549,8 @@ def status_text(cid: str, state: dict) -> str:
         lines.append("Settled: nothing more happens." if state["state"] != "refuted" else
                      "Settled. The user may still keep the case as a house rule (add a house-rule event).")
     else:
-        waiting = ", ".join(a.removeprefix("judge-") for a in state["next"])
+        ks = [a.removeprefix("judge-") for a in state["next"]]
+        waiting = f"judge {ks[0]}" if len(ks) == 1 else f"judges {', '.join(ks[:-1])} and {ks[-1]}"
         standing = ", ".join(f"judge {s['judge']}'s refutation {s['index']}" for s in state.get("standing", []))
         lines.append("Next: " + NEXT[state["state"]].format(id=cid, round=state.get("round"), waiting=waiting,
                                                             standing=standing or "none"))

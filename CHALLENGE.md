@@ -195,7 +195,8 @@ vote.
 Show the user each standing refutation in plain words: which step it attacks, on what ground, and its evidence.
 For each one, the user chooses, and you write down their choice in their words:
 
-- **concede**: they accept it. It keeps standing, so the case can't win unless they also fix it.
+- **concede**: they accept it. Unless the same answer also gives a revised case, the challenge is refuted as
+  soon as the verifier has checked the answers. Say so to the user before they concede.
 - **fix**: they change the case. Give the revised case as `"case"`; the fix holds only if it changes or removes
   the step that was attacked.
 - **rebut**: they argue back, in the proof standard, with sources. It holds only if every source checks.

@@ -200,15 +200,24 @@ def onAnswer (s : State) (n : Nat) (c : Case) (fs : List Filing) (r : Report) (x
   | .withdraw w => withdrawBy s x w
   | _ => .error s!"round {n}'s verified refutations are waiting for the user's answer"
 
-def onVerifyAnswers (s : State) (n : Nat) (c : Case) (fs : List Filing) (x : Entry) : Except String State :=
+/-- A refutation the user conceded without revising the case: it defeats the case. -/
+def concededWithoutFix (a : Answer) : Option Slot :=
+  if a.revised.isSome then none else (a.replies.find? (fun rp => rp.kind == ReplyKind.concede)).map (·.slot)
+
+def onVerifyAnswers (s : State) (n : Nat) (c : Case) (fs : List Filing) (a : Answer) (x : Entry) :
+    Except String State :=
   match x.event with
   | .report r =>
     if x.actor ≠ Actor.verifier then .error "only the verifier files a report"
     else match checkReport n .answers fs r with
       | [] =>
-        if n < roundCap then .ok { s with phase := .attack (n + 1) c [] noneFiled }
-        else if r.standing.isEmpty then .ok { s with phase := .voting c r [] noneVoted }
-        else .ok { s with phase := .open_ c s!"{roundCap} rounds, and refutations still stand" }
+        match concededWithoutFix a with
+        | some sl =>
+          .ok { s with phase := .refuted c s!"the user conceded judge {sl.judge}'s refutation {sl.index} and didn't revise the case" }
+        | none =>
+          if n < roundCap then .ok { s with phase := .attack (n + 1) c [] noneFiled }
+          else if r.standing.isEmpty then .ok { s with phase := .voting c r [] noneVoted }
+          else .ok { s with phase := .open_ c s!"{roundCap} rounds, and refutations still stand" }
       | errs => .error (joinErrors errs)
   | _ => .error s!"the user's answers to round {n} are waiting for the verifier"
 
@@ -256,7 +265,7 @@ def step (s : State) (x : Entry) : Except String State :=
   | .attack n c fs _ => onAttack s n c fs x
   | .verify n c fs => onVerify s n c fs x
   | .answer n c fs r => onAnswer s n c fs r x
-  | .verifyAnswers n c fs _ => onVerifyAnswers s n c fs x
+  | .verifyAnswers n c fs a => onVerifyAnswers s n c fs a x
   | .voting c r vs _ => onVoting s c r vs x
   | .open_ c _ => onOpen s c x
 
