@@ -802,7 +802,14 @@ def main() -> int:
     p.set_defaults(func=cmd_trace)
 
     args = parser.parse_args()
-    return args.func(args)
+    # With a remote store set, challenges sync like the rest of the record (judge.py's automatic sync).
+    name = f"challenge {args.command}"
+    if name in judge.READS:
+        judge.auto_sync(name)  # bring other devices' events in before reading
+    status = args.func(args)
+    if name in judge.WRITES and status == 0:
+        judge.auto_sync(name)  # send this device's event out
+    return status
 
 
 if __name__ == "__main__":
