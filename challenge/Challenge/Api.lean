@@ -36,7 +36,7 @@ def Phase.standing : Phase → List Slot
 
 def Phase.why : Phase → Option String
   | .refuted _ w | .open_ _ w => some w
-  | .introduced _ => some "all seven judges were convinced"
+  | .introduced _ => some "all five judges were convinced"
   | _ => none
 
 def panelName : Panel → String

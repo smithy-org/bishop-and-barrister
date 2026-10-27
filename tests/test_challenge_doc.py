@@ -29,9 +29,9 @@ class ChallengeDocTest(unittest.TestCase):
         for block in blocks:
             json.loads(block)
 
-    def test_seven_lenses(self):
-        lenses = re.findall(r"^(\d)\. \*\*", DOC.split("**The seven lenses**")[1].split("### 4.")[0], re.M)
-        self.assertEqual(lenses, [str(k) for k in range(1, 8)])
+    def test_five_lenses(self):
+        lenses = re.findall(r"^(\d)\. \*\*", DOC.split("**The five lenses**")[1].split("### 4.")[0], re.M)
+        self.assertEqual(lenses, [str(k) for k in range(1, 6)])
 
 
 if __name__ == "__main__":
