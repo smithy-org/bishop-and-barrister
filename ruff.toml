@@ -1,0 +1,8 @@
+# Docstring checks: every module, class and function has a Google-style docstring (PEP 257), so pdoc or
+# Sphinx with napoleon can generate documentation from it. CI runs `ruff check scripts`.
+
+[lint]
+select = ["D"]
+
+[lint.pydocstyle]
+convention = "google"

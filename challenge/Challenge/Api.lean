@@ -14,6 +14,7 @@ with `"ok"`; a refusal says why.
 namespace Challenge
 open Lean
 
+/-- A slot as JSON: the judge and the refutation's number. -/
 def slotJson (sl : Slot) : Json := Json.mkObj [("judge", toJson sl.judge), ("index", toJson sl.index)]
 
 /-- `challenge-<YYYYMMDD>-<12 hex>`: the opening event's date and the start of its hash. -/
@@ -21,6 +22,7 @@ def challengeId (opening : Entry) : String :=
   let date := (opening.time.take 10).replace "-" ""
   s!"challenge-{date}-{opening.hash.take 12}"
 
+/-- The judges who have filed in the round in progress. -/
 def Phase.filed : Phase → List Nat
   | .attack _ _ _ _ fs _ | .verify _ _ _ fs | .answer _ _ _ fs _ | .verifyAnswers _ _ _ fs _ => fs.map (·.judge)
   | _ => []
@@ -51,23 +53,28 @@ def Phase.revision : Phase → Option Nat
   | .joining _ _ r _ _ => some r
   | _ => none
 
+/-- The verified refutations awaiting the user's answer. -/
 def Phase.standing : Phase → List Slot
   | .answer _ _ _ _ r => r.standing
   | _ => []
 
+/-- Why the challenge ended as it did, once it is introduced, refuted or open. -/
 def Phase.why : Phase → Option String
   | .refuted _ w | .open_ _ w => some w
   | .introduced _ => some "all five judges joined the opinion of the court"
   | _ => none
 
+/-- The panel's name, as event files write it. -/
 def panelName : Panel → String
   | .independent => "independent"
   | .singleAgent => "single-agent"
 
+/-- One event's place, author, device and hash, for reporting a fork. -/
 def entryJson (x : Entry) : Json :=
   Json.mkObj [("seq", toJson x.seq), ("actor", toJson (actorName x.actor)), ("device", toJson x.device),
     ("hash", toJson x.hash)]
 
+/-- The state as JSON: the phase, who acts next, who has filed, voted or responded, and the chain's head. -/
 def stateJson (s : State) (tags : List (Nat × Entry)) : Json :=
   let entries := tags.map (·.2)
   Json.mkObj [
@@ -96,8 +103,10 @@ def forkJson (evs : List Entry) : Json :=
   Json.arr (parents.map fun h =>
     Json.mkObj [("parent", toJson h), ("events", Json.arr ((children evs h).map entryJson).toArray)]).toArray
 
+/-- A failure reply: `"ok": false` and what went wrong under `key`. -/
 def failJson (key : String) (value : Json) : Json := Json.mkObj [("ok", toJson false), (key, value)]
 
+/-- A replay's outcome as JSON: the state, or the fork, broken chain or refused event. -/
 def outcomeJson (evs : List Entry) : Outcome → Json
   | .state s tags => stateJson s tags
   | .fork => failJson "fork" (forkJson evs)
@@ -111,6 +120,7 @@ def replayJson (raws : List String) : Json :=
   | .error e => failJson "error" (toJson e)
   | .ok evs => outcomeJson evs (replay evs)
 
+/-- A refused proposed event, with the reasons. -/
 def refuseJson (reasons : List String) : Json :=
   Json.mkObj [("ok", toJson true), ("accepted", toJson false), ("reasons", toJson reasons.toArray)]
 

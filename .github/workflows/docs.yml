@@ -1,0 +1,35 @@
+name: docs
+
+# Documentation comes from the code. Python: every docstring is Google style (ruff, ruff.toml), and pdoc builds
+# the API reference from them. Lean: the challenge workflow's build fails on a missing doc comment
+# (linter.missingDocs in challenge/lakefile.lean), which is what doc-gen4 reads.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install ruff and pdoc
+        run: python -m pip install ruff pdoc -r requirements.txt
+      - name: Docstrings are Google style
+        run: python -m ruff check scripts
+      - name: Build the API reference
+        working-directory: scripts
+        run: python -m pdoc --docformat google -o ../site card challenge judge lookup s3 sources update_rules
+      - name: Keep it as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-reference
+          path: site

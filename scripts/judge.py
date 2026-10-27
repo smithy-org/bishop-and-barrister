@@ -66,14 +66,25 @@ RULES_DIR = HOME / "rules"
 
 
 def now() -> str:
+    """Return the current UTC time as an ISO 8601 string to the second, ending in Z."""
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def sha256_text(text: str) -> str:
+    """Hex SHA-256 of the text's UTF-8 bytes: how a citation is pinned to the text it relies on."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def die(message: str, code: int = 1):
+    """Print a message to stderr and exit.
+
+    Args:
+        message: What went wrong, for the user.
+        code: The exit status.
+
+    Raises:
+        SystemExit: Always.
+    """
     print(message, file=sys.stderr)
     sys.exit(code)
 
@@ -82,6 +93,18 @@ def die(message: str, code: int = 1):
 
 
 def git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
+    """Run git in the record, capturing its output.
+
+    Args:
+        *args: The git arguments.
+        check: Raise when git fails.
+
+    Returns:
+        The finished process, with stdout and stderr as text.
+
+    Raises:
+        subprocess.CalledProcessError: When git fails and check is set.
+    """
     return subprocess.run(["git", "-C", str(HOME), *args], capture_output=True, text=True, encoding="utf-8", check=check)
 
 
@@ -91,7 +114,10 @@ IGNORED = ("objects/", "index.sqlite", "config.json")
 
 
 def ensure_home() -> None:
-    """Create the store and its git repository on first use."""
+    """Create the store and its git repository on first use.
+
+    A record made before a pattern joined IGNORED gets that pattern added to its .gitignore.
+    """
     for d in (RULINGS_DIR, DELIBERATION_DIR, OBJECTS_DIR, MANIFEST.parent):
         d.mkdir(parents=True, exist_ok=True)
     if not (HOME / ".git").exists():
@@ -109,14 +135,29 @@ def ensure_home() -> None:
 
 
 def ensure_identity() -> None:
-    """A commit needs an identity; fall back to a local one only if the user has none configured."""
+    """Make sure git has an identity to commit with.
+
+    A commit needs one; fall back to a local one only if the user has none configured.
+    """
     if not git("config", "user.email", check=False).stdout.strip():
         git("config", "user.name", "Bishop & Barrister")
         git("config", "user.email", "bishop-and-barrister@localhost")
 
 
 def commit(message: str, drafted_by: str | None = None, decided_by: str | None = None) -> bool:
-    """Commit everything in the record. Returns False when there was nothing to commit."""
+    """Commit everything in the record.
+
+    Args:
+        message: The commit message.
+        drafted_by: Who drafted the change, recorded as a Drafted-by trailer.
+        decided_by: Who decided it, recorded as a Decided-by trailer.
+
+    Returns:
+        False when there was nothing to commit.
+
+    Raises:
+        subprocess.CalledProcessError: When git fails.
+    """
     ensure_identity()
     git("add", "-A")
     if not git("status", "--porcelain").stdout.strip():
@@ -132,14 +173,17 @@ def commit(message: str, drafted_by: str | None = None, decided_by: str | None =
 
 
 def load_manifest() -> dict:
+    """Read sources/manifest.json, which records each object downloaded and which one is current."""
     return json.loads(MANIFEST.read_text(encoding="utf-8")) if MANIFEST.exists() else {"objects": {}}
 
 
 def save_manifest(manifest: dict) -> None:
+    """Write sources/manifest.json."""
     MANIFEST.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def store_object(data: bytes) -> str:
+    """Keep data in objects/<sha256>, outside git, and return its hash."""
     digest = hashlib.sha256(data).hexdigest()
     path = OBJECTS_DIR / digest
     if not path.exists():
@@ -156,20 +200,33 @@ def store_object(data: bytes) -> str:
 
 
 def http_json(url: str) -> dict:
+    """GET JSON from Scryfall through card.py's client, cached for 24 hours."""
     return scryfall.get(url)
 
 
 def http_bytes(url: str) -> bytes:
+    """Download a large Scryfall file, such as a bulk data file, through card.py's client."""
     return scryfall.fetch(url, timeout=300, accept="*/*")
 
 
 def oracle_text_of(card: dict) -> str:
+    """Return a card's Oracle text, its faces joined by a "//" line."""
     faces = card.get("card_faces") or [card]
     return "\n//\n".join(f.get("oracle_text", "") for f in faces)
 
 
 def resolve_card(name: str) -> dict | None:
-    """Look a card up on Scryfall: name, Oracle ID and the hash of its current Oracle text."""
+    """Look a card up on Scryfall: name, Oracle ID and the hash of its current Oracle text.
+
+    Args:
+        name: The card name, fuzzy matched.
+
+    Returns:
+        A dict with "name", "oracle_id" and "oracle_sha256", or None when offline or no card matches.
+
+    Raises:
+        urllib.error.HTTPError: When Scryfall is still rate-limiting (429) after card.py's retries.
+    """
     if OFFLINE:
         return None
     try:
@@ -187,7 +244,13 @@ _RULES: dict[str, str] | None = None
 
 
 def cr_rules() -> dict[str, str]:
-    """Rule number -> the rule's text, from the downloaded CR (the body, not the table of contents)."""
+    """Map each rule number to the rule's text, from the downloaded CR (the body, not the table of contents).
+
+    The map is read once per process.
+
+    Raises:
+        SystemExit: Via die() when the CR isn't downloaded.
+    """
     global _RULES
     if _RULES is None:
         if not CR_FILE.exists():
@@ -202,6 +265,7 @@ def cr_rules() -> dict[str, str]:
 
 
 def cr_effective() -> str | None:
+    """Return the downloaded CR's effective date, as update_rules.py recorded it, or None."""
     if CR_VERSION.exists():
         return json.loads(CR_VERSION.read_text(encoding="utf-8")).get("effective_date")
     return None
@@ -211,10 +275,16 @@ def cr_effective() -> str | None:
 
 
 def ruling_path(rid: str) -> Path:
+    """Return where a ruling's file lives in the record."""
     return RULINGS_DIR / f"{rid}.json"
 
 
 def load_ruling(rid: str) -> dict:
+    """Read a ruling from the record.
+
+    Raises:
+        SystemExit: Via die() when there is no such ruling.
+    """
     path = ruling_path(rid)
     if not path.exists():
         die(f"No ruling {rid} in the record.")
@@ -222,10 +292,12 @@ def load_ruling(rid: str) -> dict:
 
 
 def save_ruling(ruling: dict) -> None:
+    """Write a ruling to its file in the record; the caller commits."""
     ruling_path(ruling["id"]).write_text(json.dumps(ruling, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def load_deliberation(rid: str) -> list[dict]:
+    """Read a ruling's deliberation log, one entry per line; empty when it has none."""
     path = DELIBERATION_DIR / f"{rid}.jsonl"
     if not path.exists():
         return []
@@ -233,7 +305,18 @@ def load_deliberation(rid: str) -> list[dict]:
 
 
 def validate_citation(c: dict, label: str) -> list[str]:
-    """One citation: what it cites exists in the current documents, or it carries its own excerpt."""
+    """Check one citation: what it cites exists in the current documents, or it carries its own excerpt.
+
+    Args:
+        c: The citation: doc (default "cr"), ref, and perhaps an excerpt.
+        label: Names the citation in messages.
+
+    Returns:
+        The problems found; empty when the citation is valid.
+
+    Raises:
+        SystemExit: Via die() when it cites the CR and the CR isn't downloaded.
+    """
     doc = c.get("doc", "cr")
     if doc == "cr":
         if c.get("ref") not in cr_rules():
@@ -250,7 +333,14 @@ def validate_citation(c: dict, label: str) -> list[str]:
 
 
 def pin_citation(c: dict) -> None:
-    """Pin one valid citation to the exact text it relies on (text_sha256), with an excerpt of it."""
+    """Pin one valid citation to the exact text it relies on (text_sha256), with an excerpt of it.
+
+    The citation is changed in place. A tournament document citation also gains the section's own key,
+    its heading and the document's version. Call validate_citation() first.
+
+    Args:
+        c: The citation.
+    """
     c.setdefault("doc", "cr")
     if c["doc"] == "cr":
         text = cr_rules()[c["ref"]]
@@ -286,12 +376,21 @@ CREATE INDEX IF NOT EXISTS citations_ref ON citations(ref);
 
 
 def connect() -> sqlite3.Connection:
+    """Open the search index, creating its tables if they're missing."""
     conn = sqlite3.connect(INDEX)
     conn.executescript(SCHEMA)
     return conn
 
 
 def index_user_ruling(conn: sqlite3.Connection, r: dict) -> None:
+    """Index one of the user's rulings from before challenges, replacing any earlier entry for it.
+
+    Its full text includes the deliberation, so a search finds what was said along the way.
+
+    Args:
+        conn: The search index.
+        r: The ruling.
+    """
     rid = r["id"]
     for table, col in (("rulings", "id"), ("rulings_fts", "id"), ("ruling_cards", "ruling_id"), ("citations", "ruling_id")):
         conn.execute(f"DELETE FROM {table} WHERE {col} = ?", (rid,))
@@ -316,11 +415,17 @@ def index_user_ruling(conn: sqlite3.Connection, r: dict) -> None:
 
 
 def rule_sources(rule: dict) -> list[dict]:
+    """Return the sources a rule's steps cite, leaving out stipulations."""
     return [st["source"] for st in rule.get("steps", []) if isinstance(st.get("source"), dict)]
 
 
 def index_rule(conn: sqlite3.Connection, rule: dict) -> None:
-    """A rule a challenge introduced (or a house rule a refuted one kept), searchable by text, card and rule."""
+    """Index a rule a challenge introduced (or a house rule a refuted one kept), by text, card and rule.
+
+    Args:
+        conn: The search index.
+        rule: The rule file's contents.
+    """
     rid = rule["id"]
     conn.execute(
         "INSERT OR REPLACE INTO rulings VALUES (?,?,?,?,?,?,?,?,?,?)",
@@ -339,7 +444,7 @@ def index_rule(conn: sqlite3.Connection, rule: dict) -> None:
 
 
 def live_rules() -> list[dict]:
-    """The rules search shows: current, or stale and reopened (flagged as unconfirmed)."""
+    """Return the rules search shows: current, or stale and reopened (flagged as unconfirmed)."""
     rules = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(RULES_DIR.glob("*.json"))]
     return [r for r in rules if r.get("state") in ("current", "stale", "reopened")]
 
@@ -358,17 +463,32 @@ def reindex_rules() -> None:
 
 
 def legacy_rulings() -> list[dict]:
-    """Rulings written by the retired `record` that haven't been migrated: everything but house rules."""
+    """Return the rulings written by the retired `record` that haven't been migrated: everything but house rules."""
     rulings = [json.loads(p.read_text(encoding="utf-8")) for p in sorted(RULINGS_DIR.glob("*.json"))]
     return [r for r in rulings if not (r.get("kind") == "reviewed" and r.get("house_rule"))]
 
 
 def official_id(row: dict) -> str:
+    """Give an official ruling a stable id: its source and a hash of its card, date and text.
+
+    Scryfall's rulings have no id of their own, and the id must stay the same across downloads.
+    """
     key = f"{row['oracle_id']}|{row['published_at']}|{row['comment']}"
     return f"{row['source']}-{hashlib.sha1(key.encode('utf-8')).hexdigest()[:16]}"
 
 
 def index_official(conn: sqlite3.Connection, data: bytes) -> int:
+    """Replace the index's official rulings with those in a Scryfall bulk rulings file.
+
+    Rulings with source wotc load as level 1, source scryfall as level 4.
+
+    Args:
+        conn: The search index.
+        data: The bulk file: a JSON array or JSON lines, gzipped or not.
+
+    Returns:
+        How many rulings were indexed.
+    """
     conn.execute("DELETE FROM rulings WHERE source IN ('wotc', 'scryfall')")
     conn.execute("DELETE FROM rulings_fts WHERE id LIKE 'wotc-%' OR id LIKE 'scryfall-%'")
     count = 0
@@ -388,7 +508,13 @@ def index_official(conn: sqlite3.Connection, data: bytes) -> int:
 
 
 def rebuild_index() -> tuple[int, int]:
-    """Throw the index away and rebuild it from the record and the current official rulings."""
+    """Throw the index away and rebuild it from the record and the current official rulings.
+
+    Card names learned earlier are carried over, since they can't be rebuilt without Scryfall.
+
+    Returns:
+        (official rulings indexed, the user's house rules and rules indexed).
+    """
     names = {}
     if INDEX.exists():
         old = sqlite3.connect(INDEX)
@@ -426,6 +552,7 @@ def rebuild_index() -> tuple[int, int]:
 
 
 def card_name(conn: sqlite3.Connection, oracle_id: str | None) -> str | None:
+    """Return the card name the index knows for an Oracle ID, or None."""
     if not oracle_id:
         return None
     row = conn.execute("SELECT name FROM card_names WHERE oracle_id = ?", (oracle_id,)).fetchone()
@@ -433,11 +560,21 @@ def card_name(conn: sqlite3.Connection, oracle_id: str | None) -> str | None:
 
 
 def attrs(**kw) -> str:
+    """Format keyword arguments as XML attributes, quoted and escaped, leaving out None."""
     return " ".join(f"{k}={quoteattr(str(v))}" for k, v in kw.items() if v is not None)
 
 
 def render_agent(r: dict, conn: sqlite3.Connection | None = None, with_deliberation: bool = False) -> str:
-    """One ruling as XML for Claude: quotes before reasoning, empty fields left out."""
+    """Render one ruling as XML for Claude: quotes before reasoning, empty fields left out.
+
+    Args:
+        r: An official ruling, a rule, or one of the user's rulings.
+        conn: The search index, to name an official ruling's card; None leaves the Oracle ID instead.
+        with_deliberation: Include the ruling's deliberation log.
+
+    Returns:
+        The XML.
+    """
     if r.get("kind") == "official":
         name = card_name(conn, r.get("oracle_id")) if conn else None
         # The Oracle ID is only shown when the card's name isn't known: it's noise to the reader otherwise.
@@ -471,7 +608,10 @@ def render_agent(r: dict, conn: sqlite3.Connection | None = None, with_deliberat
 
 
 def render_rule(r: dict) -> str:
-    """A rule introduced by challenge, as XML for Claude. Unconfirmed while its challenge runs again."""
+    """Render a rule introduced by challenge as XML for Claude.
+
+    A rule is unconfirmed (sources_changed="true") while its challenge runs again.
+    """
     out = [f"<ruling {attrs(id=r['id'], kind='rule', level=5, state=r['state'], house_rule=str(r.get('house_rule', False)).lower(), sources_changed=str(r['state'] != 'current').lower())}>"]
     out.append(f"  <rule>{escape(r['rule'])}</rule>")
     out.append("  <applies_when>" + "".join(f"<fact>{escape(a)}</fact>" for a in r.get("applies_when", [])) + "</applies_when>")
@@ -502,6 +642,15 @@ def render_rule(r: dict) -> str:
 
 
 def render_plain(r: dict, conn: sqlite3.Connection | None = None) -> str:
+    """Render one ruling as a short plain-text entry for people.
+
+    Args:
+        r: An official ruling, a rule, or one of the user's rulings.
+        conn: The search index, to name an official ruling's card.
+
+    Returns:
+        The id and kind on one line, then the ruling.
+    """
     if r.get("kind") == "rule":
         flag = "" if r["state"] == "current" else f" [{r['state']}: unconfirmed]"
         return f"[{r['id']}] {'house rule' if r.get('house_rule') else 'rule'}{flag}\n  {r['rule']}"
@@ -516,6 +665,19 @@ def render_plain(r: dict, conn: sqlite3.Connection | None = None) -> str:
 
 
 def cmd_build(args) -> int:
+    """Run `build`: set up the record, download the official rulings if they changed, and rebuild the index.
+
+    The record is tagged with the CR's effective date, so it can be read as of a CR version.
+
+    Args:
+        args: The parsed command line: rulings_file and force.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via die() when offline without --rulings-file.
+    """
     ensure_home()
     manifest = load_manifest()
     if args.rulings_file:
@@ -555,6 +717,14 @@ def cmd_build(args) -> int:
 
 
 def cmd_index(args) -> int:
+    """Run `index`: rebuild the search index from the record.
+
+    Args:
+        args: The parsed command line (unused).
+
+    Returns:
+        The exit status.
+    """
     ensure_home()
     official, user = rebuild_index()
     print(f"Index rebuilt: {official} official rulings, {user} of your rulings.")
@@ -562,6 +732,17 @@ def cmd_index(args) -> int:
 
 
 def fts_query(text: str, mode: str) -> str | None:
+    """Turn free text into an FTS5 query of quoted words.
+
+    Only word characters are kept, and each word is quoted, so a word like NOT or NEAR isn't read as an operator.
+
+    Args:
+        text: The search text.
+        mode: How to join the words: "AND" or "OR".
+
+    Returns:
+        The query, or None when the text has no words.
+    """
     words = re.findall(r"\w+", text.lower())
     if not words:
         return None
@@ -569,6 +750,20 @@ def fts_query(text: str, mode: str) -> str | None:
 
 
 def cmd_search(args) -> int:
+    """Run `search`: find rulings by text, card and cited rule, most authoritative first.
+
+    Cards and rules narrow the candidates; text ranks them. When no ruling has every word, the closest
+    matches on any word are shown instead, ranked by relevance, with a warning.
+
+    Args:
+        args: The parsed command line: text, card, rule, type, limit, agent and full.
+
+    Returns:
+        0 when some ruling matches, 1 otherwise.
+
+    Raises:
+        SystemExit: Via die() when there is no index yet.
+    """
     if not INDEX.exists():
         die("No index yet. Run: python scripts/judge.py build")
     conn = connect()
@@ -657,13 +852,29 @@ RETIRED = ("Retired: nothing the skill answers is stored any more. A rule enters
 
 
 def cmd_retired(args) -> int:
+    """Refuse a retired command (record, discuss, review) and say what replaced it.
+
+    Args:
+        args: The parsed command line: command.
+
+    Raises:
+        SystemExit: Always, with status 2.
+    """
     die(f"judge.py {args.command}: {RETIRED}", code=2)
 
 
 def cmd_migrate(args) -> int:
-    """Move the rulings the retired `record` wrote out of the searched record. A reviewed ruling becomes an open
-    challenge carrying its deliberation (it must pass a panel to become a rule); an unreviewed one, the model's
-    own answer, is set aside; house rules stay as they are."""
+    """Run `migrate`: move the rulings the retired `record` wrote out of the searched record.
+
+    A reviewed ruling becomes an open challenge carrying its deliberation (it must pass a panel to
+    become a rule); an unreviewed one, the model's own answer, is set aside; house rules stay as they are.
+
+    Args:
+        args: The parsed command line (unused).
+
+    Returns:
+        The exit status.
+    """
     ensure_home()
     import challenge  # noqa: PLC0415  (challenge.py imports this module)
 
@@ -696,7 +907,18 @@ def cmd_migrate(args) -> int:
 
 
 def cmd_show(args) -> int:
-    rule = RULES_DIR / f"{args.id}.json"
+    """Run `show`: print one rule, ruling of the user's, or official ruling, looked for in that order.
+
+    Args:
+        args: The parsed command line: id, agent and deliberation.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via die() when no ruling has that id.
+    """
+    rule =RULES_DIR / f"{args.id}.json"
     if rule.exists():
         r = json.loads(rule.read_text(encoding="utf-8"))
         print(render_agent(r) if args.agent else json.dumps(r, indent=2, ensure_ascii=False))
@@ -723,6 +945,17 @@ def cmd_show(args) -> int:
 
 
 def cmd_recheck(args) -> int:
+    """Run `recheck`: flag rulings whose cited text changed, and reopen rules whose sources changed.
+
+    Args:
+        args: The parsed command line: offline, which checks document citations only and skips Oracle text.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via die() when the CR isn't downloaded.
+    """
     ensure_home()
     rules = cr_rules()
     changed = []
@@ -786,7 +1019,15 @@ SYNC_STATE = HOME / ".git" / "bishop-and-barrister-sync.json"  # inside .git, so
 
 
 def load_config() -> dict | None:
-    """The store settings, with BISHOP_AND_BARRISTER_S3_ENDPOINT / _S3_BUCKET overriding the file."""
+    """Read the store settings, with BISHOP_AND_BARRISTER_S3_ENDPOINT / _S3_BUCKET overriding the file.
+
+    Returns:
+        The settings, or None when no endpoint and bucket are set (local only).
+
+    Raises:
+        OSError: When config.json can't be read.
+        ValueError: When config.json isn't JSON.
+    """
     cfg = json.loads(CONFIG.read_text(encoding="utf-8")) if CONFIG.exists() else {}
     for key in ("endpoint", "bucket"):
         if os.environ.get(f"BISHOP_AND_BARRISTER_S3_{key.upper()}"):
@@ -799,6 +1040,19 @@ class SyncStop(Exception):
 
 
 def store_client(cfg: dict, timeout: float = 60) -> s3.S3:
+    """Make a client for the remote store.
+
+    Args:
+        cfg: The store settings, from load_config().
+        timeout: Seconds to wait for the server on each request.
+
+    Returns:
+        The client.
+
+    Raises:
+        SyncStop: When there are no keys.
+        ValueError: When the endpoint fails s3.check_endpoint().
+    """
     keys = s3.credentials(cfg.get("profile"))
     if not keys:
         raise SyncStop("No keys for the store. Set BISHOP_AND_BARRISTER_S3_ACCESS_KEY and "
@@ -809,12 +1063,23 @@ def store_client(cfg: dict, timeout: float = 60) -> s3.S3:
 
 
 def device_name(name: str | None = None) -> str:
+    """Make a device name safe for a store key: the name given, or the host name, as a slug."""
     name = re.sub(r"[^a-z0-9-]+", "-", (name or socket.gethostname()).lower()).strip("-")
     return name or "device"
 
 
 def refuse_if_public(client: s3.S3, key: str | None = None) -> None:
-    """A public bucket would republish Scryfall's and Wizards' files and expose the user's rulings."""
+    """Stop if anyone without keys can list the bucket or read the key.
+
+    A public bucket would republish Scryfall's and Wizards' files and expose the user's rulings.
+
+    Args:
+        client: The store client.
+        key: An object to try reading anonymously too, or None to check only listing.
+
+    Raises:
+        SyncStop: When the bucket or the key is readable without keys.
+    """
     found = client.anonymous_access(key)
     if found:
         raise SyncStop(f"Stopped: anyone without keys can {' and '.join(found)} in bucket {client.bucket!r}. Make "
@@ -823,11 +1088,32 @@ def refuse_if_public(client: s3.S3, key: str | None = None) -> None:
 
 
 def cmd_sync(args) -> int:
+    """Run `sync`: set up the remote store with --setup, or sync with it now.
+
+    Args:
+        args: The parsed command line: setup, and the --setup options.
+
+    Returns:
+        The exit status.
+    """
     ensure_home()
     return sync_setup(args) if args.setup else sync_now()
 
 
 def sync_setup(args) -> int:
+    """Check a remote store and save its settings.
+
+    Nothing is saved unless the keys can list the bucket and the bucket is private.
+
+    Args:
+        args: The parsed command line: endpoint, bucket, region, addressing, device, profile and create.
+
+    Returns:
+        The exit status.
+
+    Raises:
+        SystemExit: Via die() when the settings are incomplete or the store fails a check.
+    """
     if not args.endpoint or not args.bucket:
         die("--setup needs --endpoint and --bucket.")
     try:
@@ -866,7 +1152,17 @@ def sync_setup(args) -> int:
 
 
 def merge_manifests(ours: dict, theirs: dict) -> dict:
-    """Both devices downloaded their own Scryfall file: keep every object, and the newest bulk file."""
+    """Merge two devices' manifests.
+
+    Both devices downloaded their own Scryfall file: keep every object, and the newest bulk file.
+
+    Args:
+        ours: This device's manifest.
+        theirs: The other device's manifest.
+
+    Returns:
+        The merged manifest.
+    """
     merged = {**ours, "objects": {**theirs.get("objects", {}), **ours.get("objects", {})}}
     candidates = [h for h in (ours.get("scryfall_rulings"), theirs.get("scryfall_rulings")) if h]
     if candidates:
@@ -875,7 +1171,21 @@ def merge_manifests(ours: dict, theirs: dict) -> dict:
 
 
 def merge_device(device: str, ref: str) -> bool:
-    """Merge one device's history in. Returns False, leaving nothing half-done, on a conflict a person must settle."""
+    """Merge one device's history in.
+
+    Conflicts in the manifest and .gitignore, which two records started apart both have, are merged
+    mechanically. Any other conflict is aborted, leaving nothing half-done, for a person to settle.
+
+    Args:
+        device: The other device's name, for messages.
+        ref: The fetched branch to merge.
+
+    Returns:
+        True when the history was merged.
+
+    Raises:
+        SyncStop: On a conflict a person must settle.
+    """
     result = git("merge", "--no-edit", "--allow-unrelated-histories", "-m", f"Sync: merge {device}\n\nDrafted-by: judge",
                  ref, check=False)
     if result.returncode == 0:
@@ -902,21 +1212,43 @@ def merge_device(device: str, ref: str) -> bool:
 
 
 def load_state() -> dict:
+    """Read this device's sync state: the bundle ETags it has merged, what it last uploaded, and when it last pulled."""
     return json.loads(SYNC_STATE.read_text(encoding="utf-8")) if SYNC_STATE.exists() else {"fetched": {}}
 
 
 def save_state(state: dict) -> None:
+    """Write this device's sync state."""
     SYNC_STATE.write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
 def remote_bundles(client: s3.S3) -> dict:
-    """Each device syncing through the store, with its bundle's ETag."""
+    """List each device syncing through the store, with its bundle's ETag.
+
+    Raises:
+        s3.S3Error: When the listing fails.
+    """
     return {o["key"][len("record/"):-len(".bundle")]: o["etag"] for o in client.keys("record/")
             if o["key"].endswith(".bundle")}
 
 
 def pull(client: s3.S3, device: str, state: dict, remote: dict) -> list[str]:
-    """Merge in every other device whose bundle changed since the last pull. Returns the devices merged."""
+    """Merge in every other device whose bundle changed since the last pull.
+
+    Tags the record lacks are copied too, and the index is rebuilt if anything was merged.
+
+    Args:
+        client: The store client.
+        device: This device's name, whose own bundle is skipped.
+        state: The sync state; updated with each bundle merged.
+        remote: Each device's bundle ETag, from remote_bundles().
+
+    Returns:
+        The devices merged.
+
+    Raises:
+        SyncStop: On a conflict a person must settle.
+        s3.S3Error: When a download fails.
+    """
     ensure_identity()
     merged = []
     for other, etag in sorted(remote.items()):
@@ -943,7 +1275,20 @@ def pull(client: s3.S3, device: str, state: dict, remote: dict) -> list[str]:
 
 
 def push(client: s3.S3, device: str, state: dict, remote: dict | None = None) -> bool:
-    """Upload this device's bundle if its history moved since the last upload. Returns whether it did."""
+    """Upload this device's bundle if its history moved since the last upload.
+
+    Args:
+        client: The store client.
+        device: This device's name.
+        state: The sync state; updated with the head uploaded.
+        remote: Each device's bundle ETag; when given, a bundle missing from it is uploaded even if the head hasn't moved.
+
+    Returns:
+        Whether it uploaded.
+
+    Raises:
+        s3.S3Error: When the upload fails.
+    """
     head = git("rev-parse", "HEAD").stdout.strip()
     if state.get("uploaded_head") == head and (remote is None or device in remote):
         return False
@@ -956,7 +1301,14 @@ def push(client: s3.S3, device: str, state: dict, remote: dict | None = None) ->
 
 
 def sync_now() -> int:
-    """`judge.py sync`: a full sync now, whatever the throttle says, reporting every problem."""
+    """Sync fully now, whatever the throttle says, reporting every problem (`judge.py sync`).
+
+    Returns:
+        0 when synced or local only, 1 when syncing stopped for the user to act.
+
+    Raises:
+        SystemExit: Via die() when the store refuses a request or can't be reached.
+    """
     cfg = load_config()
     if not cfg:
         print("Local only: no remote store is set. To add one: judge.py sync --setup --endpoint <url> --bucket <name>")
@@ -997,6 +1349,14 @@ WRITES = {"build", "migrate", "recheck", "challenge open", "challenge brief", "c
 
 
 def auto_sync(command: str) -> None:
+    """Sync automatically around a command, when a store is set: pull before a read, push after a write.
+
+    Pulls happen at most once per SYNC_INTERVAL. A problem never stops the command: it is noted once on
+    stderr, and the local record carries on.
+
+    Args:
+        command: The command, as named in READS and WRITES (such as "search" or "challenge add").
+    """
     if command not in READS | WRITES or os.environ.get("BISHOP_AND_BARRISTER_AUTO_SYNC") == "0":
         return
     try:
@@ -1032,6 +1392,11 @@ def auto_sync(command: str) -> None:
 
 
 def main() -> int:
+    """Run the command line, syncing with the remote store before reads and after writes when one is set.
+
+    Returns:
+        The exit status of the chosen command.
+    """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
 
