@@ -12,7 +12,7 @@ Every PDF is downloaded from Wizards' own host, media.wizards.com; the pages
 above only say which file is current. None of these documents ships with the
 skill: they belong to Wizards and change several times a year, so each copy
 downloads its own. They live outside the skill's folder, in documents/ in the
-skill's home (lookup.DATA_DIR), so a plugin update keeps them. A PDF is kept in
+skill's home (paths.documents()), so a plugin update keeps them. A PDF is kept in
 documents/docs/<key>.pdf and converted to documents/docs/<key>.json (sections,
 for lookup.py --doc). documents/sources.json
 records the version of each.
@@ -45,9 +45,9 @@ from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
-import lookup  # noqa: E402  (DOCS and DOCS_DIR)
+import paths  # noqa: E402  (where the user's data lives)
+import lookup  # noqa: E402  (DOCS, the tournament documents)
 
-REGISTRY = lookup.DATA_DIR / "sources.json"
 UA = "bishop-and-barrister/1.0"
 PDF_HOST = "https://media.wizards.com/"
 PAGES = {
@@ -80,12 +80,12 @@ def now() -> str:
 
 def load_registry() -> dict:
     """Read documents/sources.json, or an empty registry if nothing has been installed."""
-    return json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {}
+    return json.loads(paths.registry().read_text(encoding="utf-8")) if paths.registry().exists() else {}
 
 
 def save_registry(registry: dict) -> None:
     """Write documents/sources.json."""
-    REGISTRY.write_text(json.dumps(registry, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    paths.registry().write_text(json.dumps(registry, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def find_pdf_url(doc: str) -> str:
@@ -316,11 +316,11 @@ def install(doc: str, data: bytes, url: str) -> dict:
     Raises:
         SystemExit: When the conversion fails.
     """
-    lookup.DOCS_DIR.mkdir(parents=True, exist_ok=True)
-    pdf = lookup.DOCS_DIR / f"{doc}.pdf"
+    paths.docs_dir().mkdir(parents=True, exist_ok=True)
+    pdf = paths.docs_dir() / f"{doc}.pdf"
     pdf.write_bytes(data)
     converted = convert(doc, pdf)
-    (lookup.DOCS_DIR / f"{doc}.json").write_text(json.dumps(converted, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    (paths.docs_dir() / f"{doc}.json").write_text(json.dumps(converted, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
     return {
         "url": url,
         "sha256": hashlib.sha256(data).hexdigest(),
@@ -380,10 +380,10 @@ def update_cr(check: bool, force: bool) -> bool:
     Raises:
         subprocess.CalledProcessError: When update_rules.py fails.
     """
-    before = lookup.RULES_FILE.read_bytes() if lookup.RULES_FILE.exists() else None
+    before = paths.rules_file().read_bytes() if paths.rules_file().exists() else None
     args = [sys.executable, str(SCRIPTS / "update_rules.py")] + (["--check"] if check else []) + (["--force"] if force else [])
     subprocess.run(args, check=True)
-    after = lookup.RULES_FILE.read_bytes() if lookup.RULES_FILE.exists() else None
+    after = paths.rules_file().read_bytes() if paths.rules_file().exists() else None
     return before != after
 
 
@@ -401,7 +401,7 @@ FORMATS_DIR = lookup.REFERENCE_DIR / "formats"
 def installed_versions() -> dict:
     """Return the effective date of each installed document, as `list` prints it, by key."""
     versions = {doc: info.get("effective") for doc, info in load_registry().items()}
-    cr = lookup.DATA_DIR / "version.json"
+    cr = paths.version_file()
     if cr.exists():
         versions["cr"] = json.loads(cr.read_text(encoding="utf-8")).get("effective_date")
     return {doc: v for doc, v in versions.items() if v}
@@ -493,7 +493,7 @@ def cmd_list(args) -> int:
         The exit status.
     """
     registry = load_registry()
-    cr = lookup.DATA_DIR / "version.json"
+    cr = paths.version_file()
     if cr.exists():
         v = json.loads(cr.read_text(encoding="utf-8"))
         print(f"cr   Comprehensive Rules: effective {v.get('effective_date')}, sha256 {v.get('sha256', '')[:12]}")
@@ -521,12 +521,12 @@ def cmd_convert(args) -> int:
     """
     registry = load_registry()
     for doc in args.docs or list(lookup.DOCS):
-        pdf = lookup.DOCS_DIR / f"{doc}.pdf"
+        pdf = paths.docs_dir() / f"{doc}.pdf"
         if not pdf.exists():
             print(f"{lookup.DOCS[doc]}: no PDF kept; run `sources.py update {doc}`.")
             continue
         converted = convert(doc, pdf)
-        (lookup.DOCS_DIR / f"{doc}.json").write_text(json.dumps(converted, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        (paths.docs_dir() / f"{doc}.json").write_text(json.dumps(converted, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
         registry.setdefault(doc, {})["sections"] = len(converted["sections"])
         print(f"{lookup.DOCS[doc]}: {len(converted['sections'])} sections.")
     save_registry(registry)
