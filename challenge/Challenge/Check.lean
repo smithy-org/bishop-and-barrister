@@ -7,19 +7,28 @@ Every premise points to a fact or an earlier step (so there are no cycles and no
 step has a pinned source or is labelled an assumption, and a refutation attacks a step that exists. Whether a
 quote matches the rule's text is a data check, made by `challenge.py verify` before the verifier's report.
 Each check returns every problem it finds, so one pass reports them all; an empty list means it passes.
+
+## Main definitions
+
+* `checkCase`, `checkRefutation`, `checkFiling`: the derivations and filings.
+* `checkVote`, `checkReport`, `checkAnswer`: votes, the verifier's reports and the user's answers.
+* `isGap`: whether a case fills a gap.
 -/
 
 namespace Challenge
 
+/-- Whether a string is 64 lowercase hex digits, as a SHA-256 is written. -/
 def isHex64 (s : String) : Bool :=
   s.length == 64 && s.all (fun ch => ch.isDigit || (ch.toNat ≥ 97 && ch.toNat ≤ 102))
 
+/-- A source names its document, its place in it and the quote, and is pinned by a SHA-256. -/
 def checkSource (label : String) (s : Source) : List String :=
   (if s.doc.isEmpty then [s!"{label}: the source needs a \"doc\""] else []) ++
   (if s.ref.isEmpty then [s!"{label}: the source needs a \"ref\""] else []) ++
   (if s.excerpt.isEmpty then [s!"{label}: the source needs the quoted \"excerpt\""] else []) ++
   (if isHex64 s.textSha256 then [] else [s!"{label}: the source isn't pinned (\"text_sha256\")"])
 
+/-- A premise points to a fact, an earlier step, or a step of the case: `none` if it does, or else the problem. -/
 def checkPremise (label : String) (facts caseSteps seen : List Nat) : Ref → Option String
   | .fact n => if facts.contains n then none else some s!"{label}: premise F{n} isn't a fact of the case"
   | .step n => if seen.contains n then none else some s!"{label}: premise S{n} isn't an earlier step"
@@ -29,6 +38,8 @@ def checkPremise (label : String) (facts caseSteps seen : List Nat) : Ref → Op
 /-- A case that fills a gap says so in `challenges`: "none: a gap". -/
 def isGap (challenges : String) : Bool := challenges.trim.toLower.startsWith "none"
 
+/-- A step quotes a pinned source, or is labelled an assumption, or is a stipulation where one is allowed. Never two
+of these. -/
 def checkStepSource (label : String) (allowStip : Bool) (src : Option Source) (assumption stip : Bool) :
     List String :=
   if stip then
@@ -41,6 +52,8 @@ def checkStepSource (label : String) (allowStip : Bool) (src : Option Source) (a
     | some s, false => checkSource label s
     | none, true => []
 
+/-- Checks steps in order: the numbers increase, premises point back, and each step has a source and a conclusion.
+`seen` holds the earlier steps' numbers and `last` the previous one. -/
 def checkStepsFrom (label : String) (allowStip : Bool) (facts caseSteps : List Nat) (seen : List Nat) (last : Nat) :
     List Step → List String
   | [] => []
@@ -57,9 +70,13 @@ own derivation, which can't cite itself with `C`). -/
 def checkSteps (label : String) (allowStip : Bool) (facts caseSteps : List Nat) (steps : List Step) : List String :=
   checkStepsFrom label allowStip facts caseSteps [] 0 steps
 
+/-- The case's fact numbers. -/
 def Case.factIds (c : Case) : List Nat := c.facts.map (·.id)
+/-- The case's step numbers. -/
 def Case.stepIds (c : Case) : List Nat := c.steps.map (·.id)
 
+/-- A case: facts numbered from `F1`, each with its text; a rule; what it challenges; a derivation; and stipulations
+only in a gap. -/
 def checkCase (c : Case) : List String :=
   (if c.factIds == List.range' 1 c.facts.length then [] else ["the facts must be numbered F1, F2, F3..."]) ++
   (if c.facts.any (·.text.isEmpty) then ["every fact needs its text"] else []) ++
@@ -71,6 +88,8 @@ def checkCase (c : Case) : List String :=
     ["stipulations are for gaps: only a case that says \"none: a gap\" can stipulate"] else []) ++
   checkSteps "case" true c.factIds [] c.steps
 
+/-- A refutation attacks a step the case has, argues, and has a derivation that quotes at least one source. It can't
+stipulate. -/
 def checkRefutation (c : Case) (label : String) (r : Refutation) : List String :=
   (if c.stepIds.contains r.target then [] else [s!"{label}: attacks step {r.target}, which the case doesn't have"]) ++
   (if r.argument.isEmpty then [s!"{label}: no argument"] else []) ++
@@ -79,11 +98,13 @@ def checkRefutation (c : Case) (label : String) (r : Refutation) : List String :
     [s!"{label}: no evidence; a refutation needs at least one step that quotes a source"]) ++
   checkSteps label false c.factIds c.stepIds r.steps
 
+/-- Checks a filing's refutations, numbering them from `i`. -/
 def checkRefutationsFrom (c : Case) (judge : Nat) : Nat → List Refutation → List String
   | _, [] => []
   | i, r :: rest =>
     checkRefutation c s!"judge {judge}'s refutation {i}" r ++ checkRefutationsFrom c judge (i + 1) rest
 
+/-- A filing has refutations, or a concession with its reasons and evidence. -/
 def checkFiling (c : Case) (f : Filing) : List String :=
   (if f.refutations.isEmpty then
     (if f.concedes.isEmpty then ["a filing needs refutations, or says what the judge concedes and why"] else []) ++
@@ -129,10 +150,12 @@ def checkResponse (revision : Nat) (r : Response) : List String :=
 def slotValid (fs : List Filing) (sl : Slot) : Bool :=
   fs.any (fun f => f.judge == sl.judge && 1 ≤ sl.index && sl.index ≤ f.refutations.length)
 
+/-- Every slot names a refutation filed this round. -/
 def checkSlots (fs : List Filing) (slots : List Slot) : List String :=
   (slots.filter (fun sl => !slotValid fs sl)).map fun sl =>
     s!"judge {sl.judge} filed no refutation {sl.index} this round"
 
+/-- A report is for this round and stage, and its standing refutations were filed this round. -/
 def checkReport (n : Nat) (stage : Stage) (fs : List Filing) (r : Report) : List String :=
   (if r.round = n then [] else [s!"this is round {n}, not round {r.round}"]) ++
   (if r.stage = stage then [] else
@@ -141,6 +164,7 @@ def checkReport (n : Nat) (stage : Stage) (fs : List Filing) (r : Report) : List
       | .answers => "the verifier checks the user's answers now (stage \"answers\")"]) ++
   checkSlots fs r.standing
 
+/-- A reply has the user's words. A fix needs the revised case, and a rebuttal a derivation. -/
 def checkReply (c : Case) (hasRevision : Bool) (rp : Reply) : List String :=
   let label := s!"the reply to judge {rp.slot.judge}'s refutation {rp.slot.index}"
   (if rp.words.isEmpty then [s!"{label}: needs the user's words"] else []) ++

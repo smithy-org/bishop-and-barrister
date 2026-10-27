@@ -61,9 +61,19 @@ FORMATS = {
 
 
 class _Lock:
-    """A lock shared by every process on this machine: a directory, since mkdir is atomic everywhere."""
+    """A lock shared by every process on this machine.
+
+    The lock is a directory, since mkdir is atomic everywhere.
+    """
 
     def __enter__(self):
+        """Take the lock, waiting while another process holds it.
+
+        A lock older than STALE_LOCK seconds was left by a killed process and is removed.
+
+        Returns:
+            This lock.
+        """
         CACHE_DIR.mkdir(parents=True, exist_ok=True)
         self.path = CACHE_DIR / "scryfall.lock"
         while True:
@@ -79,10 +89,12 @@ class _Lock:
                 time.sleep(0.05)
 
     def __exit__(self, *exc):
+        """Release the lock, whether or not the block raised."""
         shutil.rmtree(self.path, ignore_errors=True)
 
 
 def _state() -> dict:
+    """Read the shared pacing state, or an empty one if it's missing or unreadable."""
     try:
         return json.loads((CACHE_DIR / "scryfall-pacing.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
@@ -90,11 +102,16 @@ def _state() -> dict:
 
 
 def _save_state(state: dict) -> None:
+    """Write the shared pacing state; call it only while holding _Lock."""
     (CACHE_DIR / "scryfall-pacing.json").write_text(json.dumps(state), encoding="utf-8")
 
 
 def _wait_turn(url: str) -> None:
-    """Hold until this machine may send its next request to url, then claim the slot."""
+    """Hold until this machine may send its next request to url, then claim the slot.
+
+    Args:
+        url: The request about to be sent; its path decides which rate limit applies.
+    """
     parsed = urllib.parse.urlparse(url)
     if parsed.hostname != urllib.parse.urlparse(API).hostname:
         return  # the *.scryfall.io file origins have no rate limit
@@ -113,7 +130,15 @@ def _wait_turn(url: str) -> None:
 
 
 def _locked_out(retry_after: str | None) -> float:
-    """Record a 429 so every process waits out the lockout. Returns the seconds to wait."""
+    """Record a 429 so every process waits out the lockout.
+
+    Args:
+        retry_after: The response's Retry-After header, if any. A value shorter than
+            LOCKOUT, or one that isn't a number, gives LOCKOUT.
+
+    Returns:
+        The seconds to wait.
+    """
     try:
         wait = max(LOCKOUT, float(retry_after or 0))
     except ValueError:
@@ -129,6 +154,18 @@ def fetch(url: str, timeout: float = 30, accept: str = HEADERS["Accept"]) -> byt
     """GET a Scryfall URL with the required headers, paced to its limits.
 
     After a 429, waits out the 30-second lockout before trying again, at most RETRIES times.
+
+    Args:
+        url: The URL to fetch.
+        timeout: Seconds to wait for the server on each attempt.
+        accept: The Accept header to send.
+
+    Returns:
+        The response body.
+
+    Raises:
+        urllib.error.HTTPError: For any error status, or a 429 that outlasts the retries.
+        urllib.error.URLError: When the server can't be reached.
     """
     req = urllib.request.Request(url, headers={"User-Agent": HEADERS["User-Agent"], "Accept": accept})
     for attempt in range(RETRIES + 1):
@@ -147,7 +184,17 @@ def fetch(url: str, timeout: float = 30, accept: str = HEADERS["Accept"]) -> byt
 
 
 def get(url: str) -> dict:
-    """GET JSON from Scryfall, from a cache kept for 24 hours as Scryfall asks."""
+    """GET JSON from Scryfall, from a cache kept for 24 hours as Scryfall asks.
+
+    Args:
+        url: The Scryfall API URL.
+
+    Returns:
+        The decoded JSON object.
+
+    Raises:
+        urllib.error.HTTPError: When Scryfall answers with an error, as from fetch().
+    """
     path = CACHE_DIR / "responses" / hashlib.sha256(url.encode("utf-8")).hexdigest()
     try:
         if time.time() - path.stat().st_mtime < CACHE_TTL:
@@ -162,6 +209,14 @@ def get(url: str) -> dict:
 
 
 def render_face(face: dict) -> str:
+    """Format one card face as text: name and cost, type line, Oracle text and stats.
+
+    Args:
+        face: A Scryfall card object, or one entry of its card_faces.
+
+    Returns:
+        The face as lines of text, leaving out whatever the face doesn't have.
+    """
     parts = [f"{face.get('name', '?')}  {face.get('mana_cost', '') or ''}".rstrip()]
     if face.get("type_line"):
         parts.append(face["type_line"])
@@ -177,6 +232,18 @@ def render_face(face: dict) -> str:
 
 
 def show(name: str, rulings: bool) -> int:
+    """Print a card's Oracle text and its legality in the formats the skill covers.
+
+    Args:
+        name: The card name, fuzzy matched by Scryfall.
+        rulings: Whether to print the card's rulings too.
+
+    Returns:
+        0 when the card was found, 1 when it wasn't or the name was ambiguous.
+
+    Raises:
+        urllib.error.URLError: When Scryfall can't be reached or answers with an error other than 404.
+    """
     url = f"{API}/cards/named?fuzzy={urllib.parse.quote(name)}"
     try:
         card = get(url)
@@ -223,6 +290,11 @@ def show(name: str, rulings: bool) -> int:
 
 
 def main() -> int:
+    """Run the command line.
+
+    Returns:
+        The exit status: 0 when every card was found, 1 otherwise.
+    """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("names", nargs="+", help="one or more card names (fuzzy matched)")
     parser.add_argument("--rulings", action="store_true", help="include official Scryfall rulings")

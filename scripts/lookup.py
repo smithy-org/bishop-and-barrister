@@ -41,6 +41,11 @@ SECTION_LINE = re.compile(r"^(\d{3})\.\s+(\S.*)$")
 
 
 def load() -> list[str]:
+    """Read the Comprehensive Rules as lines.
+
+    Raises:
+        SystemExit: When the rules haven't been downloaded.
+    """
     if not RULES_FILE.exists():
         sys.exit(
             "Rules file not found. Download it first:\n"
@@ -54,6 +59,12 @@ def body_start(lines: list[str]) -> int:
 
     Rule 100.1 is the first real rule, but section header '100. General' sits
     just above it and belongs to the body too, so back up to catch it.
+
+    Args:
+        lines: The rules file's lines.
+
+    Returns:
+        The index of the body's first line, or 0 when rule 100.1 isn't found.
     """
     for i, line in enumerate(lines):
         if re.match(r"^100\.1\.?\s", line):
@@ -68,6 +79,13 @@ def glossary_bounds(lines: list[str]) -> tuple[int, int]:
     """Find the real glossary, not the 'Glossary' line in the table of contents.
 
     Both words appear twice in the file, so scan from the end.
+
+    Args:
+        lines: The rules file's lines.
+
+    Returns:
+        (start, end): the glossary's first entry line and the line where it stops, or (-1, -1)
+        when there is no glossary.
     """
     end = len(lines)
     for i in range(len(lines) - 1, -1, -1):
@@ -85,6 +103,14 @@ def glossary_bounds(lines: list[str]) -> tuple[int, int]:
 
 
 def cmd_rule(args) -> int:
+    """Run `rule` on the CR: print each rule asked for.
+
+    Args:
+        args: The parsed command line: numbers and limit.
+
+    Returns:
+        0 when every rule was found, 1 otherwise.
+    """
     status = 0
     for i, number in enumerate(args.numbers):
         if i:
@@ -94,6 +120,18 @@ def cmd_rule(args) -> int:
 
 
 def cr_rule(number: str, limit: int) -> int:
+    """Print one CR rule with its subrules and examples, or a whole section for a bare number like "704".
+
+    Args:
+        number: The rule or section number.
+        limit: The most lines to print before truncating.
+
+    Returns:
+        0 when the rule was found, 1 when it wasn't.
+
+    Raises:
+        SystemExit: When the rules haven't been downloaded.
+    """
     lines = load()
     start = body_start(lines)
     target = number.rstrip(".")
@@ -132,7 +170,16 @@ def cr_rule(number: str, limit: int) -> int:
 
 
 def snippet(line: str, pattern: re.Pattern, width: int = 260) -> str:
-    """Trim a long rule down to a window around the match, keeping its number."""
+    """Trim a long rule down to a window around the match, keeping its number.
+
+    Args:
+        line: A rule line from the CR.
+        pattern: The search term; the window is placed around its first match.
+        width: The most characters of rule text to keep.
+
+    Returns:
+        "<number>  <text>", with "..." where the text was cut; a line that isn't a rule comes back stripped.
+    """
     m = RULE_LINE.match(line)
     if not m:
         return line.strip()
@@ -153,6 +200,16 @@ def snippet(line: str, pattern: re.Pattern, width: int = 260) -> str:
 
 
 def cmd_search(args) -> int:
+    """Run `search` on the CR: print the rules that mention a term, as snippets unless --full.
+
+    The glossary is left out, so a hit is always a numbered rule.
+
+    Args:
+        args: The parsed command line: term, limit and full.
+
+    Returns:
+        0 when some rule mentions the term, 1 otherwise.
+    """
     lines = load()
     start = body_start(lines)
     gstart, gend = glossary_bounds(lines)
@@ -183,6 +240,14 @@ def cmd_search(args) -> int:
 
 
 def cmd_glossary(args) -> int:
+    """Run `glossary`: print the entries whose name matches a term, exact matches first.
+
+    Args:
+        args: The parsed command line: term and limit.
+
+    Returns:
+        0 when an entry matched, 1 otherwise.
+    """
     lines = load()
     start, end = glossary_bounds(lines)
     if start == -1:
@@ -220,6 +285,17 @@ def cmd_glossary(args) -> int:
 
 
 def load_doc(doc: str) -> dict:
+    """Read a tournament document's converted JSON.
+
+    Args:
+        doc: The document key: "mtr", "ipg" or "jar".
+
+    Returns:
+        The document: {"title", "effective", "sections"}.
+
+    Raises:
+        SystemExit: When the document hasn't been downloaded.
+    """
     path = DOCS_DIR / f"{doc}.json"
     if not path.exists():
         sys.exit(f"The {DOCS[doc]} isn't downloaded. Download it first:\n    python scripts/sources.py update {doc}")
@@ -227,14 +303,25 @@ def load_doc(doc: str) -> dict:
 
 
 def _norm(text: str) -> str:
+    """Collapse whitespace and lower-case, for matching heading words."""
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
 def find_sections(doc: str, ref: str) -> list[dict]:
-    """The sections a reference names: a number ("2.2", "A" for Appendix A) or words from a heading.
+    """Find the sections a reference names: a number ("2.2", "A" for Appendix A) or words from a heading.
 
     A number also takes its subsections ("3" gives 3, 3.1, 3.2 ...). Heading words match when they are
     part of exactly the headings returned.
+
+    Args:
+        doc: The document key.
+        ref: The section number, "Appendix X", or heading words.
+
+    Returns:
+        The matching sections, in document order; empty when none match.
+
+    Raises:
+        SystemExit: When the document hasn't been downloaded.
     """
     sections = load_doc(doc)["sections"]
     key = ref.strip().rstrip(".")
@@ -248,7 +335,20 @@ def find_sections(doc: str, ref: str) -> list[dict]:
 
 
 def doc_section(doc: str, ref: str) -> dict | None:
-    """The one section a citation's ref names, or None if it names none or several."""
+    """Find the one section a citation's ref names.
+
+    An exact key wins over its subsections, so "3" names section 3, not 3.1.
+
+    Args:
+        doc: The document key.
+        ref: The citation's section reference.
+
+    Returns:
+        The section, or None if the ref names none or several.
+
+    Raises:
+        SystemExit: When the document hasn't been downloaded.
+    """
     found = find_sections(doc, ref)
     key = ref.strip().rstrip(".").lower()
     exact = [s for s in found if s["key"].lower() == key]
@@ -264,7 +364,15 @@ SKIPPED_PARTS = ("Examples", "Philosophy")
 
 
 def trim_parts(text: str, everything: bool) -> tuple[list[str], list[str]]:
-    """The section's lines without its Examples and Philosophy parts, and the names of the parts left out."""
+    """Drop a section's Examples and Philosophy parts.
+
+    Args:
+        text: The section's text.
+        everything: Keep every part (--all).
+
+    Returns:
+        (the lines kept, the names of the parts left out).
+    """
     if everything:
         return text.splitlines(), []
     out, skipped, skipping = [], [], False
@@ -282,11 +390,20 @@ def trim_parts(text: str, everything: bool) -> tuple[list[str], list[str]]:
 
 
 def version_line(doc: str) -> str:
+    """Return "[<title>, effective <date>]" for a document, to head its output."""
     data = load_doc(doc)
     return f"[{data['title']}, effective {data.get('effective') or 'unknown'}]"
 
 
 def doc_rule(args) -> int:
+    """Run `rule` on a tournament document: print each section asked for.
+
+    Args:
+        args: The parsed command line: doc, numbers, limit and all.
+
+    Returns:
+        0 when at least one section was found, 1 otherwise. Refs that match nothing are named on stderr.
+    """
     found, missing = [], []
     for ref in args.numbers:
         hits = find_sections(args.doc, ref)
@@ -314,6 +431,14 @@ def doc_rule(args) -> int:
 
 
 def doc_search(args) -> int:
+    """Run `search` on a tournament document: print the sections that mention a term.
+
+    Args:
+        args: The parsed command line: doc, term, limit and full.
+
+    Returns:
+        0 when some section mentions the term, 1 otherwise.
+    """
     pattern = re.compile(re.escape(args.term), re.IGNORECASE)
     hits = []
     for s in load_doc(args.doc)["sections"]:
@@ -342,6 +467,14 @@ def doc_search(args) -> int:
 
 
 def doc_toc(args) -> int:
+    """Run `toc` on a tournament document: print its section keys and headings.
+
+    Args:
+        args: The parsed command line: doc.
+
+    Returns:
+        The exit status, always 0.
+    """
     data = load_doc(args.doc)
     print(f"{data['title']} (effective {data.get('effective') or 'unknown'})")
     for s in data["sections"]:
@@ -350,6 +483,14 @@ def doc_toc(args) -> int:
 
 
 def cmd_toc(args) -> int:
+    """Run `toc` on the CR: print each section number and title once.
+
+    Args:
+        args: The parsed command line (unused).
+
+    Returns:
+        The exit status, always 0.
+    """
     lines = load()
     start = body_start(lines)
     seen = set()
@@ -362,6 +503,11 @@ def cmd_toc(args) -> int:
 
 
 def main() -> int:
+    """Run the command line, sending rule, search and toc to the --doc document's version.
+
+    Returns:
+        The exit status of the chosen command.
+    """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--doc", choices=["cr", *DOCS], default="cr",
                         help="which document: cr (default), mtr, ipg or jar")

@@ -61,25 +61,46 @@ TOC_LINE = re.compile(
 
 
 def get(url: str, timeout: int = 120) -> bytes:
+    """GET a URL and return its body.
+
+    Raises:
+        urllib.error.URLError: When the server can't be reached or answers with an error.
+    """
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.read()
 
 
 def now() -> str:
+    """Return the current UTC time as an ISO 8601 string to the second, ending in Z."""
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def load_registry() -> dict:
+    """Read reference/sources.json, or an empty registry if nothing has been installed."""
     return json.loads(REGISTRY.read_text(encoding="utf-8")) if REGISTRY.exists() else {}
 
 
 def save_registry(registry: dict) -> None:
+    """Write reference/sources.json."""
     REGISTRY.write_text(json.dumps(registry, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
 def find_pdf_url(doc: str) -> str:
-    """The current PDF's address, read from the page that links it. Only Wizards' host is accepted."""
+    """Find the current PDF's address, read from the page that links it.
+
+    Only Wizards' host is accepted.
+
+    Args:
+        doc: The document key: "mtr", "ipg" or "jar".
+
+    Returns:
+        The PDF's URL on media.wizards.com.
+
+    Raises:
+        SystemExit: When the page has no link to the PDF, or the link points to another host.
+        urllib.error.URLError: When the page can't be fetched.
+    """
     page, name = PAGES[doc]
     # The WPN page embeds its links in JSON with "/" escaped as /.
     html = get(page).decode("utf-8", errors="replace").replace("\\u002F", "/")
@@ -96,7 +117,19 @@ def find_pdf_url(doc: str) -> str:
 
 
 def pdf_lines(path: Path) -> list[tuple[str, bool]]:
-    """Each text line of the PDF, with whether it is entirely in a bold font."""
+    """Read each text line of the PDF, with whether it is entirely in a bold font.
+
+    Lines that are only a page number are dropped.
+
+    Args:
+        path: The PDF.
+
+    Returns:
+        (text, bold) for each line, in reading order.
+
+    Raises:
+        SystemExit: When pypdf isn't installed.
+    """
     try:
         import pypdf
     except ImportError:
@@ -106,13 +139,23 @@ def pdf_lines(path: Path) -> list[tuple[str, bool]]:
         cur = {"y": None, "parts": [], "bold": True}
 
         def flush():
-            text = "".join(cur["parts"]).strip()
+            """End the current line: keep it if it has text, and start a new one."""
+            text ="".join(cur["parts"]).strip()
             if text:
                 lines.append((text, cur["bold"]))
             cur["parts"], cur["bold"] = [], True
 
         def visit(text, cm, tm, font, size):
-            y = round(tm[5] * cm[3] + cm[5], 1)
+            """Collect one run of text from pypdf, starting a new line when the baseline moves.
+
+            Args:
+                text: The run's text, which may contain newlines.
+                cm: The current transformation matrix.
+                tm: The text matrix.
+                font: The font dictionary, or None.
+                size: The font size (unused; pypdf passes it).
+            """
+            y =round(tm[5] * cm[3] + cm[5], 1)
             if cur["y"] is not None and abs(y - cur["y"]) > 1:
                 flush()
             cur["y"] = y
@@ -130,11 +173,24 @@ def pdf_lines(path: Path) -> list[tuple[str, bool]]:
 
 
 def squash(text: str) -> str:
+    """Collapse whitespace and lower-case, so headings compare despite PDF spacing."""
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
 def by_contents(lines: list[str]) -> list[dict]:
-    """Split a numbered document (MTR, IPG) into sections, using its own table of contents."""
+    """Split a numbered document (MTR, IPG) into sections, using its own table of contents.
+
+    Contents entries whose heading can't be found in the body are named in a warning on stderr.
+
+    Args:
+        lines: The document's text lines.
+
+    Returns:
+        One dict per section found, with "key" (such as "2.1" or "C.1"), "heading" and "text".
+
+    Raises:
+        SystemExit: When there is no table of contents.
+    """
     toc, first, last, parent, child = [], None, -1, None, 0
     for i, line in enumerate(lines):
         m = TOC_LINE.match(line)
@@ -196,7 +252,15 @@ def by_contents(lines: list[str]) -> list[dict]:
 
 
 def by_bold_headings(lines: list[tuple[str, bool]]) -> list[dict]:
-    """Split an unnumbered document (JAR) at its bold headings, numbering them in order."""
+    """Split an unnumbered document (JAR) at its bold headings, numbering them in order.
+
+    Args:
+        lines: (text, bold) pairs from pdf_lines().
+
+    Returns:
+        One dict per section, with "key", "heading" and "text"; text before the first heading
+        becomes section "0", "Introduction", if there is any.
+    """
     sections = [{"key": "0", "heading": "Introduction", "text": []}]
     prev_bold = False
     for text, bold in lines:
@@ -213,6 +277,18 @@ def by_bold_headings(lines: list[tuple[str, bool]]) -> list[dict]:
 
 
 def convert(doc: str, pdf: Path) -> dict:
+    """Convert a document's PDF into the sections lookup.py --doc reads.
+
+    Args:
+        doc: The document key: "mtr", "ipg" or "jar".
+        pdf: The downloaded PDF.
+
+    Returns:
+        A dict with "title", "effective" (None if the first lines don't state it) and "sections".
+
+    Raises:
+        SystemExit: When pypdf is missing or the document can't be split into sections.
+    """
     lines = pdf_lines(pdf)
     head = "\n".join(t for t, _ in lines[:12])
     m = EFFECTIVE.search(head)
@@ -225,6 +301,19 @@ def convert(doc: str, pdf: Path) -> dict:
 
 
 def install(doc: str, data: bytes, url: str) -> dict:
+    """Keep a downloaded PDF and its conversion in reference/docs/.
+
+    Args:
+        doc: The document key.
+        data: The PDF's bytes.
+        url: Where it was downloaded from.
+
+    Returns:
+        The document's new registry entry. The caller saves it.
+
+    Raises:
+        SystemExit: When the conversion fails.
+    """
     lookup.DOCS_DIR.mkdir(parents=True, exist_ok=True)
     pdf = lookup.DOCS_DIR / f"{doc}.pdf"
     pdf.write_bytes(data)
@@ -243,7 +332,20 @@ def install(doc: str, data: bytes, url: str) -> dict:
 
 
 def update_pdf(doc: str, check: bool, force: bool) -> bool:
-    """Returns True when a new version was installed."""
+    """Download one PDF document and install it if its content changed.
+
+    Args:
+        doc: The document key: "mtr", "ipg" or "jar".
+        check: Report whether there is an update without installing it.
+        force: Install even if the content is unchanged.
+
+    Returns:
+        True when a new version was installed.
+
+    Raises:
+        SystemExit: When the PDF can't be found or converted.
+        urllib.error.URLError: When a download fails.
+    """
     registry = load_registry()
     local = registry.get(doc)
     url = find_pdf_url(doc)
@@ -264,6 +366,18 @@ def update_pdf(doc: str, check: bool, force: bool) -> bool:
 
 
 def update_cr(check: bool, force: bool) -> bool:
+    """Update the Comprehensive Rules by running update_rules.py.
+
+    Args:
+        check: Pass --check: report, install nothing.
+        force: Pass --force: re-download regardless.
+
+    Returns:
+        True when the rules file on disk changed.
+
+    Raises:
+        subprocess.CalledProcessError: When update_rules.py fails.
+    """
     before = lookup.RULES_FILE.read_bytes() if lookup.RULES_FILE.exists() else None
     args = [sys.executable, str(SCRIPTS / "update_rules.py")] + (["--check"] if check else []) + (["--force"] if force else [])
     subprocess.run(args, check=True)
@@ -283,7 +397,7 @@ FORMATS_DIR = lookup.REFERENCE_DIR / "formats"
 
 
 def installed_versions() -> dict:
-    """The effective date of each installed document, as `list` prints it."""
+    """Return the effective date of each installed document, as `list` prints it, by key."""
     versions = {doc: info.get("effective") for doc, info in load_registry().items()}
     cr = lookup.REFERENCE_DIR / "version.json"
     if cr.exists():
@@ -292,7 +406,14 @@ def installed_versions() -> dict:
 
 
 def format_header(path: Path) -> dict:
-    """The `sources:` versions in a format file's header (see reference/formats/README.md)."""
+    """Read the `sources:` versions in a format file's header (see reference/formats/README.md).
+
+    Args:
+        path: The format file.
+
+    Returns:
+        The version each document was checked against, by key; empty when the file has no header.
+    """
     lines = path.read_text(encoding="utf-8").splitlines()
     if not lines or lines[0].strip() != "---":
         return {}
@@ -311,7 +432,15 @@ def format_header(path: Path) -> dict:
 
 
 def stale_formats(formats_dir: Path, installed: dict) -> list[tuple[str, list[str]]]:
-    """Format files checked against an older version of a document than the one installed, with why."""
+    """Find format files checked against a different version of a document than the one installed.
+
+    Args:
+        formats_dir: The directory of format files.
+        installed: The installed version of each document, from installed_versions().
+
+    Returns:
+        (file name, reasons) for each stale file, where each reason reads like "CR <checked> → <installed>".
+    """
     stale = []
     for path in sorted(formats_dir.glob("*.md")):
         reasons = [f"{doc.upper()} {checked} → {installed[doc]}" for doc, checked in format_header(path).items()
@@ -322,6 +451,7 @@ def stale_formats(formats_dir: Path, installed: dict) -> list[tuple[str, list[st
 
 
 def report_stale_formats() -> None:
+    """Print the format files that need re-checking, if any."""
     stale = stale_formats(FORMATS_DIR, installed_versions())
     if stale:
         print("\nFormat files to re-check (re-run lookup.py on the numbers they cite, then update their header):")
@@ -330,6 +460,14 @@ def report_stale_formats() -> None:
 
 
 def cmd_update(args) -> int:
+    """Run `update`: install each changed document, then recheck the judge's record if anything changed.
+
+    Args:
+        args: The parsed command line: docs, check and force.
+
+    Returns:
+        The exit status.
+    """
     docs = args.docs or ["cr", *lookup.DOCS]
     changed = False
     for doc in docs:
@@ -344,6 +482,14 @@ def cmd_update(args) -> int:
 
 
 def cmd_list(args) -> int:
+    """Run `list`: print the installed version of each document.
+
+    Args:
+        args: The parsed command line (unused).
+
+    Returns:
+        The exit status.
+    """
     registry = load_registry()
     cr = lookup.REFERENCE_DIR / "version.json"
     if cr.exists():
@@ -363,6 +509,14 @@ def cmd_list(args) -> int:
 
 
 def cmd_convert(args) -> int:
+    """Run `convert`: re-convert the kept PDFs, after a change to the conversion code.
+
+    Args:
+        args: The parsed command line: docs, defaulting to every PDF document.
+
+    Returns:
+        The exit status.
+    """
     registry = load_registry()
     for doc in args.docs or list(lookup.DOCS):
         pdf = lookup.DOCS_DIR / f"{doc}.pdf"
@@ -378,6 +532,11 @@ def cmd_convert(args) -> int:
 
 
 def main() -> int:
+    """Run the command line.
+
+    Returns:
+        The exit status of the chosen command.
+    """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("update", help="download documents that have changed")

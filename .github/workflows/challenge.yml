@@ -30,7 +30,16 @@ jobs:
           sh elan-init.sh -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
       - name: Build and check the proofs
-        run: lake build
+        run: |
+          set -o pipefail
+          lake build 2>&1 | tee build.log
+      - name: Every declaration has a doc comment
+        # linter.missingDocs (challenge/lakefile.lean) warns on any public declaration without `/-- -/`; doc-gen4
+        # builds the reference from those comments, so a missing one fails here.
+        run: |
+          if grep -n "missing doc string" build.log; then
+            echo "::error::add a /-- -/ doc comment to each declaration listed above"; exit 1
+          fi
       - name: Run the tests
         run: lake test
       - name: The release tag is the binary's version

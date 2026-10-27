@@ -41,17 +41,32 @@ EFFECTIVE = re.compile(r"effective as of\s+([A-Z][a-z]+ \d{1,2}, \d{4})")
 
 
 def get(url: str, timeout: int = 60) -> bytes:
+    """GET a URL and return its body.
+
+    Raises:
+        urllib.error.URLError: When the server can't be reached or answers with an error.
+    """
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.read()
 
 
 def head(url: str, timeout: int = 30) -> dict:
-    """Cheap metadata probe, so --check doesn't pull a megabyte every time.
+    """Probe a file's metadata cheaply, so --check doesn't pull a megabyte every time.
 
     WotC posts the rules under a filename containing a space, and http.client
     rejects a raw space in the request path, so quote before probing exactly as
     the download path does.
+
+    Args:
+        url: The rules file's URL, quoted or not.
+        timeout: Seconds to wait for the server.
+
+    Returns:
+        A dict with "content_length" and "last_modified", each None when the server didn't send it.
+
+    Raises:
+        urllib.error.URLError: When the server can't be reached or answers with an error.
     """
     url = urllib.parse.quote(urllib.parse.unquote(url), safe=":/")
     req = urllib.request.Request(url, headers={"User-Agent": UA}, method="HEAD")
@@ -63,6 +78,14 @@ def head(url: str, timeout: int = 30) -> dict:
 
 
 def find_txt_url() -> str:
+    """Find the current Comprehensive Rules .txt link on Wizards' rules page.
+
+    Returns:
+        The link; when the page has several, the one that sorts last, which carries the latest date.
+
+    Raises:
+        SystemExit: When the page has no such link, which usually means its layout changed.
+    """
     html = get(RULES_PAGE).decode("utf-8", errors="replace")
     matches = TXT_LINK.findall(html)
     if not matches:
@@ -75,22 +98,27 @@ def find_txt_url() -> str:
 
 
 def posted_date(url: str) -> str:
-    """The YYYYMMDD stamp in the filename — when Wizards posted this file."""
+    """Return the YYYYMMDD stamp in the filename — when Wizards posted this file — or "unknown"."""
     m = re.search(r"(\d{8})", urllib.parse.unquote(url))
     return m.group(1) if m else "unknown"
 
 
 def effective_date(text: str) -> str:
-    """The effective date stated inside the document. Not the same thing."""
+    """Return the effective date stated inside the document, or "unknown".
+
+    This is not the same thing as the posted date in the filename.
+    """
     m = EFFECTIVE.search(text)
     return m.group(1) if m else "unknown"
 
 
 def digest(text: str) -> str:
+    """Hex SHA-256 of the text's UTF-8 bytes: the version key for the rules."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def decode(raw: bytes) -> str:
+    """Decode the downloaded file, trying UTF-8 (with or without a BOM), then cp1252, then Latin-1."""
     for encoding in ("utf-8-sig", "utf-8", "cp1252", "latin-1"):
         try:
             return raw.decode(encoding)
@@ -104,6 +132,10 @@ def local_state() -> dict | None:
 
     A file copied in by hand has no version.json, but it can still be hashed,
     so manual installs get the same staleness checking as downloaded ones.
+
+    Returns:
+        The saved metadata when version.json matches the file on disk, metadata rebuilt
+        from the file otherwise ("source" says which), or None when there is no local copy.
     """
     if not RULES_FILE.exists():
         return None
@@ -133,6 +165,13 @@ def local_state() -> dict | None:
 
 
 def write_meta(text: str, url: str, probe: dict) -> None:
+    """Record what was downloaded in version.json.
+
+    Args:
+        text: The rules text, as installed.
+        url: Where it was downloaded from.
+        probe: The result of head(), stored so a later --check can skip the download; may be empty.
+    """
     META_FILE.write_text(
         json.dumps(
             {
@@ -153,6 +192,7 @@ def write_meta(text: str, url: str, probe: dict) -> None:
 
 
 def describe(state: dict | None) -> None:
+    """Print the local copy's version, as local_state() describes it."""
     if state is None:
         print("Local copy:  none downloaded yet")
         return
@@ -161,6 +201,15 @@ def describe(state: dict | None) -> None:
 
 
 def main() -> int:
+    """Run the command line: compare the local copy with Wizards' file and install it if it changed.
+
+    Returns:
+        The exit status, 0 unless something failed.
+
+    Raises:
+        SystemExit: When the rules page has no rules link.
+        urllib.error.URLError: When the Wizards site can't be reached.
+    """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--force", action="store_true", help="re-download even if unchanged")
     parser.add_argument("--check", action="store_true", help="report status without downloading")
