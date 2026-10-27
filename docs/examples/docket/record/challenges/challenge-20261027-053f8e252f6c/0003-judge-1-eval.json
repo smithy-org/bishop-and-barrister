@@ -1,0 +1,49 @@
+{
+  "v": 1,
+  "seq": 3,
+  "prev": "6f7acc19f98e391698563a690892e5a94171f302c1b84308eea12111478adfef",
+  "actor": "judge-1",
+  "device": "eval",
+  "time": "2026-10-27T17:04:18Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [
+    {
+      "target": 3,
+      "ground": "overridden",
+      "argument": "Step 3 stipulates that the first loser chooses. But in the case's own scenario (F2) every loser has lost, and a player who lost has left the game (CR 800.4 premise of the case itself: multiplayer games continue after players leave). 103.1 is a rule that requires 'the loser of the previous game' to make a choice. CR 800.4h already settles what happens when a rule requires a player who has left the game to make a choice: the next player in turn order makes it. So the Comprehensive Rules already assign this choice by turn order, and the stipulation (first loser chooses, with a tie-break by agreement or random) contradicts 800.4h and cannot be accepted as a gap-filler. At minimum the case never addresses 800.4h, which is the specific rule on choices owed by players who left.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "F2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "103.1 requires a loser of the previous game, a player who is no longer in the game in a multiplayer game that ended with other players remaining, to make the choice."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "800.4h",
+            "excerpt": "If a rule requires a player who has left the game to make a choice, the next player in turn order makes that choice.",
+            "text_sha256": "fbb414fe762ebde2b7abd82e5b74c38ff583132e0039816c9de2b56989372743"
+          },
+          "assumption": false,
+          "conclusion": "When 103.1 requires a player who has left the game to choose, the next player in turn order makes the choice, not the first loser, so the stipulation in C3 conflicts with 800.4h."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

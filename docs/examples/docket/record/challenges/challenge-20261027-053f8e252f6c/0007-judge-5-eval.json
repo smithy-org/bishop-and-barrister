@@ -1,0 +1,38 @@
+{
+  "v": 1,
+  "seq": 7,
+  "prev": "72fe1c976a730c7bdfe995d151441643f0819e90bdffee7b5dd70e1026729cc0",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T17:04:20Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [],
+  "concedes": "Lens 5 (tournament documents and formats). MTR 2.2 (play/draw rule) is two-player in wording: after each game 'the loser of that game' decides, and after a draw the player who decided at the drawn game chooses; it never addresses several losers. MTR 2.1 and 2.4 speak of 'one player'/'the other'. A search of the MTR for multiplayer finds only 7.2 (Conspiracy boosters, irrelevant), and its only multiplayer structure is Two-Headed Giant (section 9), where 9.3 has a team determined at random choose, with no loser rule, so no tournament rule settles which of several losers chooses. reference/formats/matches.md says the same: 'No official rule says who starts a later game or how a multiplayer match of several games ends', and the only community answer is level 4 (random first player each game), which cannot override a level 2 reading of CR 103.1 and does not contradict a gap-filling stipulation. commander.md defers to matches.md and sets no different start rule. So this is a genuine gap, no format or REL changes it, and the stipulation (earliest loser chooses; draw rule unchanged) contradicts no MTR or format text on the stated facts. Residual weaknesses that are not refutations: the user's confirm adds tie-break words (tied earliest losers decide between themselves, else random) that are not in the case's rule text, and teammates in Two-Headed Giant lose simultaneously, but that format has its own MTR 9.3 procedure for tournaments.",
+  "concede_evidence": [
+    {
+      "doc": "mtr",
+      "ref": "2.2",
+      "heading": "Play/Draw Rule",
+      "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)\nduring Swiss rounds, or the player ranked higher at the end of Swiss rounds during playoff matches - chooses\neither to play first or to play second. They must state this choice before"
+    },
+    {
+      "doc": "mtr",
+      "ref": "9.3",
+      "heading": "Play-Draw Rule",
+      "text_sha256": "150a7fab369c8830f9e3999a38621075435c347e13731886c2c75e9fd75d3054",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "A team determined at random chooses either to play first or to play second. The choice must be made before\neither player on that team looks at their hand. If either player on that team looks at their hand before their choice\nis made, that team plays first. The team who plays first skips the draw ste"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    }
+  ]
+}

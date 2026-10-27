@@ -1,0 +1,43 @@
+{
+  "v": 1,
+  "seq": 29,
+  "prev": "6c42a146a9907b3b7aa3d47c9a7655e7b591d9156f06d0394876cc5db86a467a",
+  "actor": "judge-4",
+  "device": "eval",
+  "time": "2026-10-27T17:15:03Z",
+  "type": "vote",
+  "convinced": true,
+  "reason": "Lens 4 (counterexamples and logic). Every refutation filed against step 3 (team games via 104.2c, Archenemy via 103.1b, draw overlap via 104.4a, simultaneous first losers via 704.3, Supervillain Rumble via 904.12c, win-by-effect with no stated losers, and a player who drew under 104.4e/801.16 being deemed a loser) was answered by a fix in the rule's own text, and the final report passed with no standing refutation. I re-ran each counterexample against the final wording. Team, Archenemy and Supervillain Rumble games are excluded. Any game that was a draw, for the whole game or for any one player, goes by the 103.1 draw sentence. Simultaneous first losers have a stated tie-break. Players still in the game when a winner wins by an effect count as losers at that moment. Because the rule requires one winner and that no player left with a draw, every game it reaches has a determinate first loser or a determinate tied set, and 103.1 gives no competing answer. 800.4h does not apply, since the 103.1 chooser acts at the start of the next game, as a player of that game. 103.1 says only 'the loser', so it is silent when there are several losers; the stipulation fills that gap and contradicts no cited CR text. Steps 1, 2 and 4 are sourced and claim no more than their quotes. Step 3 is a stipulation I accept as the rule. Residual points are not refutations: 'cannot agree' is undefined, and limited-range-of-influence wins that do not end the game are not spelled out.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.5",
+      "excerpt": "If the game is a draw for a player, that player leaves the game.",
+      "text_sha256": "a24fd6993d82c078f0cda33e8882474b51647fd435608bdaaf26004b468f19ef"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1b",
+      "excerpt": "Rather, the archenemy takes the first turn.",
+      "text_sha256": "9397a605d20b5d43ef09bd283335bb34354401790b0e2b7455bfefc5d183097d"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.2c",
+      "excerpt": "Each player on the winning team wins the game, even if one or more of those players had previously lost that game.",
+      "text_sha256": "7c602b36a136b9ed7e6a54d52205594ae1ed14eabfe261426a381c0476898551"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "v": 1,
+  "seq": 0,
+  "prev": null,
+  "actor": "user",
+  "device": "eval",
+  "time": "2026-10-27T17:01:39Z",
+  "type": "open",
+  "statement": "I want to challenge this. In a three-player Commander match of several games, CR 103.1 says the loser of the previous game chooses who starts, but two of us lost. Let's make it the rule that the player who lost first in the previous game chooses; if the previous game was a draw, 103.1's draw rule applies.",
+  "panel": "independent"
+}

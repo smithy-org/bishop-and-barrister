@@ -1,0 +1,56 @@
+{
+  "v": 1,
+  "seq": 15,
+  "prev": "f8aa7fd6ad7971a8c06cc2b4ebe69b89433509c70ff9523e00679c2dbda871a6",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T17:09:15Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [],
+  "concedes": "Lens 5 (tournament documents and formats), round 2. The revised rule is limited to free-for-all games with one winner and more than one loser, and leaves draws, team games and Archenemy games alone. I re-checked the tournament documents against that narrower rule. MTR 2.2 gives the choice to 'the loser of that game' and to the earlier decider after a draw. It is worded for two players and says nothing about several losers. MTR 2.5 allows concession and draws and forbids rewards for them, and the rule's tie-break does not offer any. The IPG Game Loss penalty ends the game immediately and treats the offender as having lost. That game has no single winner, so it falls outside the rule's condition and does not conflict with it. The MTR's only multiplayer structure is Two-Headed Giant (section 9), which is a team game and is carved out. MTR 7.2 (Conspiracy boosters) is irrelevant. reference/formats/matches.md says no official rule says who starts a later game of a multiplayer match, and its only answer (random first player) is level 4. That cannot override a level 2 or level 1 text and does not contradict a gap-filling stipulation. commander.md sets no different start rule. So no tournament rule or format settles the gap, and none changes the stipulation. CR 800.4h, which judge 1 raised in round 1, concerns a player who has left the game being played. The user answered it, and the chooser under 103.1 acts at the start of the next game, so I do not repeat it. Residual weaknesses that are not refutations: games ended by a Game Loss or with several winners stay uncovered, and the tie-break is the user's own new content.",
+  "concede_evidence": [
+    {
+      "doc": "mtr",
+      "ref": "2.2",
+      "heading": "Play/Draw Rule",
+      "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)\nduring Swiss rounds, or the player ranked higher at the end of Swiss rounds during playoff matches - chooses\neither to play first or to play second. They must state this choice before"
+    },
+    {
+      "doc": "mtr",
+      "ref": "2.5",
+      "heading": "Conceding or Intentionally Drawing Games or Matches",
+      "text_sha256": "d0c3774e67e6dc47d8ad4efaa2f9efb274ca66da591c2ba31984a26f1b1f2c09",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "Until the result of a match has been recorded, players may concede or mutually agree to a draw in that game or\nmatch. If the conceding player won a game in the match, the match must be reported as 2-1. Intentional draws\nwhere no games were played are always reported as 0-0-3 in EventLink.\nPlayers ma"
+    },
+    {
+      "doc": "mtr",
+      "ref": "9.3",
+      "heading": "Play-Draw Rule",
+      "text_sha256": "150a7fab369c8830f9e3999a38621075435c347e13731886c2c75e9fd75d3054",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "A team determined at random chooses either to play first or to play second. The choice must be made before\neither player on that team looks at their hand. If either player on that team looks at their hand before their choice\nis made, that team plays first. The team who plays first skips the draw ste"
+    },
+    {
+      "doc": "ipg",
+      "ref": "1.1",
+      "heading": "Definition of Penalties",
+      "text_sha256": "d76779c51f531d85cab43bb8a5d8c6e8d2f66f4007eaf66581af8e8fb2cd1f31",
+      "version": "September 23, 2024",
+      "level": 2,
+      "excerpt": "Warning\nWarnings are used in situations of incorrect play when a small amount of time is needed to\nimplement the corrective procedure. The purpose of a Warning is to alert judges and players\ninvolved that a problem has occurred and to keep a permanent record of the infraction. A time\nextension shoul"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    }
+  ]
+}
