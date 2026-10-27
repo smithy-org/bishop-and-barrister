@@ -58,6 +58,27 @@ are `unreviewed`.
   Add `--house-rule` if the ruling knowingly departs from the official rules. Never review a ruling on your
   own judgement.
 
+## Syncing with a remote store
+
+There are two storage modes. **Local only** is the default: the record lives in `~/.claude/bishop-and-barrister/`
+and nothing leaves the machine. **Local plus a remote RustFS** keeps a synced copy in a bucket the user chooses,
+so their other devices share the same rulings. In both, the local record is the working copy every answer reads.
+
+Only the user sets up a store; never pick an endpoint for them. Their keys go in the environment
+(`BISHOP_AND_BARRISTER_S3_ACCESS_KEY`, `BISHOP_AND_BARRISTER_S3_SECRET_KEY`) or a `~/.aws/credentials` profile,
+never in a command you echo back or in `config.json`.
+
+```bash
+python scripts/judge.py sync --setup --endpoint https://rustfs.example.net --bucket bishop-and-barrister --create
+python scripts/judge.py sync
+```
+
+`--setup` checks the endpoint before saving it: plain `http://` only for this machine or a private network, keys
+that work, a bucket that exists and refuses anonymous reads. `sync` merges the other devices' histories in and
+uploads this device's. If it stops on a conflict, two devices changed the same ruling: show the user both
+versions, settle it in their words, then sync again. If the store can't be reached, the local record still works;
+say so and carry on.
+
 ## Keeping the documents current
 
 The Comprehensive Rules change with every set, roughly quarterly; the MTR, IPG and JAR a few times a year.
