@@ -1,0 +1,154 @@
+{
+  "v": 1,
+  "seq": 10,
+  "prev": "d409be91a1d69448f88fa02cd82ea6c2c6349e0c87d94ff860a5a35f98fe7bac",
+  "actor": "user",
+  "device": "eval",
+  "time": "2026-10-27T20:14:06Z",
+  "type": "answer",
+  "round": 1,
+  "words": "The team-game objection and the winner-chooses objection both show real contradictions with 103.1 and 104.2, so I fix them instead of arguing. The rule now covers only free-for-all Commander (no teams), and it only ever names a player who actually lost the previous game. I dropped the 'previous chooser chooses again' fallback for simultaneous losses, because it could hand the choice to the winner. Simultaneous first losers are broken by turn order in that game, which is my own stipulation and not a CR quote.",
+  "replies": [
+    {
+      "judge": 1,
+      "index": 1,
+      "kind": "fix",
+      "words": "Narrowed to free-for-all Commander with no teams, so 104.2c cannot make an early loser a winner."
+    },
+    {
+      "judge": 2,
+      "index": 1,
+      "kind": "fix",
+      "words": "Same fix: no team games."
+    },
+    {
+      "judge": 3,
+      "index": 1,
+      "kind": "fix",
+      "words": "Removed the 'previous chooser chooses again' fallback for ties. The chooser is always a player who lost the previous game."
+    },
+    {
+      "judge": 4,
+      "index": 1,
+      "kind": "fix",
+      "words": "Step 6 now covers only the draw. Mixed simultaneous and sequential losses are handled by one rule: the earliest losing moment counts, and ties go by turn order."
+    }
+  ],
+  "case": {
+    "facts": [
+      {
+        "id": 1,
+        "text": "It is a Commander match of several games with three players, with no teams (free-for-all)."
+      },
+      {
+        "id": 2,
+        "text": "In the previous game, two of the three players lost the game and one player won it."
+      },
+      {
+        "id": 3,
+        "text": "The two losing players did not lose at the same moment: one of them lost first."
+      },
+      {
+        "id": 4,
+        "text": "The previous game was not a draw (it had a winner), in the case where the first-loser rule is wanted."
+      }
+    ],
+    "open_questions": [
+      "Does the rule also cover four-player free-for-all pods, where three players may lose? The user cares about multiplayer Commander without teams.",
+      "Is this meant as a Comprehensive Rules change, or only a house rule for the user's playgroup?"
+    ],
+    "rule": "In a free-for-all (no teams) Commander match of several games, when the previous game had a winner and more than one losing player, the player who lost first in that game is 'the loser of the previous game' for 103.1 and chooses who takes the first turn; if several players lost at that same earliest moment, the one of them who was earliest in turn order in that game chooses. If the previous game was a draw, rule 103.1's draw sentence applies unchanged.",
+    "applies_when": [
+      "a free-for-all (no teams) multiplayer Commander match of several games",
+      "the previous game had a winner and two or more losing players",
+      "or the previous game was a draw"
+    ],
+    "challenges": "none: a gap",
+    "steps": [
+      {
+        "id": 1,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "In a match of several games the chooser of the first turn is described as the loser of the previous game, a single player."
+      },
+      {
+        "id": 2,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "903.2",
+          "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+          "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+        },
+        "assumption": false,
+        "conclusion": "A three-player Commander game is a multiplayer game, and no Commander rule is quoted here that replaces 103.1's choice of who takes the first turn."
+      },
+      {
+        "id": 3,
+        "premises": [
+          "F2",
+          "F3"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        },
+        "assumption": false,
+        "conclusion": "Players can lose and leave a multiplayer game one after another while the game continues, so two losers can be ordered by when each lost."
+      },
+      {
+        "id": 4,
+        "premises": [
+          "F2",
+          "S1",
+          "S3"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "the loser of the previous game chooses who takes the first turn",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "With two losing players, 103.1 names 'the loser' as if there were one and gives no way to pick which of the two chooses: this is a gap."
+      },
+      {
+        "id": 5,
+        "premises": [
+          "F1",
+          "F2",
+          "F3",
+          "S4"
+        ],
+        "stipulation": true,
+        "conclusion": "Stipulated new rule for free-for-all games only: when the previous game had a winner and more than one losing player, the player who lost first is 'the loser of the previous game' for 103.1 and chooses; if several players lost at that same earliest moment, the one earliest in turn order in that game chooses. The chooser is therefore always a player who lost."
+      },
+      {
+        "id": 6,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game; the stipulation leaves this sentence untouched and applies only to games with a winner."
+      }
+    ]
+  }
+}

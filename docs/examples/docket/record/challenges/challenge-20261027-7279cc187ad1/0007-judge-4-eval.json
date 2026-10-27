@@ -1,0 +1,50 @@
+{
+  "v": 1,
+  "seq": 7,
+  "prev": "d975614808b2bcb63d1fb888b0a3b23052b605a5f4261f96cfac2af19f207a02",
+  "actor": "judge-4",
+  "device": "eval",
+  "time": "2026-10-27T20:13:08Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [
+    {
+      "target": 6,
+      "ground": "counterexample",
+      "argument": "C6 hands the choice to 'the player who made the choice in the previous game' whenever the losers lost simultaneously, with no check that this player is a loser. Example, three players: A chose the first turn of game 2 (as loser of game 1). In game 2, A wins while B and C lose in the same state-based-action check. Under C6, A, the winner, chooses who starts game 3. Rule 103.1 gives the choice to the loser of the previous game, and a winner is by definition not a loser (104.2a: the winner is the player whose opponents have all left). So the proposed rule reverses 103.1's purpose of letting losers choose, and it contradicts C7, which treats the winner as someone who only picks among the losers. C7 helps only if the previous chooser is absent, so the winner-chooses result stands whenever A is present. Separately, C5 covers 'several players lost at different moments' and C6 covers 'losing players lost at the same moment', but the rule is extended to four-player pods (F1). There, B and C lose simultaneously, then D later, then A wins. Nobody lost uniquely first and not all losers were simultaneous, so neither C5 nor C6 applies and the rule is silent in a case it claims to cover.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C6",
+            "F2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "the loser of the previous game chooses who takes the first turn",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "Under 103.1 the chooser for the next game is a loser of the previous game, never its winner."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "C6",
+            "S1"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.2a",
+            "excerpt": "A player still in the game wins the game if that player’s opponents have all left the game.",
+            "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+          },
+          "assumption": false,
+          "conclusion": "A player who made the previous choice can be the winner of the previous game, so C6 would make a winner choose, contrary to S1; the stipulation fails on this counterexample."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

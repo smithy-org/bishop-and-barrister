@@ -1,0 +1,32 @@
+{
+  "v": 1,
+  "seq": 13,
+  "prev": "48ac15d992cf4c183e9e9d1352d0060a3f18dbf837754d8a87d0af73c33b7181",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T20:15:56Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [],
+  "concedes": "Through the cards-and-rulings lens nothing defeats the revised case. My round-1 team-game refutation is answered: C5 now covers free-for-all only, so 104.2c cannot make an early loser a winner. No card or official ruling gives the choice to someone else or defines 'lost first' differently; 103.1 itself says the default turn order begins with the starting player and proceeds clockwise, so the new turn-order tiebreak ('earliest in turn order in that game') has a defined meaning from the sources. Step 6 leaves the draw sentence of 103.1 unchanged, and Karn Liberated's restart (727.1) yields no winner or loser, so the stipulation does not touch it. Remaining open points (a first loser who has left the match, how a Karn restart interacts with the draw sentence) are unsettled gaps, not contradictions with an official source.",
+  "concede_evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "The game’s default turn order begins with the starting player and proceeds clockwise.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.2c",
+      "excerpt": "Each player on the winning team wins the game, even if one or more of those players had previously lost that game.",
+      "text_sha256": "7c602b36a136b9ed7e6a54d52205594ae1ed14eabfe261426a381c0476898551"
+    },
+    {
+      "doc": "cr",
+      "ref": "727.1",
+      "text_sha256": "e0a27ae42cbef9f650ca74d89c679cd51bbc5d605e8e5d642ac19089a43ecbb3",
+      "excerpt": "One card (Karn Liberated) restarts the game. A game that is restarted immediately ends. No players in that game win, lose, or draw that game. All players in that game when it ended then start a new game following the procedures set forth in rule 103, “Starting the Game,” with the following exception"
+    }
+  ]
+}

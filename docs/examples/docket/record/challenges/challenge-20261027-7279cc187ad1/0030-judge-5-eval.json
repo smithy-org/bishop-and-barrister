@@ -1,0 +1,50 @@
+{
+  "v": 1,
+  "seq": 30,
+  "prev": "6556887e9b161ce2e213021e57c2dda21660a0c58d488df85e16c6d2c981512f",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T20:21:12Z",
+  "type": "respond",
+  "revision": 0,
+  "stance": "join",
+  "reason": "I adopt the opinion. S1 and S4 correctly pin 103.1 as naming a single 'loser' with no way to pick among two, a real gap (my tournament-document check found MTR 2.2 only mirrors 103.1 for two players, so nothing fills it). S2 (903.2: a three-player Commander game is multiplayer, default Free-for-All) and S3 (800.4: players leave one after another, so losers are ordered in time) hold. Stipulation S5 is stated as the case words it. It fits inside 103.1 because the chooser is always a player who lost (a winner is never among the losers, ties are only among losers). The earlier refutations (team games via 104.2c, winner-choosing fallback, turn-order ambiguity) are answered by limiting to free-for-all (806.1) and dropping turn order. S6 leaves 103.1's draw sentence untouched, and 104.4a sends simultaneous loss of all remaining players to that draw sentence, so the tie-break never meets a drawn game. The holding matches the rule word for word. I accept it as the rule.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "800.4",
+      "excerpt": "multiplayer games can continue after one or more players have left the game.",
+      "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+    },
+    {
+      "doc": "cr",
+      "ref": "903.2",
+      "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+      "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+    },
+    {
+      "doc": "cr",
+      "ref": "806.1",
+      "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+      "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.4a",
+      "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+      "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+    }
+  ]
+}

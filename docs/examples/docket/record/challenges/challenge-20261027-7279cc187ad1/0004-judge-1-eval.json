@@ -1,0 +1,77 @@
+{
+  "v": 1,
+  "seq": 4,
+  "prev": "4189bf966ec2931a4741edd0b5b4a58f430bbd39ee132cf46fd220634fd33302",
+  "actor": "judge-1",
+  "device": "eval",
+  "time": "2026-10-27T20:13:06Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [
+    {
+      "target": 5,
+      "ground": "counterexample",
+      "argument": "C5 is limited to 'multiplayer Commander matches' and says the player who lost first is 'the loser of the previous game' and chooses. 903.2 says the default multiplayer setup is Free-for-All, which means other setups (Team vs. Team, 808) are allowed in multiplayer Commander. In a team game 104.2c makes every player on the winning team a winner even if that player had previously lost that game. So the first player to lose can be a member of the winning team, who by 104.2c won the game. Under C5 that winner would be 'the loser of the previous game' and would choose, which contradicts 103.1: the chooser is the loser of the previous game, and a player who won is not a loser. The stipulation is overbroad: it covers games where 'who lost first' and 'who lost the game' come apart, and it has no carve-out for team games, so it contradicts the rule it supplements. A correct stipulation would have to choose among players who lost the game (not a winning-team member who lost early), and C5 does not.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C5"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "903.2",
+            "excerpt": "The default multiplayer setup is the Free-for-All variant",
+            "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+          },
+          "assumption": false,
+          "conclusion": "A multiplayer Commander game is not confined to Free-for-All: the Free-for-All variant is only the default, so a Team vs. Team multiplayer Commander game falls within C5's 'multiplayer Commander matches'."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "808.1",
+            "excerpt": "Team vs. Team games are played with two or more teams.",
+            "text_sha256": "67d1b1ed3187b726bda7a53cffbd1bc19048ec7977a35e06a4c9cbc95af8980b"
+          },
+          "assumption": false,
+          "conclusion": "A team multiplayer game with several players per team exists, so C5 applies to it."
+        },
+        {
+          "id": 3,
+          "premises": [
+            "S2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.2c",
+            "excerpt": "Each player on the winning team wins the game, even if one or more of those players had previously lost that game.",
+            "text_sha256": "7c602b36a136b9ed7e6a54d52205594ae1ed14eabfe261426a381c0476898551"
+          },
+          "assumption": false,
+          "conclusion": "In such a game the first player to lose can be on the winning team and so is a winner of the game, not a loser."
+        },
+        {
+          "id": 4,
+          "premises": [
+            "S3",
+            "C5"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "the loser of the previous game chooses who takes the first turn",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "103.1 gives the choice to a loser of the previous game, but C5 gives it to 'the player who lost first' even when that player is a winner under 104.2c, so C5 contradicts 103.1 on these facts."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}
