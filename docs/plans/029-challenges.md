@@ -45,8 +45,9 @@ PR B). What changed, and why:
   answered no one's refutation, nobody is convened and the judges settle. The **soundness rule**: every judge's
   last position must be on the final version of the case. When no refutation stands, a judge whose last look
   (a concession) was at an earlier version, or was a refutation, settles again with a vote; a concession on the
-  final, unchanged version is already that judge's settled position (it exists for the all-concede case, and now
-  holds for any judge). Blindness is unchanged: a judge never sees another's work from the phase in progress.
+  final version counts as the judge's settled position only in a round where no judge filed a refutation (the
+  all-concede case, and a targeted round in which every convened judge concedes); in a round with any refutation,
+  every judge of that round settles by vote. Blindness is unchanged: a judge never sees another's work from the phase in progress.
 - **Kept:** the five-judge panel, unanimity to introduce, three of five to refuse, stipulations only in gaps,
   evidence and reasoning on every position, the round limit of three, house rules from refuted or open cases, the
   hash chain and fork detection.
@@ -172,7 +173,7 @@ who owes it** (the user, judge *k*, the verifier, or the panel), so any session,
 | `draft` | User (with the clerk) | Clerk writes the brief | `briefed` |
 | `briefed` | User | Confirms facts and the proposed rule / edits them | `attack(n=1)` / `briefed` |
 | `attack(n)` | The convened judges (all five in round 1), blind; each judge's refutation or concession is a separate event | All convened judges filed | `verify(n)` |
-| `verify(n)` | Verifier (script) | Report filed | `answer(n)`, or, if no verified refutation stands, `voting` (or `drafting` when every judge is already settled and convinced) |
+| `verify(n)` | Verifier (script) | Report filed | `answer(n)`, or, if no verified refutation stands, `voting` (or `drafting` when a round without refutations has settled all five) |
 | `answer(n)` | User | Answers each verified refutation (concede, fix the case, rebut) / withdraws | `verify-answers(n)` / `withdrawn` |
 | `verify-answers(n)` | Verifier | Report filed | `attack(n+1)` if n < cap and the revision answered a refutation, convening only those judges; else `voting` |
 | `voting` | The judges not yet settled on the final case, blind to each other's votes | All have voted | `drafting` if every guard holds and all five are convinced; `attack(n+1)` with one or two not convinced; else `refuted` or `open` |

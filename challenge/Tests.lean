@@ -141,7 +141,7 @@ def mixedAnswerS : Spec :=
 def toConcededBy (ks : List Nat) : List Spec :=
   toAnswerBy ks ++ [replyS "concede" 1 (standingOf ks), reportS 1 "answers" (standingOf ks)]
 /-- Three judges' refutations stand and the user concedes them; all three are not convinced. -/
-def toRefuted : List Spec := toConcededBy [1, 2, 3] ++ votesBy [1, 2, 3] (fun _ => false)
+def toRefuted : List Spec := toConcededBy [1, 2, 3] ++ votesBy panel (· > 3)
 
 /-- Round 2 convenes only judge 1, whose refutation the revision answered. -/
 def toRoundTwo : List Spec := [opening, briefS, confirmS] ++ roundSpecs 1
@@ -208,25 +208,26 @@ def checks : List Check := [
   expect "four of five filed: still attacking" (stateOf (chain ([opening, briefS, confirmS] ++ (allConcede 1).take 4)))
     "attack",
   expect "all five filed: verify" (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1))) "verify",
-  expect "nothing standing, but not everyone conceded: the judges who didn't concede settle"
+  expect "nothing standing, but not everyone conceded: the judges settle"
     (stateOf (chain toVoting)) "voting",
-  expect "only the judge who didn't concede is still to settle"
-    (replayField (chain toVoting) "next") "[\"judge-1\"]",
+  expect "a round with a refutation settles nobody by concession: all five vote"
+    (replayField (chain toVoting) "next") "[\"judge-1\",\"judge-2\",\"judge-3\",\"judge-4\",\"judge-5\"]",
+  expect "so no position is on record yet" (replayField (chain toVoting) "voted") "[]",
   expect "everyone conceded on the unchanged case: settled, with no separate vote; the opinion is drafted next"
     (stateOf (chain toDrafting)) "drafting",
-  expect "one not convinced: no consensus, another round" (stateOf (chain (toVoting ++ votesBy [1] (fun _ => false))))
+  expect "one not convinced: no consensus, another round" (stateOf (chain (toVoting ++ votesBy panel (· != 1))))
     "attack",
   expect "two not convinced: no consensus, another round"
-    (stateOf (chain (toVotingWith [1, 2] ++ votesBy [1, 2] (fun _ => false)))) "attack",
+    (stateOf (chain (toVotingWith [1, 2] ++ votesBy panel (· > 2)))) "attack",
   expect "three not convinced and nothing stands: the case is unproven, so open"
-    (stateOf (chain (toVotingWith [1, 2, 3] ++ votesBy [1, 2, 3] (fun _ => false)))) "open",
+    (stateOf (chain (toVotingWith [1, 2, 3] ++ votesBy panel (· > 3)))) "open",
   expect "five not convinced and nothing stands: open"
     (stateOf (chain (toVotingWith panel ++ votesBy panel (fun _ => false)))) "open",
   expect "five convinced after voting: settled, the opinion is drafted next"
     (stateOf (chain (toVotingWith panel ++ votesBy panel (fun _ => true)))) "drafting",
   expect "three not convinced and a refutation stands: refuted" (stateOf (chain toRefuted)) "refuted",
   expect "all convinced, but a verified refutation stands: refuted"
-    (stateOf (chain (toConcededBy [1] ++ votesBy [1] (fun _ => true)))) "refuted",
+    (stateOf (chain (toConcededBy [1] ++ votesBy panel (fun _ => true)))) "refuted",
   expect "a failed verifier report: open, the case is unproven"
     (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [] (passed := false)]))) "open",
   expect "a level 1 conflict: refuted"
@@ -385,8 +386,6 @@ def checks : List Check := [
     (stateOf (chain [opening, briefS, confirmS, refuteWith 1 1 (refutationJ 1 [stepJ 1 ["C1"] (some (source "103.3")),
       stipJ 2 ["S1"]])])),
   expectRefused "a judge votes twice" (stateOf (chain (toVoting ++ [voteS 1 true, voteS 1 true]))),
-  expectRefused "a judge who conceded on this case has already settled"
-    (stateOf (chain (toVoting ++ [voteS 2 true]))),
   expectRefused "a challenge must start with open" (stateOf (chain [briefS])),
 
   -- refused: the opinion

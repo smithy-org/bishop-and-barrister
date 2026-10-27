@@ -182,14 +182,18 @@ def notConvinced (vs : List Vote) : Nat := (vs.filter (fun v => !v.convinced)).l
 def concessionVote (f : Filing) : Vote :=
   { judge := f.judge, convinced := true, reason := f.concedes, evidence := f.concedeEvidence }
 
-/-- The judges' latest looks once these filings are in, seen at the case version `version`. -/
+/-- The judges' latest looks once these filings are in, seen at the case version `version`. A concession is a
+settled position only in a round where no judge filed a refutation; in a round with any refutation, every filer
+must settle by vote. -/
 def updateLooks (old : List Look) (fs : List Filing) (version : Nat) : List Look :=
+  let clean := fs.all (fun f => f.refutations.isEmpty)
   old.filter (fun l => !filedBy fs l.judge) ++
     fs.map (fun f => { judge := f.judge, version := version,
-                       position := if f.refutations.isEmpty then some (concessionVote f) else none })
+                       position := if clean then some (concessionVote f) else none })
 
-/-- The positions already settled on the case as it now stands: a judge's concession on this very version counts. A
-judge whose last look predates the final revision (or was a refutation) isn't settled and must look again. -/
+/-- The positions already settled on the case as it now stands: a concession on this very version, made in a round
+where no judge filed a refutation. A judge whose last look predates the final revision, or came in a round with any
+refutation, isn't settled and must look again. -/
 def settledOn (looks : List Look) (version : Nat) : List Vote :=
   judges.filterMap (fun k => (looks.find? (fun l => l.judge == k && l.version == version)).bind (·.position))
 

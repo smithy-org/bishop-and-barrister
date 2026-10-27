@@ -226,13 +226,13 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn('Decided-by: user ("Yes, that\'s my case")', log)
         self.assertIn("Decided-by: panel", log)
 
-    def test_a_vote_settles_the_judge_who_refuted_and_then_the_opinion_is_drafted(self):
+    def test_a_round_with_a_refutation_settles_nobody_by_concession(self):
         cid = self.to_voting()
         state = self.status(cid)
-        self.assertEqual((state["state"], state["next"]), ("voting", ["judge-1"]))  # the four concessions already count
+        self.assertEqual((state["state"], state["next"]), ("voting", [f"judge-{k}" for k in range(1, 6)]))  # a round with a refutation settles nobody by concession
         self.assertIn("The judges settle", self.ok("status", cid))
-        self.assertIn("has already settled", self.refused("add", cid, self.write("v.json", VOTE), "--as", "judge-2"))
-        self.vote(cid, 1)
+        for k in range(1, 6):
+            self.vote(cid, k)
         self.assertEqual(self.status(cid)["state"], "drafting")
 
     def test_the_brief_pins_its_sources(self):
@@ -275,8 +275,8 @@ class ChallengeTest(unittest.TestCase):
     def test_conceding_a_refutation_sends_the_case_to_the_judges_to_settle(self):
         cid = self.to_conceded()
         self.assertEqual(self.status(cid)["state"], "voting")  # nothing closes the case for the judges
-        for k in (1, 2, 3):
-            self.vote(cid, k, convinced=False)
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)
         state = self.status(cid)
         self.assertEqual(state["state"], "refuted")
         self.assertIn("a verified refutation stands", state["why"])
@@ -456,8 +456,8 @@ class ChallengeTest(unittest.TestCase):
 
     def test_a_refuted_challenge_can_be_kept_as_a_house_rule(self):
         cid = self.to_conceded()
-        for k in (1, 2, 3):
-            self.vote(cid, k, convinced=False)
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)
         self.assertEqual(self.status(cid)["state"], "refuted")
         self.assertFalse((self.home / "rules" / f"{cid}.json").exists())
         self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "We play it this way anyway"}),
@@ -469,8 +469,8 @@ class ChallengeTest(unittest.TestCase):
 
     def test_an_open_challenge_can_be_kept_as_a_house_rule_too(self):
         cid = self.to_voting(refuters=(1, 2, 3))
-        for k in (1, 2, 3):
-            self.vote(cid, k, convinced=False)  # three not convinced, nothing standing: unproven
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)  # three not convinced, nothing standing: unproven
         self.assertEqual(self.status(cid)["state"], "open")
         self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "At our table, yes"}), "--as", "user")
         self.assertEqual(self.status(cid)["state"], "house-rule")
@@ -480,16 +480,16 @@ class ChallengeTest(unittest.TestCase):
 
     def test_three_not_convinced_refuse_the_case_as_unproven(self):
         cid = self.to_voting(refuters=(1, 2, 3))
-        for k in (1, 2, 3):
-            self.vote(cid, k, convinced=False)
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)
         state = self.status(cid)
         self.assertEqual(state["state"], "open")
         self.assertIn("3 of 5 judges were not convinced and no refutation stands", state["why"])
 
     def test_a_refused_case_leaves_a_per_curiam_record_assembled_from_the_judges_positions(self):
         cid = self.to_conceded()
-        for k in (1, 2, 3):
-            self.vote(cid, k, convinced=False)
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)
         path = self.home / "challenges" / cid / "record" / "per-curiam.json"
         record = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual((record["outcome"], record["final_hash"]), ("refuted", self.status(cid)["head"]))
@@ -505,7 +505,8 @@ class ChallengeTest(unittest.TestCase):
 
     def test_a_split_calls_another_round_until_the_limit(self):
         cid = self.to_voting()
-        self.vote(cid, 1, convinced=False)  # one dissenter: no consensus
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k != 1)  # one dissenter: no consensus
         state = self.status(cid)
         self.assertEqual((state["state"], state["round"]), ("attack", 2))
         self.assertEqual(state["convened"], [1, 2, 3, 4, 5])

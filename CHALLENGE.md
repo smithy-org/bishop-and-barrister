@@ -222,10 +222,11 @@ python scripts/challenge.py verify <id>
 
 It re-checks every source in the case and in every refutation: the rule or section still exists, its text
 still hashes to what was pinned, and the quote is in it. A refutation with any failed source is dropped. The
-rest are **verified, and stand** until the user answers them. If none stands, a judge's concession on the case as
-it now stands is that judge's settled position, so no separate vote runs for it. Every other judge (one whose
-refutation was dropped, or whose last look was at an earlier version of the case) settles in step 7. When all
-five are settled and convinced, the opinion is drafted (step 8).
+rest are **verified, and stand** until the user answers them. If none stands and no judge filed a refutation in the
+round (not even one that was dropped), the concessions are the judges' settled positions on the case as it now
+stands, and no separate vote runs for them. Every other judge settles in step 7: all the judges of a round in which
+any judge filed a refutation, and any judge whose last look was at an earlier version of the case. When all five
+are settled and convinced, the opinion is drafted (step 8).
 
 ### 5. The user answers
 
@@ -277,12 +278,13 @@ they are asked to act.
 
 **The soundness rule.** Every judge's last position must be on the final version of the case. When no refutation
 stands, a judge whose last look was at an earlier version of the case (a concession in round 1, say, before a
-later revision) settles again in step 7; a judge who conceded on the final version is already settled.
+later revision) settles again in step 7; a judge who conceded on the final version, in a round where no judge filed a refutation, is already
+settled. A concession in a round with any refutation settles nobody.
 
 ### 7. The judges settle: five blind positions, each with evidence and reasoning
 
-When `status` says the judges settle, launch **the judges it lists under "Owed by"** (not necessarily all five:
-a judge whose concession is already on the final case has settled) as subagents, in one message, each with its
+When `status` says the judges settle, launch **the judges it lists under "Owed by"** (all five, unless a round
+without refutations already settled some on the final case) as subagents, in one message, each with its
 own view (which never shows another judge's position) and this prompt:
 
 > Judge {k}, settle your position on the case as it now stands. Be convinced only if no verified refutation you

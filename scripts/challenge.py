@@ -635,7 +635,7 @@ NEXT = {
               "rebut (challenge.py add {id} answer.json --as user)",
     "verify-answers": "The verifier checks the user's answers to round {round}: challenge.py verify {id}",
     "voting": "The judges settle on the case as it now stands, blind to each other's positions; {waiting} still to "
-              "settle (a judge's concession on this very case already counts). Each vote needs its reasoning and "
+              "settle (a concession counts only if it came in a round with no refutation). Each vote needs its reasoning and "
               "evidence (challenge.py add {id} vote.json --as judge-<k>)",
     "drafting": "All five are settled and convinced. {waiting} writes the Opinion of the Court: the holding (the rule's "
                 "text), the reasoning with pinned sources, and the case's stipulations (challenge.py add {id} "
