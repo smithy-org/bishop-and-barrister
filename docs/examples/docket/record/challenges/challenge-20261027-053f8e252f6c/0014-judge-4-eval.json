@@ -1,0 +1,38 @@
+{
+  "v": 1,
+  "seq": 14,
+  "prev": "ebbf22b43d0f4ffff42f3840672f9406bad83c7feaa633762c1b4975d83813e3",
+  "actor": "judge-4",
+  "device": "eval",
+  "time": "2026-10-27T17:09:14Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [],
+  "concedes": "Lens 4 (counterexamples and logic), round 2. My four round-1 refutations (team games via 104.2c, Archenemy via 103.1b, draw vs first-loser overlap via 104.4a, simultaneous first losers via 704.3) were each answered by a fix in the rule's own text: it is now limited to free-for-all games, not Archenemy, won by one player (so a draw never reaches it, leaving the 103.1 draw sentence untouched), and it states its own tie-break for losers at the same moment. I re-ran those counterexamples against the revised wording and each now falls outside the rule or is settled by it. I then looked for new ones. 800.4h (a rule requiring a player who has left the game to choose) does not reach 103.1, whose chooser acts at the start of the next game, so the stipulation does not collide with it. 104.3h and 801.16 (limited range of influence, partial draws) let some players lose or draw while others continue, but the rule counts only players who lost and requires a single winner, so a player who drew is simply not a loser and the stipulation still names a determinate first loser. No game with one winner and several losers leaves the chooser undefined. Steps 1, 2 and 4 are sourced and say no more than their quotes; step 3 is the stipulation, which is the rule's new content and which I accept on its merits as a gap-filler that contradicts no CR text, since 103.1 says only 'the loser' and is silent on several losers. Residual weaknesses that are not refutations: 'cannot agree' in the tie-break is not defined, and the interaction of partial draws under 801.16 with the phrase 'the previous game was a draw' is not spelled out.",
+  "concede_evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    },
+    {
+      "doc": "cr",
+      "ref": "800.4h",
+      "text_sha256": "fbb414fe762ebde2b7abd82e5b74c38ff583132e0039816c9de2b56989372743",
+      "excerpt": "If a rule requires a player who has left the game to make a choice, the next player in turn order makes that choice."
+    },
+    {
+      "doc": "cr",
+      "ref": "104.3h",
+      "text_sha256": "e7493e940d9b740c840d89b634724c0c269b8e678bac7a577c9f7560bfba7e39",
+      "excerpt": "In a multiplayer game using the limited range of influence option (see rule 801), an effect that states that a player wins the game instead causes all of that player’s opponents within the player’s range of influence to lose the game. This may not cause the game to end."
+    },
+    {
+      "doc": "cr",
+      "ref": "801.16",
+      "text_sha256": "03a3214157c092bba8ec3441aa6be238b4aa97b0c4d5a47a054de179a7637d94",
+      "excerpt": "If the game somehow enters a “loop” of mandatory actions, repeating a sequence of events with no way to stop, the game is a draw for each player who controls an object that’s involved in that loop, as well as for each player within the range of influence of any of those players. They leave the game."
+    }
+  ]
+}

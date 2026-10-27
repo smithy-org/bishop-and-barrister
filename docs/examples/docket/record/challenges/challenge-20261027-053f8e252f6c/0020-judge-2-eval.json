@@ -1,0 +1,49 @@
+{
+  "v": 1,
+  "seq": 20,
+  "prev": "7b45cc721c95c95b1979c39ea9e03f671df479896c388670f8f8f34cc61bb388",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T17:12:19Z",
+  "type": "file",
+  "round": 3,
+  "refutations": [
+    {
+      "target": 3,
+      "ground": "counterexample",
+      "argument": "The revised stipulation declares that in a game won by one player 'every other player counts as a loser' of it. But a free-for-all game can use the limited range of influence option (806.2a), and under 801.16 a mandatory loop makes the game a draw for each player involved, those players leave the game, and all remaining players continue; one remaining player can then win. In that game the looping player did not lose: the CR says the game is a draw for that player. C3 nevertheless turns that player into a loser, and, as the first to leave, into the first loser who chooses who goes first. 103.1 gives a drawer the draw sentence (the player who made the choice in the previous game chooses), not the loser clause. The carve-out 'if the previous game was a draw' covers only the whole game, so the stipulation overrides an official per-player outcome (a draw) that the CR settles, in a free-for-all game the case's applies_when covers and does not exclude.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "801.16",
+            "excerpt": "the game is a draw for each player who controls an object",
+            "text_sha256": "03a3214157c092bba8ec3441aa6be238b4aa97b0c4d5a47a054de179a7637d94"
+          },
+          "assumption": false,
+          "conclusion": "In a free-for-all game using limited range of influence, a looping player's game is a draw for that player, who leaves, while the remaining players play on and one of them can win; that player drew and did not lose."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "The CR treats a drawn outcome by the draw sentence of 103.1, but C3 counts that drawing player as a loser (and as first loser), so the proposed rule contradicts the official outcome of the game for that player."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

@@ -1,0 +1,43 @@
+{
+  "v": 1,
+  "seq": 30,
+  "prev": "5f69509933980f28757e21ae1c3245be916fcf2513121292955ce31bd641a5d9",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T17:15:03Z",
+  "type": "vote",
+  "convinced": true,
+  "reason": "Lens 5 (tournament documents and formats). After round 3 the verifier's answers report shows no standing refutation and no level 1 conflict. The last fix excludes draws, whether of the whole game or for any one player, and also excludes team games and game types whose start the CR settles. That removes the 104.4e/104.5/801.16 counterexamples from judges 2, 3 and 4. The tournament documents do not address this case. MTR 2.2 gives the choice to 'the loser of that game' and is worded for two players. MTR 9.3 (Two-Headed Giant) is a team game and is carved out. MTR 2.5 allows concessions and draws, and the rule rewards neither. reference/formats/matches.md says no official rule covers who starts a later game of a multiplayer match, and its only answer, a random first player, is level 4. commander.md sets no different start rule. So this is a genuine gap that CR 103.1 leaves open by saying only 'the loser'. The derivation holds step by step. Steps 1, 2 and 4 are pinned and claim only what their quotes say. Step 3 is an explicit stipulation: the earliest loser chooses, simultaneous earliest losers agree among themselves or else pick at random, and draws are untouched. I accept that as the rule. The undefined phrase 'cannot agree' is a small weakness, not a refutation.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "mtr",
+      "ref": "2.2",
+      "excerpt": "For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)",
+      "heading": "Play/Draw Rule",
+      "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+      "version": "February 27, 2026",
+      "level": 2
+    },
+    {
+      "doc": "mtr",
+      "ref": "9.3",
+      "excerpt": "A team determined at random chooses either to play first or to play second.",
+      "heading": "Play-Draw Rule",
+      "text_sha256": "150a7fab369c8830f9e3999a38621075435c347e13731886c2c75e9fd75d3054",
+      "version": "February 27, 2026",
+      "level": 2
+    }
+  ]
+}

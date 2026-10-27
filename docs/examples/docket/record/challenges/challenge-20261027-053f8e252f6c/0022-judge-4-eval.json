@@ -1,0 +1,49 @@
+{
+  "v": 1,
+  "seq": 22,
+  "prev": "03beb92dcb5d1a6fe4c2c76fe447ddd1dba6306d67ca1ad6ce2603ac9bcffc89",
+  "actor": "judge-4",
+  "device": "eval",
+  "time": "2026-10-27T17:12:20Z",
+  "type": "file",
+  "round": 3,
+  "refutations": [
+    {
+      "target": 3,
+      "ground": "counterexample",
+      "argument": "The revised stipulation makes 'every other player' a loser when one player wins, including a player who left earlier 'at the moment they left'. But a player can leave a free-for-all game without losing: with the limited range of influence option, a draw effect or a mandatory loop makes the game a draw for that player, only that player leaves, and the game goes on for the rest (104.4e, 104.4f, 801.15, 801.16). Play it out: three players, limited range of influence. A controls a draw effect that draws the game for A; A leaves with a draw (not a loss). Later B loses, then C wins by 104.2a. The CR settles A's result as a draw, and 104.5 separates 'loses' from 'is a draw for a player'. The case's stipulation makes A the first loser, so A chooses under the loser sentence of 103.1, although the CR says A did not lose; the draw sentence of 103.1 (previous chooser chooses) is the CR's answer for a player for whom the game was a draw, and the case's carve-out only reaches a game that is a draw as a whole ('the previous game was a draw'), so it is silent on a game that was a draw for one player and won by another. The rule as worded and applies_when ('won by one player and there was more than one loser') therefore gives a chooser the CR contradicts in a situation it settles, and there is no ordering between the two readings in the case's text.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "F1"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.5",
+            "excerpt": "If the game is a draw for a player, that player leaves the game.",
+            "text_sha256": "a24fd6993d82c078f0cda33e8882474b51647fd435608bdaaf26004b468f19ef"
+          },
+          "assumption": false,
+          "conclusion": "A player can leave a game because the game is a draw for that player, which the CR distinguishes from that player losing."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.4e",
+            "excerpt": "Only those players leave the game; the game continues for all other players.",
+            "text_sha256": "60713f6fd8bd3d49863e74354e11a412a43a6802319674dd188c29a5edb7292f"
+          },
+          "assumption": false,
+          "conclusion": "In a limited range of influence game the game can be a draw for A while it continues for B and C and one of them wins; C3 counts A as a loser who lost first and gives A the choice, against the CR's result of a draw for A and the draw sentence of 103.1, and the carve-out for a drawn game does not cover this mixed game."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

@@ -1,0 +1,49 @@
+{
+  "v": 1,
+  "seq": 12,
+  "prev": "76dd6ad20b5ac518a6cda5bc6682d4203be6dc8b216ab2b3b2eb179ecc84f1ca",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T17:09:13Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [
+    {
+      "target": 3,
+      "ground": "counterexample",
+      "argument": "The revised carve-out removes team games and 'Archenemy games', but the rule still covers every 'free-for-all multiplayer match'. CR 904.12a defines the Supervillain Rumble option as 'a Free-for-All game' (no team, each player an archenemy, no other multiplayer options), and 904.12c settles how its starting player is found: 'the starting player is randomly determined'. It is a Free-for-All game in which one player lost first and the other lost later and a third won, so it falls inside C3's wording unless it counts as an 'Archenemy game'; the case never says it does, and 904.12a itself calls it a Free-for-All game, which is the category the rule names as covered. In such a match C3 gives the first loser the choice, while the CR specifically fixes a random starting player. 904.12c is the specific provision (101.1/specific over general) and a level 1 source; the rule as worded and applies_when overbroadly captures a game type the CR settles differently, and the user's 'Archenemy games are not affected (103.1b stays as it is)' does not reach it, because the Supervillain Rumble start is set by 904.12c, not by 103.1b (which names the archenemy as first player, a different answer from random).",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "904.12a",
+            "excerpt": "players may play a Free-for-All game in which each player has their own scheme deck.",
+            "text_sha256": "f51fc7de02ab04f05a19d3245c64d65cf88c6070861c31b93c5936050c8be79d"
+          },
+          "assumption": false,
+          "conclusion": "A Supervillain Rumble game is a Free-for-All game that is not a team game, so it meets C3's stated scope (free-for-all, not team, one winner, several losers) unless it is excluded by the 'Archenemy game' carve-out, which the case does not say."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C3"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "904.12c",
+            "excerpt": "As in a normal Free-for-All game, the starting player is randomly determined.",
+            "text_sha256": "b0043b78dc91ed67dae482757f66a0a9f2e06d43bbe8664d10ce21e0821ef54f"
+          },
+          "assumption": false,
+          "conclusion": "For that game the CR fixes a random starting player, while C3 has the first loser choose who takes the first turn; the rule gives an answer the specific CR provision contradicts, and the carve-out for 103.1b does not cover it."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

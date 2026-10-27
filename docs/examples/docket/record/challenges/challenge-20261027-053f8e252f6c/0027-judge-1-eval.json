@@ -1,0 +1,37 @@
+{
+  "v": 1,
+  "seq": 27,
+  "prev": "7ae7791b9aac585a69749a935bf664da61a721dafce25e99b15afbfaeed5d125",
+  "actor": "judge-1",
+  "device": "eval",
+  "time": "2026-10-27T17:15:01Z",
+  "type": "vote",
+  "convinced": true,
+  "reason": "CR 103.1 says only 'the loser of the previous game' and gives no answer when several players lost, so this is a gap and the stipulation (earliest loser chooses; tied earliest losers agree, else random) contradicts no CR text. The final wording closes every attack I know of: draws, including a draw for one player (104.4e, 104.5, 801.16), keep 103.1's draw sentence; team games, Archenemy (103.1b) and Supervillain Rumble (904.12c) are carved out; a game won by an effect or by the last player remaining still has losers at the moment it ended (104.2a, 104.2b). My own 800.4h objection fails because the 103.1 chooser acts at the start of the next game, as a player of that game. The verifier's last report shows no standing refutation, the sourced steps say no more than their quotes, and I accept step 3 as the rule.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.5",
+      "excerpt": "If the game is a draw for a player, that player leaves the game.",
+      "text_sha256": "a24fd6993d82c078f0cda33e8882474b51647fd435608bdaaf26004b468f19ef"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.2a",
+      "excerpt": "A player still in the game wins the game if that player",
+      "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+    }
+  ]
+}
