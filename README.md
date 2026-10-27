@@ -83,7 +83,7 @@ stays the copy the skill works from; the bucket is a synced copy. A RustFS to tr
 | `reference/formats/`             | One file per format the skill covers, with a source for every fact    |
 | `reference/upkeep.md`            | Keeping the documents current                                         |
 | `evals/`                         | Rules questions with known answers, and the baseline results          |
-| `tests/`                         | Tests: `python -m unittest discover -s tests`                         |
+| `tests/`                         | Tests: `python -m unittest discover -s tests`; CI also requires 70% coverage (`.coveragerc`) |
 | `docs/plans/`                    | Design plans; plan 028 turns the skill into a rules library and judge |
 | `docs/ROADMAP.md`                | Everything planned but not done yet, and who or what it waits on      |
 | `docs/RELEASING.md`              | How a version is numbered and released                                |

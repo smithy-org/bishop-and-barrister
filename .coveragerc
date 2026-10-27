@@ -1,0 +1,17 @@
+# Test coverage of scripts/, measured with coverage.py (requirements-dev.txt).
+#
+#   python -m coverage run -m unittest discover -s tests
+#   python -m coverage combine
+#   python -m coverage report
+#
+# Most tests run the scripts as subprocesses, so coverage follows them (patch = subprocess) and each process
+# writes its own data file (parallel), which `combine` merges. CI fails below fail_under.
+
+[run]
+source = scripts
+parallel = true
+patch = subprocess
+
+[report]
+fail_under = 70
+show_missing = true
