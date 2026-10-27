@@ -1,0 +1,44 @@
+{
+  "v": 1,
+  "seq": 27,
+  "prev": "99eefd7f448928e1e0fe3505f5103ce61e5ffbd8c728d0ac3e9f7d738c72f466",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T20:21:10Z",
+  "type": "respond",
+  "revision": 0,
+  "stance": "join",
+  "reason": "I adopt the opinion as written. Verified with lookup.py: 103.1 gives the choice to 'the loser of the previous game' in a match of several games, in the singular, and separately says that after a draw the earlier chooser chooses again. 903.2 makes a three-player Commander game a multiplayer game under the Free-for-All default, and no Commander rule replaces 103.1's choice of who goes first. 800.4 says multiplayer games continue after players leave, so losers can leave one after another and be ordered by when each lost. With two losers, 103.1 therefore names one 'loser' and does not say which of two chooses: a real gap, which the opinion states in steps 1-4. The holding fills that gap through step 5, a stipulation worded exactly as the case words it. The first loser is 'the loser of the previous game' and chooses. If several lost at that same earliest moment, the winner picks which of them chooses. This is limited to free-for-all, where 806.1 says players compete as individuals, so my round-1 team-game objection (104.2c making an early loser a winner) cannot arise. The chooser is always a player who lost, which keeps 103.1's allocation of the choice to a loser. The draw sentence is untouched (step 6) and applies only where there is no winner, so the branches do not overlap (104.4a). Turn order is not used, which answers judge 3's Aeon Engine objection. Leftover edge cases (a first loser who has left the match) are drafting gaps shared with 103.1 itself, not contradictions with a pinned source.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "903.2",
+      "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+      "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+    },
+    {
+      "doc": "cr",
+      "ref": "800.4",
+      "excerpt": "multiplayer games can continue after one or more players have left the game.",
+      "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+    },
+    {
+      "doc": "cr",
+      "ref": "806.1",
+      "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+      "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+    }
+  ]
+}

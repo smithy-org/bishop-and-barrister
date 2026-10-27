@@ -1,0 +1,38 @@
+{
+  "v": 1,
+  "seq": 15,
+  "prev": "d5fb30268b37da42a030fede693b78db59b1c1650f63b5427f9b5730ad32052e",
+  "actor": "judge-4",
+  "device": "eval",
+  "time": "2026-10-27T20:15:58Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [],
+  "concedes": "Through the counterexamples-and-logic lens, the revision answers my round-1 refutation. C5 now names only a player who lost the previous game (the winner can no longer choose, so the 104.2a counterexample is gone), the C6/C7 fallback that caused it is removed, and the mixed four-player case (B and C lose together, D later, A wins) is covered by one rule: the earliest losing moment counts and ties go by turn order. The case is limited to free-for-all, so 104.2c cannot turn an early loser into a winner (806.1: players compete as individuals). The draw sentence is untouched (step 6), and a game that ends with all remaining players losing at once is a draw under 104.4a, so it goes to 103.1's draw sentence, not to C5. The tie-break needs a reference point for 'earliest in turn order'; 103.1 supplies one (turn order begins with the starting player of that game), and restarts under 727.1 begin a new game, so they do not blur it. I tried further counterexamples (conceding versus state-based losses, restarts, the first loser leaving the match, 800.4h) and found none that an official source settles against the stipulation; the leftover gaps (such as a first loser who has left the match) are shared with 103.1 itself and are not contradictions.",
+  "concede_evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.4a",
+      "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+      "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+    },
+    {
+      "doc": "cr",
+      "ref": "806.1",
+      "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+      "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+    },
+    {
+      "doc": "cr",
+      "ref": "727.1",
+      "excerpt": "A game that is restarted immediately ends.",
+      "text_sha256": "e0a27ae42cbef9f650ca74d89c679cd51bbc5d605e8e5d642ac19089a43ecbb3"
+    }
+  ]
+}

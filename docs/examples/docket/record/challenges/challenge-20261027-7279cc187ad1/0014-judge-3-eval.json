@@ -1,0 +1,50 @@
+{
+  "v": 1,
+  "seq": 14,
+  "prev": "b0e0a480de06233f5b2a9d68c43137ff48b98eb567ddfc1da10ee1d820042829",
+  "actor": "judge-3",
+  "device": "eval",
+  "time": "2026-10-27T20:15:57Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [
+    {
+      "target": 5,
+      "ground": "counterexample",
+      "argument": "The round-2 fix replaces the 'previous chooser' fallback with 'the one of them who was earliest in turn order in that game chooses'. Simulate a free-for-all Commander game: A is the starting player and the clockwise order is A, B, C. A controls Aeon Engine and wins the game when B and C both reach 0 life and lose in a single state-based-action check (104.3b). The two losers lost at the same earliest moment, so C5's tie-break applies. But what is 'earliest in turn order in that game'? The default turn order begins with the starting player and proceeds clockwise (103.1) and the word 'default' is there because the order can change: Aeon Engine reverses the game's turn order, which is legal in Commander. If A activated Aeon Engine earlier in the game, the order is now A, C, B. Counting from the starting player in the default order gives B; counting in the order in force when they lost gives C. The stipulation also does not say whether 'earliest' is counted from the starting player or from the active player at the moment of loss (the way 101.4 and 800.4h use 'turn order'). The two readings choose different players in the same game state, so the stipulation does not determine a chooser in a situation the user's applies_when covers (several losers at the same earliest moment). F3 only excludes ties for the first-loser branch; the tie-break is claimed for all games with a winner and two or more losers. The new step is therefore under-specified exactly where the removed fallback used to decide.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C5"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "The game’s default turn order begins with the starting player and proceeds clockwise.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "Turn order is only 'default' at the start: C5's 'earliest in turn order in that game' has a reading anchored at the starting player and the default clockwise order."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C5"
+          ],
+          "source": {
+            "doc": "oracle",
+            "ref": "Aeon Engine",
+            "excerpt": "Reverse the game's turn order.",
+            "text_sha256": "10cb55f91bc42ed52588728f43003f6556f7923e98fdf0a942d58b92f9d7933c",
+            "level": 1
+          },
+          "assumption": false,
+          "conclusion": "A legal Commander card can reverse the turn order mid-game, so for two players who lose in the same state-based-action check the default order and the order in force when they lost can put them in opposite order; C5 does not say which counts, and so does not determine who chooses."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

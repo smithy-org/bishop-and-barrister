@@ -1,0 +1,50 @@
+{
+  "v": 1,
+  "seq": 12,
+  "prev": "94177d3bcee5234d883d099b7c6b8ad6c03415ece8b73623765a848cbeb875a3",
+  "actor": "judge-1",
+  "device": "eval",
+  "time": "2026-10-27T20:15:56Z",
+  "type": "file",
+  "round": 2,
+  "refutations": [],
+  "concedes": "The round-1 refutation (C5 could name a winning-team member who lost early, via 104.2c, contradicting 103.1) is answered: the rule is now limited to free-for-all with no teams, and 806.1 says free-for-all players compete as individuals, so 104.2c's team-win exception cannot arise. I also re-read 103.1, 104.2, 104.3, 104.4, 800.4 (including 800.4h), 806 and 903.2 for a new weakness. The chooser named by C5 is always a player who lost the previous game (104.3 gives every way to lose; the winner under 104.2a is a player whose opponents have all left, so never a loser). The simultaneous-loss tie is broken by turn order, which 103.1 defines (it begins with the starting player and proceeds clockwise), so 'earliest in turn order in that game' has a fixed origin. The draw sentence of 103.1 is quoted unchanged and only applies when 104.4a/104.4c made the game a draw, so it does not overlap the winner case. 800.4h concerns choices inside a game for a player who has left that game, not the choice for the next game, so it does not displace the stipulation. I found no CR rule that the stipulation contradicts and no condition the case skips in rules text; the remaining points (first loser having dropped from the match, limited range of influence in free-for-all, scope limited to Commander) are gaps the stipulation can be voted on, not contradictions of a quoted rule.",
+  "concede_evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.3",
+      "text_sha256": "af139fb430a3355640e1dd12a0c30437f63cb594fb4a1f15f2e1e69c9fce23e5",
+      "excerpt": "There are several ways to lose the game."
+    },
+    {
+      "doc": "cr",
+      "ref": "104.2a",
+      "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09",
+      "excerpt": "A player still in the game wins the game if that player’s opponents have all left the game. This happens immediately and overrides all effects that would preclude that player from winning the game."
+    },
+    {
+      "doc": "cr",
+      "ref": "104.4a",
+      "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade",
+      "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw."
+    },
+    {
+      "doc": "cr",
+      "ref": "806.1",
+      "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a",
+      "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other."
+    },
+    {
+      "doc": "cr",
+      "ref": "800.4h",
+      "text_sha256": "fbb414fe762ebde2b7abd82e5b74c38ff583132e0039816c9de2b56989372743",
+      "excerpt": "If a rule requires a player who has left the game to make a choice, the next player in turn order makes that choice."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "v": 1,
+  "seq": 29,
+  "prev": "15b322331d22a81d3858ffda69cebe5cff2e3ee8892a66f3bdcf6f5c6fbd184b",
+  "actor": "judge-4",
+  "device": "eval",
+  "time": "2026-10-27T20:21:11Z",
+  "type": "respond",
+  "revision": 0,
+  "stance": "join",
+  "reason": "I checked each pinned excerpt with lookup.py and all match the CR text. Step 1: 103.1 says 'the loser of the previous game' chooses, a single player. Step 2: 903.2 makes a three-player Commander game a multiplayer game, and the opinion correctly claims only that it quotes no Commander rule replacing 103.1's choice. Step 3: 800.4 says multiplayer games continue after players leave, so losers can be ordered in time. Step 4: with two losers 103.1 does not say which one chooses. That is a real gap, and 103.1 is the only place that rule is stated. Step 5 is a stipulation worded as the case words it. It fills the gap narrowly: the first loser chooses, simultaneous first losers are resolved by the winner picking among them, and the chooser is always a loser, as the user intended. Step 6 leaves 103.1's draw sentence untouched, as the user asked. The holding limits the rule to free-for-all games with a winner and more than one loser. I accept the holding, every step and the stipulation as the rule, and the reasoning is mine too.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn. If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "903.2",
+      "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+      "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+    },
+    {
+      "doc": "cr",
+      "ref": "800.4",
+      "excerpt": "multiplayer games can continue after one or more players have left the game.",
+      "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "v": 1,
+  "seq": 22,
+  "prev": "c0a667ef0becaa9ec0d1081b233d77d4ecb322c6cd531d3173c2fe64d74f5e5f",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T20:18:38Z",
+  "type": "vote",
+  "convinced": true,
+  "reason": "My only filed refutation (round 1: the first-loser rule could name an early loser who won under 104.2c in a team game, contradicting 103.1) was answered by narrowing the rule to free-for-all, where 806.1 says players compete as individuals, so 104.2c's exception cannot arise. In round 2 judge 3's turn-order objection (Aeon Engine reversing turn order) was the only refutation that stood; the user dropped turn order and now the winner picks among players who lost at the same earliest moment. In round 3 no refutation was filed and the verifier reports nothing standing. Step by step: 103.1 gives the choice to 'the loser of the previous game' and speaks of one loser, 800.4 shows players leave a multiplayer game one after another so losers can be ordered, so with two or more losers 103.1 is silent on who chooses (a real gap). Stipulation S5 fills it with a player who actually lost (the first to lose, or if tied, one the winner picks among the tied), so the chooser is always a loser and never the winner, which keeps 103.1's allocation to a loser. The draw sentence of 103.1 is quoted unchanged in step 6 and applies only to games with no winner (104.4a), so the two branches do not overlap. I accept S5 as the rule. Leftover points (a first loser who has left the match; the tie branch not being a separate fact) are drafting gaps shared with 103.1, not contradictions with a pinned source. The 103.1 text pinned in steps 1, 4 and 6 is enough to establish both the gap and the untouched draw rule.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "806.1",
+      "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+      "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.4a",
+      "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+      "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+    },
+    {
+      "doc": "cr",
+      "ref": "800.4",
+      "excerpt": "multiplayer games can continue after one or more players have left the game.",
+      "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+    }
+  ]
+}

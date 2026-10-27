@@ -1,0 +1,38 @@
+{
+  "v": 1,
+  "seq": 8,
+  "prev": "4453b03c37cd04b30a6c58115ecb5c8fdcc07aedc185b12e384262b66c2bf3f2",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T20:13:09Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [],
+  "concedes": "Through the tournament-documents lens nothing settles this. MTR 2.2 (two-player: the loser decides, a drawn game goes to whoever decided in it) mirrors CR 103.1 and says nothing about several losers; MTR 2.1 and section 9 (Two-Headed Giant only) give no multiplayer structure, and the formats reference records that no official rule says who starts a later multiplayer game. So the case's gap (C4) holds, and no MTR/IPG/JAR rule or format changes it. The stipulations (C5-C9) add new content without contradicting MTR 2.2's draw sentence or CR 103.1's draw sentence, which C8 quotes and C9 only clarifies for the new rule.",
+  "concede_evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c",
+      "excerpt": "At the start of a game, the players determine which one of them will choose who takes the first turn. In the first game of a match (including a single-game match), the players may use any mutually agreeable method (flipping a coin, rolling dice, etc.) to do so. In a match of several games, the loser"
+    },
+    {
+      "doc": "mtr",
+      "ref": "2.2",
+      "heading": "Play/Draw Rule",
+      "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "For the first game of a match, a designated player - the winner of a random method (such as a die roll or coin toss)\nduring Swiss rounds, or the player ranked higher at the end of Swiss rounds during playoff matches - chooses\neither to play first or to play second. They must state this choice before"
+    },
+    {
+      "doc": "mtr",
+      "ref": "2.1",
+      "heading": "Match Structure",
+      "text_sha256": "54606822bd92bc3fbbc217d006d82c810f248f185f53db0ecea6540df142b27e",
+      "version": "February 27, 2026",
+      "level": 2,
+      "excerpt": "A match consists of a series of games that are played until one side has won a set number of games, usually two.\nDrawn games do not count toward this goal. If the round ends before a player has won the required number of\ngames, the winner of the match is the player who has won the most games at that"
+    }
+  ]
+}
