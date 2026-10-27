@@ -7,6 +7,7 @@ BISHOP_AND_BARRISTER_OFFLINE so nothing touches the network.
 """
 
 import gzip
+import hashlib
 import json
 import os
 import subprocess
@@ -107,9 +108,16 @@ class JudgeTest(unittest.TestCase):
     def git_log(self):
         return subprocess.run(["git", "-C", str(self.home), "log", "--format=%B%n---"], capture_output=True, text=True, encoding="utf-8").stdout
 
-    def record(self, data=None):
-        out = self.run_ok("record", self.write("r.json", data or ruling()))
-        return out.split()[1]
+    def put_ruling(self, rid="aaaa11112222", kind="reviewed", house_rule=True):
+        """A ruling as the retired `judge.py record` and `review` left it in the record."""
+        text = "Within a layer or sublayer, determining which order effects are applied in is sometimes done using a dependency system."
+        r = ruling(id=rid, kind=kind, level=5, status="current", house_rule=house_rule)
+        r["citations"][0].update(text_sha256=hashlib.sha256(text.encode("utf-8")).hexdigest(), excerpt=text)
+        (self.home / "rulings" / f"{rid}.json").write_text(json.dumps(r), encoding="utf-8")
+        (self.home / "deliberation" / f"{rid}.jsonl").write_text(
+            json.dumps({"by": "user", "decision": "reviewed", "said": "Keep it as our table's rule."}) + "\n", encoding="utf-8")
+        self.run_ok("index")
+        return rid
 
     def test_build_creates_record_and_index(self):
         self.assertTrue((self.home / ".git").exists())
@@ -119,7 +127,6 @@ class JudgeTest(unittest.TestCase):
         self.assertIn("official (wotc", out)
 
     def test_official_order_puts_wotc_before_scryfall(self):
-        self.record()
         out = self.run_ok("search", "effect")  # in both a wotc and a scryfall ruling
         self.assertLess(out.index("official (wotc"), out.index("official (scryfall"))
 
@@ -129,56 +136,33 @@ class JudgeTest(unittest.TestCase):
         self.assertIn("No ruling has every word", out)
         self.assertNotIn("Trample", out)
 
-    def test_record_pins_sources_and_commits(self):
-        rid = self.record()
-        saved = json.loads((self.home / "rulings" / f"{rid}.json").read_text(encoding="utf-8"))
-        self.assertEqual(saved["kind"], "unreviewed")
-        self.assertEqual(saved["level"], 5)
-        self.assertEqual(len(saved["citations"][0]["text_sha256"]), 64)
-        self.assertIn("dependency system", saved["citations"][0]["excerpt"])
-        log = self.git_log()
-        self.assertIn(f"Record unreviewed ruling {rid}", log)
-        self.assertIn("Drafted-by: model", log)
+    def test_record_review_and_discuss_are_retired(self):
+        for command in (["record", "r.json"], ["review", "x", "--user-said", "yes"], ["discuss", "x", "d.json"]):
+            result = self.run_judge(*command)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("only through a challenge", result.stderr)
+            self.assertIn("CHALLENGE.md", result.stderr)
+        self.assertFalse(list((self.home / "rulings").glob("*.json")))
 
-    def test_record_rejects_missing_agent_fields(self):
-        bad = ruling(agent_summary="", steps=[{"text": "no refs"}])
-        del bad["ask_if_unknown"]
-        bad["citations"].append({"id": "c2", "doc": "cr", "ref": "999.9"})
-        result = self.run_judge("record", self.write("bad.json", bad))
-        self.assertEqual(result.returncode, 2)
-        for expected in ("agent_summary", "ask_if_unknown", "step 1 has no 'refs'", "999.9"):
-            self.assertIn(expected, result.stderr)
-
-    def test_search_and_agent_rendering(self):
-        rid = self.record()
+    def test_a_house_rule_is_still_searched(self):
+        rid = self.put_ruling()
         brief = self.run_ok("search", "Swamps", "--agent")
         self.assertIn(f'id="{rid}"', brief)
-        self.assertIn("<summary>", brief)
-        self.assertNotIn("<citations>", brief)  # listed briefly; `show` has the rest
+        self.assertIn('kind="reviewed"', brief)
         out = self.run_ok("search", "Swamps", "--agent", "--full")
+        self.assertIn('house_rule="true"', out)
         self.assertIn('<quote id="c1" doc="cr" ref="613.8"', out)
-        self.assertIn("<applies_when><fact>", out)
-        self.assertNotIn("<ask_if_unknown>", out)  # empty lists are left out
         self.assertIn(rid, self.run_ok("search", "--rule", "613.8"))
 
-    def test_review_needs_the_users_words(self):
-        rid = self.record()
-        self.assertNotEqual(self.run_judge("review", rid, "--user-said", "  ").returncode, 0)
-        self.run_ok("discuss", rid, self.write("d.json", [{"by": "user", "said": "Even if Urborg came down later?"},
-                                                          {"by": "model", "said": "Yes: dependency, not timestamps."}]),
-                    "--summary", "Timestamp order was raised and rejected: dependency decides.")
-        self.run_ok("review", rid, "--user-said", "Makes sense, mark it reviewed.")
-        saved = json.loads((self.home / "rulings" / f"{rid}.json").read_text(encoding="utf-8"))
-        self.assertEqual(saved["kind"], "reviewed")
-        lines = (self.home / "deliberation" / f"{rid}.jsonl").read_text(encoding="utf-8").splitlines()
-        self.assertEqual(json.loads(lines[-1])["decision"], "reviewed")
-        log = self.git_log()
-        self.assertIn("Decided-by: user", log)
-        self.assertIn("Makes sense, mark it reviewed.", log)
-        self.assertIn('kind="reviewed"', self.run_ok("show", rid, "--agent", "--deliberation"))
+    def test_an_old_ruling_isnt_searched_until_migrated(self):
+        for rid, kind in (("bbbb11112222", "unreviewed"), ("cccc11112222", "reviewed")):
+            self.put_ruling(rid, kind=kind, house_rule=False)
+        result = self.run_judge("index")
+        self.assertIn("2 ruling(s) from the retired `judge.py record`", result.stderr)
+        self.assertIn("No rulings match", self.run_judge("search", "--rule", "613.8").stdout)
 
     def test_recheck_flags_changed_rule(self):
-        rid = self.record()
+        rid = self.put_ruling()
         self.assertIn("still match", self.run_ok("recheck"))
         self.cr.write_text(CR.replace("dependency system.", "dependency system, revised."), encoding="utf-8")
         out = self.run_ok("recheck")
@@ -189,11 +173,10 @@ class JudgeTest(unittest.TestCase):
         self.assertIn('sources_changed="true"', self.run_ok("show", rid, "--agent"))
 
     def test_index_rebuilds_from_the_record(self):
-        rid = self.record()
+        rid = self.put_ruling()
         (self.home / "index.sqlite").unlink()
         self.assertIn("3 official rulings, 1 of your rulings", self.run_ok("index"))
         self.assertIn(rid, self.run_ok("search", "Swamps"))
-
 
 if __name__ == "__main__":
     unittest.main()
