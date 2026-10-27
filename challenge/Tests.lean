@@ -74,13 +74,13 @@ def voteS (k : Nat) (convinced : Bool) : Spec :=
   (s!"judge-{k}", "vote", [("convinced", toJson convinced), ("reason", jstr "step 2 settled it")])
 def words (actor type_ : String) : Spec := (actor, type_, [("words", jstr "in my own words")])
 
-def seven : List Nat := List.range' 1 7
-def allConcede (n : Nat) : List Spec := seven.map (concede · n)
-def allVote (convinced : Nat → Bool) : List Spec := seven.map fun k => voteS k (convinced k)
+def panel : List Nat := List.range' 1 5
+def allConcede (n : Nat) : List Spec := panel.map (concede · n)
+def allVote (convinced : Nat → Bool) : List Spec := panel.map fun k => voteS k (convinced k)
 
 def toVoting : List Spec := [opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" []]
 def toAnswer : List Spec :=
-  [opening, briefS, confirmS, refute 1 1 1] ++ (List.range' 2 6).map (concede · 1) ++ [reportS 1 "attack" [(1, 1)]]
+  [opening, briefS, confirmS, refute 1 1 1] ++ (List.range' 2 4).map (concede · 1) ++ [reportS 1 "attack" [(1, 1)]]
 
 def outcomeName : Outcome → String
   | .state s _ => s.phase.name
@@ -111,7 +111,7 @@ def expectNat (name : String) (actual expected : Nat) : Check :=
   (name, actual == expected, s!"got {actual}, expected {expected}")
 
 def roundSpecs (n : Nat) : List Spec :=
-  [refute 1 n 1] ++ (List.range' 2 6).map (concede · n) ++
+  [refute 1 n 1] ++ (List.range' 2 4).map (concede · n) ++
   [reportS n "attack" [(1, 1)], answerS n [(1, 1)], reportS n "answers" [(1, 1)]]
 
 def forked : List String :=
@@ -138,11 +138,11 @@ def checks : List Check := [
   expect "an edit keeps it briefed" (stateOf (chain [opening, briefS, ("user", "edit", [("case", goodCase),
     ("words", jstr "F1 is three players")])])) "briefed",
   expect "confirmed: round 1" (stateOf (chain [opening, briefS, confirmS])) "attack",
-  expect "six of seven filed: still attacking" (stateOf (chain ([opening, briefS, confirmS] ++ (allConcede 1).take 6)))
+  expect "four of five filed: still attacking" (stateOf (chain ([opening, briefS, confirmS] ++ (allConcede 1).take 4)))
     "attack",
-  expect "all seven filed: verify" (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1))) "verify",
+  expect "all five filed: verify" (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1))) "verify",
   expect "nothing standing: voting" (stateOf (chain toVoting)) "voting",
-  expect "seven convinced: introduced" (stateOf (chain (toVoting ++ allVote (fun _ => true)))) "introduced",
+  expect "five convinced: introduced" (stateOf (chain (toVoting ++ allVote (fun _ => true)))) "introduced",
   expect "one not convinced: refuted" (stateOf (chain (toVoting ++ allVote (· != 4)))) "refuted",
   expect "a failed verifier report: refuted"
     (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [] (passed := false)] ++
@@ -189,7 +189,7 @@ def checks : List Check := [
   expectRefused "the user files as a judge"
     (stateOf (chain [opening, briefS, confirmS, ("user", "file", [("round", jnat 1), ("refutations", Json.arr #[]),
       ("concedes", jstr "x")])])),
-  expectRefused "there is no judge 8" (stateOf (chain [opening, briefS, confirmS, concede 8 1])),
+  expectRefused "there is no judge 6" (stateOf (chain [opening, briefS, confirmS, concede 6 1])),
   expectRefused "a filing for the wrong round" (stateOf (chain [opening, briefS, confirmS, concede 1 2])),
   expectRefused "the user writes the brief" (stateOf (chain [opening, ("user", "brief", [("case", goodCase)])])),
   expectRefused "a premise pointing nowhere"
@@ -226,7 +226,7 @@ def checks : List Check := [
   expectNat "judge 3 can't see judges 1 and 2's filings"
     (hiddenFor (chain [opening, briefS, confirmS, concede 1 1, concede 2 1]) 3) 2,
   expectNat "judge 1 sees its own filing" (hiddenFor (chain [opening, briefS, confirmS, concede 1 1, concede 2 1]) 1) 1,
-  expectNat "once all seven filed, everyone sees all" (hiddenFor (chain ([opening, briefS, confirmS] ++ allConcede 1)) 3) 0,
+  expectNat "once all five filed, everyone sees all" (hiddenFor (chain ([opening, briefS, confirmS] ++ allConcede 1)) 3) 0,
   expectNat "votes are hidden while voting" (hiddenFor (chain (toVoting ++ [voteS 1 true, voteS 2 false])) 5) 2,
   expectNat "and shown once all have voted" (hiddenFor (chain (toVoting ++ allVote (fun _ => true))) 5) 0,
 
@@ -242,8 +242,8 @@ def checks : List Check := [
       (mkEvent 2 (some (hashString (chain [opening, briefS]).getLast!)) "laptop" confirmS)).getObjValD "accepted").compress
     "true",
   expect "replay names who acts next"
-    ((replayJson (chain ([opening, briefS, confirmS] ++ (allConcede 1).take 5))).getObjValD "next").compress
-    "[\"judge-6\",\"judge-7\"]",
+    ((replayJson (chain ([opening, briefS, confirmS] ++ (allConcede 1).take 3))).getObjValD "next").compress
+    "[\"judge-4\",\"judge-5\"]",
 
   -- the rule machine
   expect "a current rule goes stale when a source changes"

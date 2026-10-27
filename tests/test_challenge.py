@@ -140,19 +140,19 @@ class ChallengeTest(unittest.TestCase):
     def test_a_unanimous_panel_introduces_the_rule(self):
         cid = self.to_attack()
         self.assertRegex(cid, r"^challenge-\d{8}-[0-9a-f]{12}$")
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.file(cid, k)
         out = self.ok("verify", cid)
         self.assertIn("Case passes; 0 refutation(s) standing", out)
         self.assertEqual(self.status(cid)["state"], "voting")
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
         self.assertEqual(self.status(cid)["state"], "introduced")
         self.assertIn("traces", self.ok("trace", cid))
         log = self.git_log()
         self.assertIn(f"{cid}: Open a challenge", log)
         self.assertIn('Decided-by: user ("Yes, that\'s my case")', log)
-        self.assertIn("Drafted-by: judge-7", log)
+        self.assertIn("Drafted-by: judge-5", log)
 
     def test_the_brief_pins_its_sources(self):
         cid = self.open_briefed()
@@ -164,7 +164,7 @@ class ChallengeTest(unittest.TestCase):
     def test_a_standing_refutation_goes_to_the_user_then_round_2(self):
         cid = self.to_attack()
         self.file(cid, 1, REFUTE)
-        for k in range(2, 8):
+        for k in range(2, 6):
             self.file(cid, k)
         self.ok("verify", cid)
         state = self.status(cid)
@@ -179,7 +179,7 @@ class ChallengeTest(unittest.TestCase):
     def test_conceding_a_refutation_refutes_the_case(self):
         cid = self.to_attack()
         self.file(cid, 1, REFUTE)
-        for k in range(2, 8):
+        for k in range(2, 6):
             self.file(cid, k)
         self.ok("verify", cid)
         concede = {"type": "answer", "round": 1, "words": "Fair, it doesn't cover three players",
@@ -193,10 +193,10 @@ class ChallengeTest(unittest.TestCase):
     def test_a_single_agent_panel_cannot_introduce(self):
         cid = self.open_briefed(panel="single-agent")
         self.ok("confirm", cid, "--user-said", "yes")
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.file(cid, k)
         self.ok("verify", cid)
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
         state = self.status(cid)
         self.assertEqual(state["state"], "open")
@@ -206,7 +206,7 @@ class ChallengeTest(unittest.TestCase):
         cid = self.to_attack()
         self.refused("withdraw", cid, "--user-said", "never mind")  # only where the user acts
         self.file(cid, 1, REFUTE)
-        for k in range(2, 8):
+        for k in range(2, 6):
             self.file(cid, k)
         self.ok("verify", cid)
         self.ok("withdraw", cid, "--user-said", "never mind")
@@ -244,13 +244,13 @@ class ChallengeTest(unittest.TestCase):
 
     def test_a_source_that_changed_fails_the_verifier(self):
         cid = self.to_attack()
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.file(cid, k)
         self.cr.write_text(CR.replace("the loser of the previous game chooses", "the winner chooses"), encoding="utf-8")
         out = self.ok("verify", cid)
         self.assertIn("Case fails", out)
         self.assertIn("CR 103.1a has changed since it was pinned", out)
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
         self.assertEqual(self.status(cid)["state"], "refuted")
 
@@ -306,10 +306,10 @@ class ChallengeTest(unittest.TestCase):
 
     def introduce(self, cid=None, convinced=lambda k: True):
         cid = cid or self.to_attack()
-        for k in range(1, 8):
+        for k in range(1, 6):
             self.file(cid, k)
         self.ok("verify", cid)
-        for k in range(1, 8):
+        for k in range(1, 6):
             vote = {**VOTE, "convinced": convinced(k)}
             self.ok("add", cid, self.write("vote.json", vote), "--as", f"judge-{k}")
         return cid
@@ -320,7 +320,7 @@ class ChallengeTest(unittest.TestCase):
         rule = json.loads((self.home / "rules" / f"{cid}.json").read_text(encoding="utf-8"))
         self.assertEqual((rule["kind"], rule["state"], rule["challenge"]), ("rule", "current", cid))
         self.assertEqual(rule["final_hash"], state["head"])
-        self.assertEqual(len(rule["votes"]), 7)
+        self.assertEqual(len(rule["votes"]), 5)
         self.assertEqual(len(rule["verifier_report_sha256"]), 64)
         self.assertEqual(rule["rule"], case()["rule"])
         self.assertIn("Decided-by: panel", self.git_log())
@@ -334,7 +334,7 @@ class ChallengeTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         graded = json.loads(result.stdout)
         self.assertEqual((graded["challenge"], graded["state"], graded["outcome_ok"]), (cid, "introduced", True))
-        self.assertEqual((graded["concessions"], len(graded["votes"]), graded["traces"]), (7, 7, True))
+        self.assertEqual((graded["concessions"], len(graded["votes"]), graded["traces"]), (5, 5, True))
         wrong = subprocess.run([sys.executable, str(grade), "urborg-still-swamps", "--home", str(self.home)],
                                capture_output=True, text=True, encoding="utf-8", env=self.env)
         self.assertEqual(wrong.returncode, 1)
@@ -451,10 +451,10 @@ class ChallengeTest(unittest.TestCase):
         self.assertEqual([e["actor"] for e in seen], ["user", "clerk", "user"])
         seen = json.loads(self.ok("show", cid, "--judge", "1"))
         self.assertEqual([e["actor"] for e in seen], ["user", "clerk", "user", "judge-1"])
-        for k in range(3, 8):
+        for k in range(3, 6):
             self.file(cid, k)
         seen = json.loads(self.ok("show", cid, "--judge", "3"))
-        self.assertEqual(len([e for e in seen if e["type"] == "file"]), 7)
+        self.assertEqual(len([e for e in seen if e["type"] == "file"]), 5)
 
     def test_status_alone_says_what_happens_next(self):
         cid = self.ok("open", "--statement", "a case").split()[0]
@@ -463,11 +463,11 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn("The user confirms the brief", self.ok("status", cid))
         self.ok("confirm", cid, "--user-said", "yes")
         out = self.ok("status", cid)
-        self.assertIn("Round 1: judges 1, 2, 3, 4, 5, 6 and 7 still to file", out)
-        for k in range(1, 7):
+        self.assertIn("Round 1: judges 1, 2, 3, 4 and 5 still to file", out)
+        for k in range(1, 5):
             self.file(cid, k)
-        self.assertIn("Round 1: judge 7 still to file", self.ok("status", cid))
-        self.file(cid, 7)
+        self.assertIn("Round 1: judge 5 still to file", self.ok("status", cid))
+        self.file(cid, 5)
         self.assertIn(f"challenge.py verify {cid}", self.ok("status", cid))
         self.ok("verify", cid)
         self.assertIn("The panel votes, blind", self.ok("status", cid))

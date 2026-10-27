@@ -7,8 +7,8 @@ derivation whose every step names its premises and quotes one pinned source, or 
 
 namespace Challenge
 
-/-- The panel has seven judges, numbered 1 to 7. -/
-def panelSize : Nat := 7
+/-- The panel has five judges, numbered 1 to 5. -/
+def panelSize : Nat := 5
 
 /-- After this many attack rounds a challenge with refutations still standing stays open. -/
 def roundCap : Nat := 4

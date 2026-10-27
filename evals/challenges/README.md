@@ -25,7 +25,7 @@ Run each case in a fresh session with the skill installed and its own empty reco
 (`BISHOP_AND_BARRISTER_HOME` set to a new folder, then `judge.py build`). Count the tokens and time of the whole
 run, every subagent included.
 
-1. **The panel.** The orchestrator follows `CHALLENGE.md` for the prompt, in Claude Code, with seven judge
+1. **The panel.** The orchestrator follows `CHALLENGE.md` for the prompt, in Claude Code, with five judge
    subagents per round. A separate subagent plays the user from `user.md`, seeing only what the user would
    (the brief, the verified refutations, the outcome). When the challenge settles or stays open, grade it:
 

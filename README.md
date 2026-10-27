@@ -53,7 +53,7 @@ stays the copy the skill works from; the bucket is a synced copy. A RustFS to tr
 | Path                             | What                                                                  |
 | -------------------------------- | --------------------------------------------------------------------- |
 | `SKILL.md`                       | The skill's instructions for Claude                                   |
-| `CHALLENGE.md`                   | How a challenge runs: the clerk, seven judges, rounds and the vote    |
+| `CHALLENGE.md`                   | How a challenge runs: the clerk, five judges, rounds and the vote    |
 | `scripts/judge.py`               | The rulings record: search, show, recheck                             |
 | `scripts/challenge.py`           | Challenges: the only way a rule enters the record (`CHALLENGE.md`)    |
 | `challenge/`                     | The challenge core in Lean 4, with its proofs, built to `bab-challenge` |

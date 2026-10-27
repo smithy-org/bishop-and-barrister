@@ -5,7 +5,7 @@ import Challenge.Chain
 
 Checked on every build; `Audit.lean` fails the build if any of them is missing or rests on `sorry`.
 
-1. `no_unearned_rule`: an introduced challenge had seven convinced judges, a passing verifier report, no level 1
+1. `no_unearned_rule`: an introduced challenge had five convinced judges, a passing verifier report, no level 1
    conflict, no unsupported step and an independent panel.
 2. `determinism`: the state depends only on which events there are, not the order the files are read in, so
    every device holding the same events computes the same state.

@@ -7,9 +7,9 @@ nothing the skill answers is ever stored as a rule. A challenge is the only way 
 The design and its reasons are in `docs/plans/029-challenges.md`. In short:
 
 - **The user carries the burden.** The established answer stands unless the case survives every attack.
-- **Seven adversarial judges** each try to defeat the case through a different lens, with evidence from the
+- **Five adversarial judges** each try to defeat the case through a different lens, with evidence from the
   skill's own sources. In the first round they can't see each other's work.
-- **A rule is introduced only if all seven are convinced**, the verifier passes the final case with no
+- **A rule is introduced only if all five are convinced**, the verifier passes the final case with no
   unsupported step, it contradicts no level 1 source, and the panel was independent. A single judge with a
   verified refutation still standing defeats it. That judge is the correct minority, and unanimity lets it win.
 - **`scripts/challenge.py` enforces all of this.** Every step is an event that the Lean core (`bab-challenge`)
@@ -104,7 +104,7 @@ python scripts/challenge.py confirm <id> --user-said "<what the user said>"
 python scripts/challenge.py edit <id> case.json --user-said "<their correction>"   # or, to correct it
 ```
 
-### 3. The attack round: seven judges, blind
+### 3. The attack round: five judges, blind
 
 Each judge gets **only** its own view of the challenge, built from the core:
 
@@ -113,9 +113,9 @@ python scripts/challenge.py show <id> --judge <k>
 ```
 
 **Never paste one judge's filing into another judge's prompt**, and don't summarise it for them either. The core
-hides the other judges' work until all seven have filed; keep it that way.
+hides the other judges' work until all five have filed; keep it that way.
 
-**In Claude Code, launch the seven judges as seven subagents in one message** (the Agent tool), so they work in
+**In Claude Code, launch the five judges as five subagents in one message** (the Agent tool), so they work in
 parallel and independently. Give each one the shared brief below, its own lens, and its own view. Each returns a
 filing as JSON; add each one as that judge:
 
@@ -128,9 +128,9 @@ reasons back to that judge only, and add its corrected filing.
 
 **The shared brief for every judge:**
 
-> You are judge {k} of seven on a panel deciding whether a user's case for a Magic: the Gathering rule should be
+> You are judge {k} of five on a panel deciding whether a user's case for a Magic: the Gathering rule should be
 > introduced. Your job is to **defeat the case if it can be defeated**: argue against it fervently, but only
-> with evidence. The established answer stands unless the case survives you. You are one of seven, each with a
+> with evidence. The established answer stands unless the case survives you. You are one of five, each with a
 > different lens; you can't see the others' work, and they can't see yours.
 >
 > Use the skill's own tools, and nothing from memory: `python scripts/card.py` for Oracle text and official
@@ -155,31 +155,28 @@ reasons back to that judge only, and add its corrected filing.
 >
 > The challenge so far (everything you may see): {the output of show --judge k}
 
-**The seven lenses** (add the judge's own after the shared brief):
+**The five lenses** (add the judge's own after the shared brief):
 
 1. **The Comprehensive Rules' text.** Read every cited rule in full, with its subrules and the rules it refers to.
    Look for conditions the case skips, exceptions, and later rules that modify it.
-2. **Oracle text and card wording.** Read every card's current Oracle text word by word ("may", "each",
-   "target", "until end of turn", "instead"). Card text overrides the rules (101.1). Look for wording the case
-   paraphrases wrongly.
-3. **Wizards' rulings and precedent.** Search the record and `card.py --rulings` for official rulings on these
-   cards and on cards with the same wording or mechanic. A ruling on an analogous card that points the other way
-   is strong evidence.
-4. **Game-state simulation.** Play the situation out step by step: what goes on the stack, who gets priority,
+2. **Cards and their rulings.** Read every card's current Oracle text word by word ("may", "each", "target",
+   "until end of turn", "instead"); card text overrides the rules (101.1). Then search the record and
+   `card.py --rulings` for official rulings on these cards and on cards with the same wording or mechanic: a ruling
+   on an analogous card that points the other way is strong evidence. Look for wording the case paraphrases wrongly.
+3. **Game-state simulation.** Play the situation out step by step: what goes on the stack, who gets priority,
    what triggers and when, when state-based actions are checked (704), which layers apply (613). Find the step
    where the case's sequence differs from the real one.
-5. **Counterexamples.** Find another game situation where the proposed rule, as worded in `rule` and
-   `applies_when`, gives an answer the official sources contradict. Overbroad rules fall here.
-6. **The tournament documents and formats.** Check the MTR, IPG and JAR, and `reference/formats/`: whether the
+4. **Counterexamples and logic.** Find another game situation where the proposed rule, as worded in `rule` and
+   `applies_when`, gives an answer the official sources contradict; overbroad rules fall here. Then check the
+   derivation itself: hidden assumptions, steps whose conclusion doesn't follow from their premises and source,
+   circular steps, gaps between steps, facts used but never stated, and quotes stretched beyond what they say.
+5. **The tournament documents and formats.** Check the MTR, IPG and JAR, and `reference/formats/`: whether the
    case is about gameplay at all, whether a format or REL changes it, and whether a tournament rule already
    settles it.
-7. **Logic.** Check the derivation itself: hidden assumptions, steps whose conclusion doesn't follow from their
-   premises and source, circular steps, gaps between steps, facts used but never stated, and quotes stretched
-   beyond what they say.
 
 ### 4. The verifier
 
-When all seven have filed, `status` says the verifier is next:
+When all five have filed, `status` says the verifier is next:
 
 ```bash
 python scripts/challenge.py verify <id>
@@ -219,7 +216,7 @@ never concede for them. They can also withdraw: `challenge.py withdraw <id> --us
 ### 6. The next round
 
 Each judge now sees the user's answers and the other judges' verified refutations from the round before (their
-`show --judge k` includes them). Run the seven again with the same shared brief and lens, adding:
+`show --judge k` includes them). Run the five again with the same shared brief and lens, adding:
 
 > This is round {n}. The user has answered the last round's refutations; you can now also see the other judges'
 > filings from that round. Attack again where the case, as it now stands, can still be defeated: a rebuttal that
@@ -230,9 +227,9 @@ Rounds repeat until no verified refutation stands, or the user withdraws. After 
 still standing, the challenge stays **open**. It's a gap the user can return to with new facts or sources (a
 `reopen` event with the revised case).
 
-### 7. The verdict: seven blind votes
+### 7. The verdict: five blind votes
 
-When `status` says the panel votes, launch the seven again as subagents, in one message, each with its own view
+When `status` says the panel votes, launch the five again as subagents, in one message, each with its own view
 (which never shows another judge's vote) and this prompt:
 
 > Judge {k}, vote on the case as it now stands. Be convinced only if no verified refutation you know of still
@@ -244,8 +241,8 @@ When `status` says the panel votes, launch the seven again as subagents, in one 
 python scripts/challenge.py add <id> vote-3.json --as judge-3
 ```
 
-The seventh vote closes the challenge on its own. The core introduces the rule only if every guard holds
-(all seven convinced, the last report passed, no level 1 conflict, no assumption step, an independent panel).
+The fifth vote closes the challenge on its own. The core introduces the rule only if every guard holds
+(all five convinced, the last report passed, no level 1 conflict, no assumption step, an independent panel).
 Otherwise the challenge is **refuted**, with the reason, or stays **open** if a single-agent panel was
 convinced.
 
@@ -262,17 +259,17 @@ line. Then:
 
 ## On claude.ai: a single-agent panel
 
-claude.ai can't launch subagents, so one agent plays all seven judges, one after another, each with only its own
-`show --judge k` view and its own lens. That isn't independent: one model's blind spots are shared by all seven.
+claude.ai can't launch subagents, so one agent plays all five judges, one after another, each with only its own
+`show --judge k` view and its own lens. That isn't independent: one model's blind spots are shared by all five.
 So a challenge opened with `--panel single-agent` can test a case and refute it, but **can never introduce a
-rule**. If all seven are convinced, it stays open until an independent panel (in Claude Code) hears it again.
+rule**. If all five are convinced, it stays open until an independent panel (in Claude Code) hears it again.
 Tell the user this when you open it.
 
 ## What never happens
 
 - No answer, conversation or agent's opinion becomes a rule except through a challenge that the core closes as
   introduced.
-- No judge sees another judge's filing in its own round, or another judge's vote, before all seven have acted.
+- No judge sees another judge's filing in its own round, or another judge's vote, before all five have acted.
 - Nothing is decided for the user: they confirm the brief, answer the refutations, pick a side of a fork and
   ask for a house rule, each in their own words.
 - No event file is edited or deleted. A fork's unchosen branch is moved to `discarded/`, never removed.
