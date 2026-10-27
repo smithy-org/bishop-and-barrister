@@ -207,9 +207,120 @@ def propose(cid: str | None, actor: str, fields: dict, message: str, words: str 
     folder = CHALLENGES_DIR / cid
     folder.mkdir(parents=True, exist_ok=True)
     (folder / f"{event['seq']:04d}-{actor}-{event['device']}.json").write_bytes(text.encode("utf-8"))
-    decided = f'user ("{words}")' if words else None
-    judge.commit(f"{cid}: {message}", drafted_by=actor, decided_by=decided)
+    drafted, decided = actor, (f'user ("{words}")' if words else None)
+    if new_state["settled"] or new_state["state"] == "open":
+        outcome = settle(cid, new_state)
+        if outcome:
+            message += f"\n\n{outcome}"
+            judge.reindex_rules()
+        if new_state["state"] == "introduced":
+            drafted, decided = "panel", "panel"
+    judge.commit(f"{cid}: {message}", drafted_by=drafted, decided_by=decided)
     return cid, new_state
+
+
+# --- rules: what a challenge leaves in the record ---------------------------------------------
+
+
+def rule_step(state: str, event: str) -> str:
+    """One transition of the rule state machine, decided by the core."""
+    result = core(["rule"], {"state": state, "event": event})
+    if not result.get("accepted"):
+        judge.die(f"The rule can't move: {'; '.join(result.get('reasons', [str(result)]))}")
+    return result["state"]
+
+
+def load_rule(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def save_rule(rule: dict, path: Path) -> None:
+    RULES_DIR.mkdir(exist_ok=True)
+    path.write_text(json.dumps(rule, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
+    """The rule file for a closed challenge, with its provenance: the challenge, the hash of its final event,
+    the votes, the verifier's last report, the devices and dates, and the pinned sources."""
+    files = {json.loads(read_raw(p))["seq"]: p for p in event_files(cid)}
+    events = events_in_order(cid)
+    case = events[state["case_seq"]]["case"]
+    reports = [e for e in events if e["type"] == "report"]
+    opening, last = events[0], events[-1]
+    return {
+        "id": f"house-{cid}" if house_rule else cid, "kind": "rule", "level": 5, "house_rule": house_rule,
+        "state": "current", "challenge": cid, "final_hash": state["head"],
+        "rule": case["rule"], "applies_when": case["applies_when"], "challenges": case["challenges"],
+        "facts": case["facts"], "steps": case["steps"],
+        "votes": [{"judge": int(e["actor"].removeprefix("judge-")), "convinced": e["convinced"], "reason": e["reason"]}
+                  for e in events if e["type"] == "vote"],
+        "verifier_report_sha256": sha256_file(files[reports[-1]["seq"]]) if reports else None,
+        "opened": {"device": opening["device"], "time": opening["time"]},
+        "introduced": {"device": last["device"], "time": last["time"]},
+    }
+
+
+def settle(cid: str, state: dict) -> str | None:
+    """Write what a closed challenge leaves behind. An introduced challenge writes rules/challenge-<id>.json; a
+    house rule writes rules/house-challenge-<id>.json. A challenge that reopened a stale rule moves that rule
+    instead: introduced again, it is current with the new case; refuted, it is retired."""
+    reopens = events_in_order(cid)[0].get("reopens")
+    if reopens and state["state"] in ("introduced", "refuted", "withdrawn"):
+        path = RULES_DIR / f"{reopens}.json"
+        rule = load_rule(path)
+        if state["state"] == "introduced":
+            fresh = rule_from(cid, state, house_rule=False)
+            rule.update({k: fresh[k] for k in ("rule", "applies_when", "challenges", "facts", "steps")})
+            rule.setdefault("renewals", []).append({"challenge": cid, "final_hash": state["head"],
+                                                    "votes": fresh["votes"], "time": fresh["introduced"]["time"]})
+            rule["state"] = rule_step(rule["state"], "challenge-introduced")
+            rule.pop("recheck_reasons", None)
+        else:
+            rule["state"] = rule_step(rule["state"], "challenge-refuted")
+            rule["retired_by"] = cid
+        save_rule(rule, path)
+        return f"Rule {reopens} is now {rule['state']}."
+    if state["state"] == "introduced":
+        save_rule(rule_from(cid, state, house_rule=False), RULES_DIR / f"{cid}.json")
+        return f"Introduces rules/{cid}.json."
+    if state["state"] == "house-rule":
+        save_rule(rule_from(cid, state, house_rule=True), RULES_DIR / f"house-{cid}.json")
+        return f"Kept as a house rule: rules/house-{cid}.json."
+    return None
+
+
+def recheck_rules(offline: bool = False) -> list[tuple[str, list[str], str]]:
+    """Every current rule whose sources changed goes stale, and a new challenge opens against the new text,
+    carrying the old case for the clerk. Returns (rule, reasons, the new challenge) for each."""
+    reopened = []
+    for path in sorted(RULES_DIR.glob("challenge-*.json")):
+        rule = load_rule(path)
+        if rule["state"] != "current":
+            continue
+        reasons = []
+        for st in rule["steps"]:
+            src = st.get("source")
+            if isinstance(src, dict) and not (offline and src.get("doc") == "oracle"):
+                why = verify_source(src)
+                if why:
+                    reasons.append(f"step {st['id']}: {why}")
+        if not reasons:
+            continue
+        rule["state"] = rule_step(rule["state"], "source-changed")
+        rule["recheck_reasons"] = reasons
+        statement = (f"The rule from {rule['id']} relied on sources that changed ({'; '.join(reasons)}). It must win "
+                     f"its challenge again against the new text: {rule['rule']}")
+        case = {k: rule[k] for k in ("facts", "rule", "applies_when", "challenges", "steps")}
+        rule["state"] = rule_step(rule["state"], "challenge-reopened")
+        cid, _ = propose(None, "user", {"type": "open", "statement": statement, "panel": "independent",
+                                        "reopens": rule["id"], "carried": {"case": case}},
+                         f"Reopen {rule['id']}: its sources changed")
+        rule["reopened_by"] = cid
+        save_rule(rule, path)
+        judge.commit(f"Rule {rule['id']} is reopened by {cid}\n\n" + "\n".join(f"- {r}" for r in reasons),
+                     drafted_by="judge")
+        reopened.append((rule["id"], reasons, cid))
+    return reopened
 
 
 # --- citations: pinning and the verifier -----------------------------------------------------
@@ -606,7 +717,8 @@ def cmd_trace(args) -> int:
     state = replay(args.id)
     if not state.get("ok"):
         problems.append(describe_failure(state))
-    rule = RULES_DIR / f"{args.id}.json"
+    rule = next((p for p in (RULES_DIR / f"{args.id}.json", RULES_DIR / f"house-{args.id}.json") if p.exists()),
+                RULES_DIR / f"{args.id}.json")
     if rule.exists():
         data = json.loads(rule.read_text(encoding="utf-8"))
         if data.get("challenge") != args.id:
