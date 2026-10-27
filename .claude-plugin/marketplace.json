@@ -1,0 +1,12 @@
+{
+  "name": "smithy-org",
+  "owner": { "name": "smithy-org" },
+  "description": "Bishop & Barrister: a Magic: the Gathering rules skill for Claude",
+  "plugins": [
+    {
+      "name": "bishop-and-barrister",
+      "source": "./",
+      "description": "Answers Magic: the Gathering rules questions from the Comprehensive Rules, current Oracle text and the tournament documents, with rule citations."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "bishop-and-barrister",
+  "version": "0.2.0",
+  "description": "Answers Magic: the Gathering rules questions from the Comprehensive Rules, current Oracle text and the tournament documents, with rule citations.",
+  "author": { "name": "Peter Derouen" },
+  "homepage": "https://github.com/smithy-org/bishop-and-barrister",
+  "repository": "https://github.com/smithy-org/bishop-and-barrister",
+  "license": "Apache-2.0",
+  "keywords": ["magic-the-gathering", "mtg", "rules", "judge"]
+}

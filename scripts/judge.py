@@ -44,7 +44,7 @@ import lookup  # noqa: E402  (the skill's own CR reader)
 import s3  # noqa: E402  (the optional remote store's client)
 
 SKILL_DIR = Path(__file__).resolve().parent.parent
-HOME = Path(os.environ.get("BISHOP_AND_BARRISTER_HOME") or Path.home() / ".claude" / "bishop-and-barrister")
+HOME = lookup.HOME
 CR_FILE = Path(os.environ.get("BISHOP_AND_BARRISTER_CR") or lookup.RULES_FILE)
 CR_VERSION = CR_FILE.parent / "version.json"
 OFFLINE = os.environ.get("BISHOP_AND_BARRISTER_OFFLINE") == "1"
@@ -108,9 +108,10 @@ def git(*args: str, check: bool = True) -> subprocess.CompletedProcess:
     return subprocess.run(["git", "-C", str(HOME), *args], capture_output=True, text=True, encoding="utf-8", check=check)
 
 
-# Kept out of the record: the object store (synced by hash, not git), the rebuildable index, and the sync
-# settings, which name the user's own endpoint and must never be committed or uploaded.
-IGNORED = ("objects/", "index.sqlite", "config.json")
+# Kept out of the record: the object store (synced by hash, not git), the rebuildable index, the sync
+# settings, which name the user's own endpoint and must never be committed or uploaded, and the downloaded
+# rules documents (lookup.DATA_DIR), which are Wizards' material and each device downloads its own.
+IGNORED = ("objects/", "index.sqlite", "config.json", "documents/")
 
 
 def ensure_home() -> None:
@@ -253,8 +254,9 @@ def cr_rules() -> dict[str, str]:
     """
     global _RULES
     if _RULES is None:
+        lookup.adopt_legacy_documents()
         if not CR_FILE.exists():
-            die("The Comprehensive Rules aren't downloaded. Run: python scripts/update_rules.py")
+            die("The Comprehensive Rules aren't downloaded. Run: python scripts/sources.py update")
         lines = CR_FILE.read_text(encoding="utf-8-sig").splitlines()
         _RULES = {}
         for line in lines[lookup.body_start(lines):]:
