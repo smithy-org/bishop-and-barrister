@@ -26,8 +26,10 @@ Run each case in a fresh session with the skill installed and its own empty reco
 run, every subagent included.
 
 1. **The panel.** The orchestrator follows `CHALLENGE.md` for the prompt, in Claude Code, with five judge
-   subagents per round. A separate subagent plays the user from `user.md`, seeing only what the user would
-   (the brief, the verified refutations, the outcome). When the challenge settles or stays open, grade it:
+   subagents in round 1, then only the judges whose refutation was answered, then (for a case that gets that
+   far) one judge drafting the opinion and five answering it. A separate subagent plays the user from `user.md`,
+   seeing only what the user would (the brief, the verified refutations, the outcome). When the challenge settles
+   or stays open, grade it:
 
    ```bash
    python evals/challenges/grade.py <case> --home <that run's record>

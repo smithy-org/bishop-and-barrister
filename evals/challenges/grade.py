@@ -56,6 +56,9 @@ def grade(case: str, home: Path, cid: str | None = None) -> dict:
         "concessions": sum(1 for e in events if e["type"] == "file" and not e["refutations"]),
         "votes": [{"judge": e["actor"], "convinced": e["convinced"], "reason": e["reason"]} for e in votes],
         "every_vote_has_a_reason": all(v["reason"].strip() for v in votes),
+        "opinion_drafts": sum(1 for e in events if e["type"] == "opinion"),
+        "responses": {s: sum(1 for e in events if e["type"] == "respond" and e["stance"] == s)
+                      for s in ("join", "concur", "dissent")},
         "traces": traces, "events": len(events),
     }
 

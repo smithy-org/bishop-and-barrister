@@ -9,7 +9,7 @@ Users don't need Lean: the binary is downloaded from the release, checked agains
 
 | File | What it holds |
 | --- | --- |
-| `Challenge/Types.lean` | Cases, derivations, refutations, reports, answers, votes, events |
+| `Challenge/Types.lean` | Cases, derivations, refutations, reports, answers, votes, opinions and responses, events |
 | `Challenge/Check.lean` | The structural checks: premises point to a fact or an earlier step, every step quotes a pinned source or is labelled an assumption, a refutation attacks a step that exists |
 | `Challenge/Machine.lean` | The phases, who owes the next action, and `step`, the transition table |
 | `Challenge/Chain.lean` | The hash chain, fork detection, `replay`, and `view`: what each judge may see |
@@ -21,10 +21,15 @@ Users don't need Lean: the binary is downloaded from the release, checked agains
 
 ## The guarantees
 
-1. **No unearned rule.** `Phase.introduced` holds an `Earned`, which can only be built from five convinced
-   positions, each with evidence; a passing verifier report with no level 1 conflict and nothing standing; a case
-   whose every step is sourced or a stipulation; and an independent panel. A stipulation, the rule's own new
-   content, is only allowed in a case that fills a gap (`stipulations_only_in_gaps`).
+1. **No unearned rule.** `Phase.introduced` holds an `Earned`: a `Settled` (five convinced positions, each with
+   evidence; a passing verifier report with no level 1 conflict and nothing standing; a case whose every step is
+   sourced or a stipulation; and an independent panel) plus an Opinion of the Court that all five judges joined.
+   A stipulation, the rule's own new content, is only allowed in a case that fills a gap
+   (`stipulations_only_in_gaps`). `introduced_has_opinion` proves the opinion: its author was one of the convinced
+   judges, its holding is the case's rule, its steps are sourced or stipulations, and each of the five judges
+   joined it as written. A concurrence is not a join. After the judges settle, the phases are `drafting` (the
+   lowest-numbered convinced judge writes it) and `joining` (all five join, concur or dissent; up to two
+   revisions).
 2. **Determinism.** `replay` gives the same result for any order of the same events (`determinism`).
 3. **Terminal states are final.** No event leaves `introduced`, `withdrawn` or `house-rule`; `refuted` leaves
    only for `house-rule`, at the user's request.
@@ -56,8 +61,10 @@ An event file:
  "panel": "independent"}
 ```
 
-The types are `open`, `brief`, `edit`, `confirm`, `file`, `report`, `answer`, `vote`, `withdraw`,
-`house-rule` and `reopen`; `Challenge/Parse.lean` lists each one's fields.
+The types are `open`, `brief`, `edit`, `confirm`, `file`, `report`, `answer`, `vote`, `opinion`, `respond`,
+`withdraw`, `house-rule` and `reopen`; `Challenge/Parse.lean` lists each one's fields. `replay` also reports
+`convened` (the judges who attack in the round: all five in round 1, then only those whose refutation a revision
+answered), `revision` and `responded` (the opinion's revision and who has answered the draft).
 
 ## Building
 

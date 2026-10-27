@@ -21,6 +21,40 @@ the table below. Where this document still says seven, read five.
   goes to the judges to settle, with no re-attack of an unchanged case. Five concessions on the unchanged case are
   the five settled positions, so no separate vote runs. The round limit is three.
 - A case that ends `open` can also be kept as a house rule, as a `refuted` one can.
+
+**Revised 2026-10-27 (second note): the Opinion of the Court, and targeted rounds** (decided with the maintainer,
+PR B). What changed, and why:
+
+- **A rule is introduced by an opinion that all five judges join**, not by the settling vote alone. Once all five are
+  settled and convinced (and every guard holds), the case is `drafting`: the lowest-numbered convinced judge writes
+  the opinion in the proof standard: the **holding** (the case's rule, word for word), the **reasoning** (sourced
+  steps, no assumption) and the **stipulations** (exactly the case's, none added, none left out). Then the case is
+  `joining`: each of the five answers the draft blind to the others with exactly one of **join** (adopt it as
+  written), **concur** (the rule is right, for other reasons, which the judge states with evidence) or **dissent**
+  (not convinced, with evidence). Every answer is a position, so it needs reasoning and evidence.
+- **Only five joins introduce the rule.** A concurrence is not a join and is never unanimity. A concurrence or a
+  dissent (fewer than three dissents) sends the draft back to its author, who sees every response and revises; after
+  two revisions without five joins the case stays `open`. Three or more dissents refuse the case (`open`: the case
+  has no refutation standing, so it is unproven). The opinion, who joined, and every concurrence and dissent are
+  stored in `rules/challenge-<id>.json` and shown by `judge.py`.
+- **A refused case needs no agents to be written up.** For `refuted` and `open` cases, `challenge.py` assembles a
+  short per curiam record from each judge's last position (reasons and evidence) and stores it with the challenge,
+  in `challenges/<id>/record/per-curiam.json` (outside the event chain, derived from it).
+- **Targeted rounds.** After the first full round, an attack round after a revision convenes only the judges whose
+  refutation was answered by that revision (a `fix` reply); the others' concessions stand for now. If the revision
+  answered no one's refutation, nobody is convened and the judges settle. The **soundness rule**: every judge's
+  last position must be on the final version of the case. When no refutation stands, a judge whose last look
+  (a concession) was at an earlier version, or was a refutation, settles again with a vote; a concession on the
+  final, unchanged version is already that judge's settled position (it exists for the all-concede case, and now
+  holds for any judge). Blindness is unchanged: a judge never sees another's work from the phase in progress.
+- **Kept:** the five-judge panel, unanimity to introduce, three of five to refuse, stipulations only in gaps,
+  evidence and reasoning on every position, the round limit of three, house rules from refuted or open cases, the
+  hash chain and fork detection.
+- **Proofs.** `Earned` is now a `Settled` (the old guarantee) plus an opinion and five joins. `introduced_has_opinion`
+  proves that an introduced rule has an opinion whose author was one of the convinced judges, whose holding is the
+  case's rule and whose steps are sourced or stipulations, and that each of the five judges (distinct, as there are
+  five) joined it. The other theorems are unchanged in statement.
+
 **Decided with the user (2026-10-26):**
 
 - **Nothing the skill answers enters the database.** Established rules are only what official sources say:
@@ -137,11 +171,13 @@ who owes it** (the user, judge *k*, the verifier, or the panel), so any session,
 | --- | --- | --- | --- |
 | `draft` | User (with the clerk) | Clerk writes the brief | `briefed` |
 | `briefed` | User | Confirms facts and the proposed rule / edits them | `attack(n=1)` / `briefed` |
-| `attack(n)` | The five judges, blind; each judge's refutation or concession is a separate event | All five filed | `verify(n)` |
-| `verify(n)` | Verifier (script) | Report filed | `answer(n)`, or `voting` if no verified refutation stands |
+| `attack(n)` | The convened judges (all five in round 1), blind; each judge's refutation or concession is a separate event | All convened judges filed | `verify(n)` |
+| `verify(n)` | Verifier (script) | Report filed | `answer(n)`, or, if no verified refutation stands, `voting` (or `drafting` when every judge is already settled and convinced) |
 | `answer(n)` | User | Answers each verified refutation (concede, fix the case, rebut) / withdraws | `verify-answers(n)` / `withdrawn` |
-| `verify-answers(n)` | Verifier | Report filed | `attack(n+1)` if n < cap; `open` if the cap is reached with refutations standing |
-| `voting` | The five judges, blind to each other's votes | All five voted | `introduced` if every guard holds; else `refuted` |
+| `verify-answers(n)` | Verifier | Report filed | `attack(n+1)` if n < cap and the revision answered a refutation, convening only those judges; else `voting` |
+| `voting` | The judges not yet settled on the final case, blind to each other's votes | All have voted | `drafting` if every guard holds and all five are convinced; `attack(n+1)` with one or two not convinced; else `refuted` or `open` |
+| `drafting` | The lowest-numbered convinced judge | Writes the opinion | `joining` |
+| `joining` | The five judges, blind to each other's answers | All five answered | `introduced` on five joins; `drafting` (a revision, at most two) on a concurrence or a dissent; `open` on three dissents or after two revisions |
 | `introduced` | | Terminal for the challenge; creates a rule (below) | |
 | `refuted` | | Terminal. Optionally the user asks to keep it as a house rule | `house-rule` |
 | `open` | User | Returns with new facts or sources | `briefed` |

@@ -423,6 +423,7 @@ class ChallengeTest(unittest.TestCase):
         graded = json.loads(result.stdout)
         self.assertEqual((graded["challenge"], graded["state"], graded["outcome_ok"]), (cid, "introduced", True))
         self.assertEqual((graded["concessions"], len(graded["votes"]), graded["traces"]), (5, 0, True))
+        self.assertEqual((graded["opinion_drafts"], graded["responses"]), (1, {"join": 5, "concur": 0, "dissent": 0}))
         wrong = subprocess.run([sys.executable, str(grade), "urborg-still-swamps", "--home", str(self.home)],
                                capture_output=True, text=True, encoding="utf-8", env=self.env)
         self.assertEqual(wrong.returncode, 1)
