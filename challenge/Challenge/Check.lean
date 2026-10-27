@@ -101,6 +101,30 @@ def checkVote (v : Vote) : List String :=
   (if v.evidence.isEmpty then ["a vote needs evidence: the pinned sources it relied on or checked"] else []) ++
   v.evidence.flatMap (checkSource "the vote")
 
+def Case.stipulations (c : Case) : List String := (c.steps.filter (·.stipulation)).map (·.conclusion)
+
+/-- A draft of the Opinion of the Court: the holding is the case's rule, the reasoning is sourced step by step, and
+the stipulations are the case's own, all of them and no others (the judges join exactly what they settled on). -/
+def checkOpinion (c : Case) (revision : Nat) (o : Opinion) : List String :=
+  (if o.revision = revision then [] else [s!"this is revision {revision} of the opinion, not revision {o.revision}"]) ++
+  (if o.holding == c.rule then [] else ["the holding must be the case's rule, word for word"]) ++
+  (if o.steps.isEmpty then ["the opinion needs its reasoning: the steps, each quoting a pinned source"] else []) ++
+  ((o.steps.filter (fun st => !(st.source.isSome || st.stipulation))).map fun st =>
+    s!"the opinion's step {st.id}: an assumption can't support a rule; quote a source") ++
+  (((o.steps.filter (·.stipulation)).map (·.conclusion)).filter (fun t => !c.stipulations.contains t)).map
+    (fun t => s!"the opinion stipulates \"{t}\", which the case doesn't: the opinion can't add to the rule") ++
+  (c.stipulations.filter (fun t => !((o.steps.filter (·.stipulation)).map (·.conclusion)).contains t)).map
+    (fun t => s!"the opinion leaves out the stipulation \"{t}\": it must state everything the judges accepted") ++
+  checkSteps "the opinion" true c.factIds [] o.steps
+
+/-- A response is a position, like a vote: its reasoning and the evidence it rests on. -/
+def checkResponse (revision : Nat) (r : Response) : List String :=
+  (if r.revision = revision then [] else [s!"this is revision {revision} of the opinion, not revision {r.revision}"]) ++
+  (if r.reason.isEmpty then
+    ["a response needs its reasoning: why the judge joins, concurs in the judgment only, or dissents"] else []) ++
+  (if r.evidence.isEmpty then ["a response needs evidence: the pinned sources it relied on or checked"] else []) ++
+  r.evidence.flatMap (checkSource "the response")
+
 /-- The slot names a refutation some judge filed this round. -/
 def slotValid (fs : List Filing) (sl : Slot) : Bool :=
   fs.any (fun f => f.judge == sl.judge && 1 ≤ sl.index && sl.index ≤ f.refutations.length)
