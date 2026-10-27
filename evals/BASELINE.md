@@ -6,6 +6,79 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
+## Challenges (plan 029), run 2026-10-27
+
+The first run of `evals/challenges/`: each case played through the panel in `CHALLENGE.md`, with a simulated user
+following the case's `user.md`, and answered three times by a single agent for comparison. Everything ran on
+Claude Sonnet 5.5 (one pilot of `urborg-still-swamps` on Opus 5.5 also refuted it, at 738k tokens). The first six
+cases ran with seven judges; the panel was then cut to five (#14), and the last three ran with five. **Nine of
+the ten cases ran; `multiplayer-match-ends-at-time` was held** because it would meet the same wall as
+`multiplayer-match-who-chooses`, below.
+
+| Case                                 | Expected   | Panel (judges)         | Rounds | Single agents ×3 | Panel tokens | Singles ×3 |
+| ------------------------------------ | ---------- | ---------------------- | ------ | ---------------- | ------------ | ---------- |
+| `urborg-still-swamps`                | refuted    | refuted ✓ (7)          | 1      | refuted ×3       | 738k         | 224k       |
+| `deathtouch-trample-full-toughness`  | refuted    | refuted ✓ (7)          | 1      | refuted ×3       | 730k         | 218k       |
+| `humility-always-wins`               | refuted    | refuted ✓ (7)          | 1      | refuted ×3       | 897k         | 231k       |
+| `summoning-sickness-all-permanents`  | refuted    | refuted ✓ (7)          | 1      | refuted ×3       | 1.01M        | 219k       |
+| `extra-card-regular-rel-game-loss`   | refuted    | refuted ✓ (7)          | 3      | refuted ×3       | 2.14M        | 233k       |
+| `forged-quote`                       | refuted    | **open** ✗ (7)         | 4      | refuted ×3       | 3.29M        | 237k       |
+| `multiplayer-match-who-chooses`      | introduced | **refuted** ✗ (5)      | 4 + vote | open ×3        | 2.49M        | 231k       |
+| `magar-aftermath`                    | open       | **refuted** ✗ (5)      | 4 + vote | refuted ×3     | 0.85M        | 265k       |
+| `commander-tax-free-first-recast`    | house-rule | house-rule ✓ (5)       | 3 + vote | refuted ×3     | 1.99M        | 220k       |
+
+Panel tokens include the clerk, the simulated user and every judge, including refiled filings. A single agent
+costs about 75k tokens, so the panel cost 10 to 44 times as much.
+
+### What it shows
+
+- **The panel did not beat a single agent.** It reached the expected outcome in 6 of 9 cases; the single agents'
+  majority did in 6 or 7 (it depends on how `commander-tax` is read, and on whether the expected answers for
+  `magar-aftermath` and `who-chooses` are right). Where they disagreed, the single agents were right once
+  (`forged-quote`) and the panel never was. On the five easy cases both were right every time, and the panel's cost
+  bought nothing a single agent didn't deliver.
+- **Starting an agent costs about 60k tokens before it does anything:** a simulated user that made one tool call
+  cost 61k tokens. So the panel's cost is its agent count, not its depth of thought, which is why the judges were
+  cut from seven to five (#14).
+- **The judges mostly find the same thing.** On the one-round cases every judge attacked the same step and cited
+  the same two sources (the Urborg ruling and CR 613.8), whatever their lens.
+
+### What went wrong, and what each failure was
+
+1. **Gap rules can't be introduced** (`who-chooses`, and so `ends-at-time`). All five judges voted convinced after
+   four rounds, and the core still refused the rule: its tie-break steps are the rule's own new content, which has
+   no official source, and the guard refuses an unsourced assumption. A rule that fills a gap is new content
+   by definition, so as built no gap rule can ever be introduced. This is a design flaw. The proposed fix is a
+   separate kind of step, a *stipulation*, that is the rule's declared new content and what the judges vote on,
+   while factual steps still need sources.
+2. **A case can stay `open` when it should be refuted** (`forged-quote`). The simulated user restated an unsourced
+   claim for four rounds; all 22 refutations were verified and none answered, and the cap sent it to `open` after
+   3.29M tokens. When no standing refutation has been answered with a sourced rebuttal, `refuted` is the honest
+   outcome, and it could be reached after the first such round.
+3. **`magar-aftermath` came out `refuted`, not `open`, on both the panel (all five judges not convinced) and every
+   single agent.** Either the expected answer is wrong (the judges cite CR 707.12 and the aftermath ruling) or the
+   panel and the agents share a blind spot. Settling it needs a human judge, so treat it as unresolved.
+4. **`challenge.py trace` rejected a house rule's rule file** (it expected every rule file to belong to an
+   introduced challenge), so the grader marked `commander-tax` wrong. The outcome was right.
+5. **Prompt gotchas the judges kept hitting**, each costing a refused filing: premises written as bare numbers
+   instead of `F1`/`S1`/`C1`; quoting a rule's `Example:` paragraph or a section heading, which isn't in the pinned
+   text; an Oracle excerpt that included the type line; a `fix` reply with the revised case nested too deep; and a
+   revised case with no `open_questions`.
+
+### Caveats
+
+- **The runs aren't perfectly controlled.** Seven judges ran the first six cases and five ran the last three, so
+  the comparison of five against seven is confounded with the case type. The five-judge runs of `who-chooses` and
+  `commander-tax` (and the start of `magar`) had no MTR, IPG or JAR, because the checkout lacked the downloaded
+  documents; this was fixed during the run.
+- **The simulated user doesn't follow `user.md` closely.** It was told to rebut once; it usually conceded
+  everything, and twice narrowed its own case.
+- **One Urborg run was filed twice** by mistake; the record shows the version that counted, and the orchestrator's
+  report described the other.
+- **Per-role token rows are approximate:** agents' usage arrives in notifications, and a few rows were mapped by order.
+- The full outputs (records, filings, ledgers, reports) are kept outside the repository in
+  `bishop-and-barrister-workspace/challenges-2` (seven judges) and `challenges-3` (five).
+
 ## Iteration 8 (current): phase 3, one file per format
 
 Run on 2026-10-26 on branch `phase-3-formats`. `reference/formats.md` became `reference/formats/`: one file per
