@@ -20,8 +20,9 @@ here with the skill's history on 2026-10-25. The number 028 is kept from there.
   the user's machine.
 - Git is the record, so every ruling, decision and source has a traceable history, much like an amended
   statute. SQLite is only a search index, rebuilt from the git files. Large files go in a local object store.
-- Sync across the user's own devices is optional: a private git remote for the records, and the user's own
-  RustFS bucket for the large files. A server shared by several users is out of scope.
+- Sync across the user's own devices is optional, through one store: the user's own RustFS bucket holds both
+  the record (as git bundles) and the large files. No git host, no remote database. A server shared by several
+  users is out of scope.
 - `pypdf` is added, to read the tournament documents.
 - Tournament procedure and penalties are in scope.
 - The project is named **Bishop & Barrister** and licensed under **Apache-2.0**, with the Fan Content statement in
@@ -323,26 +324,54 @@ Lines, 5.4 MB on 2026-10-25) and loads it: rulings with `source: "wotc"` as offi
 `source: "scryfall"` as level 4. It refreshes when Scryfall publishes a new file (daily). The file is downloaded
 on each user's machine, never shipped with the skill: Scryfall's terms forbid republishing its data as is.
 
-**Sync across the user's own devices (optional).** Two remotes, both the user's own, set in
-`~/.claude/bishop-and-barrister/config.toml`:
+**Sync across the user's own devices (optional).** One private store, the user's own RustFS bucket, holds both
+the record and the object store. No git host (GitHub, GitLab) and no remote database: the user runs one
+self-hosted service and nothing leaves it. (Decided 2026-10-26; this replaced a private git remote.)
 
-- **A private git remote** (GitHub, GitLab, a self-hosted server) for the record. `judge.py sync` pulls with a
-  rebase, then pushes. One file per ruling and append-only deliberation files keep conflicts rare. A real
-  conflict on the same ruling is shown to the user to settle; it is never merged by guesswork.
-- **A RustFS bucket** for the object store. RustFS is a self-hosted, S3-compatible object store (Apache-2.0),
-  and the README shows how to run one. `sync` uploads and downloads objects by hash, so nothing is copied
-  twice. This keeps the archived pages, which cannot be downloaded again, and old document releases after
-  Wizards stops hosting them. The skill speaks plain S3, so any S3-compatible store works; RustFS is the one
-  documented and tested. Its maturity is still settling (reports disagree on whether 1.0 is stable), so phase 4
-  checks its own releases page first.
-- **No remote database.** Each device rebuilds its own index from the synced record.
+RustFS is a self-hosted, S3-compatible object store (Apache-2.0). Version 1.0.0 was released on 2026-09-16 and
+1.0.4 on 2026-10-25, with steady bug-fix releases; an authentication bypass in its internal RPC was reported and
+patched, so the README asks for 1.0.4 or later. The skill speaks plain S3, so any S3-compatible store works;
+RustFS is the one documented and tested.
 
-`boto3` is needed only by users who turn on the bucket. Nothing here is designed for several users sharing one
-server; it may happen to work, but it is out of scope.
+| In the bucket                 | What                                                                                   |
+| ----------------------------- | -------------------------------------------------------------------------------------- |
+| `record/<device>.bundle`      | That device's whole git history as a git bundle. Each device writes only its own key  |
+| `objects/<sha256>`            | The object store, each file named by its hash, uploaded once                          |
 
-**claude.ai.** Its sandbox does not keep files between sessions. Without sync, the index is rebuilt each session
-and the user's rulings are forgotten. With sync, and if the sandbox can reach the remotes, each session clones
-the record, rebuilds the index, and fetches objects only when a ruling needs one.
+`judge.py sync`:
+
+1. Downloads every other device's bundle and fetches it as `refs/remotes/<device>/main`.
+2. **Merges** each one into the local history. It merges rather than rebases, so a commit keeps one hash on
+   every device and its `Drafted-by` / `Decided-by` trailers stay as written. One file per ruling and
+   append-only deliberation files keep conflicts rare. A real conflict on the same ruling stops the sync and is
+   shown to the user to settle; it is never merged by guesswork.
+3. Uploads its own bundle, replacing its previous one. Because no two devices write the same key, no locking
+   or conditional writes are needed.
+4. Uploads the objects the bucket lacks and downloads the ones this device lacks, by hash.
+5. Rebuilds the index. CR release tags travel in the bundles too.
+
+The device name defaults to the host name. Bundles are small: the record is text, a few kilobytes per ruling.
+
+**Settings and secrets.** The bucket's endpoint, name and the device name go in
+`~/.claude/bishop-and-barrister/config.json` (JSON, since `tomllib` needs Python 3.11 and the skill supports
+3.10). That file is gitignored, because every `judge.py` change runs `git add -A` in the record folder.
+Credentials never go in it: they come from `BISHOP_AND_BARRISTER_S3_ACCESS_KEY` and
+`BISHOP_AND_BARRISTER_S3_SECRET_KEY`, or a named profile in `~/.aws/credentials`.
+
+**No new dependency.** `sync` signs its S3 requests (AWS Signature Version 4) with the standard library, and
+uses only GET, PUT, HEAD and LIST. `boto3` is not needed.
+
+**Keep every document version.** For the bucket to be worth having, the object store must hold what can't be
+downloaded again. So each tournament document release (and each CR release) is also stored in `objects/` by
+hash, and a citation records the hash of the release it used, not only the section's text hash. A ruling's
+cited text can then be shown even after Wizards replaces the document. Archived web pages (the trusted-sources
+"keep a copy" rule) belong in the object store too, but are a separate piece of work.
+
+Nothing here is designed for several users sharing one bucket; it may happen to work, but it is out of scope.
+
+**claude.ai.** Its sandbox does not keep files between sessions, and syncing there would mean putting bucket
+keys into the sandbox. Phase 4 leaves claude.ai out; whether its sandbox can reach a user's own RustFS, and
+whether that is wise, is a separate check.
 
 ### 5. The judge
 
@@ -358,7 +387,7 @@ the record, rebuilds the index, and fetches objects only when a ruling needs one
 | `judge.py show <id>`           | One ruling with its citations and deliberation; `--agent` for the compact agent form                                                          |
 | `judge.py recheck`             | Mark `needs-recheck` every ruling whose cited rule text or Oracle text has changed                                                            |
 | `judge.py index`               | Rebuild the SQLite search index from the git record and the downloaded official rulings                                                       |
-| `judge.py sync`                | Pull and push the git remote, and upload and download objects in RustFS, if configured                                                        |
+| `judge.py sync`                | Merge the other devices' git bundles from the RustFS bucket, upload this device's, and sync objects by hash, if configured                   |
 
 `sources.py` runs `recheck` after it installs a new document. Rule numbers alone are not enough to spot a
 change, because rules get renumbered; the hash of each cited rule's text is.
@@ -397,7 +426,8 @@ SKILL.md gains the judge procedure, used for every rules question:
   Wizards of the Coast, © Wizards of the Coast LLC.
 - **What ships:** the scripts, SKILL.md and the format files (our own summaries, with sources). Nothing from
   Wizards or Scryfall: each user's copy downloads those.
-- **Dependencies:** `git` and `pypdf` always; `boto3` only for the RustFS bucket.
+- **Dependencies:** `git` and `pypdf`. The RustFS bucket needs nothing more: S3 requests are signed with the
+  standard library.
 
 ### 7. Trusted sources when nothing local answers
 
@@ -468,7 +498,7 @@ of the skill.
 | 1     | `judge.py` with the git record, the SQLite index and the object store, pre-filled from Scryfall's bulk rulings; the judge procedure; `card.py` prints each ruling's source |
 | 2     | `sources.py` with the MTR, IPG and JAR (`pypdf`); `lookup.py --doc`; `recheck` after each update                                                                           |
 | 3     | `reference/formats/` split, with per-file source versions                                                                                                                  |
-| 4     | Optional sync: a private git remote for the record, a RustFS bucket for the object store (after checking RustFS's release status)                                          |
+| 4     | Optional sync through the user's RustFS bucket: the record as one git bundle per device, merged on `sync`; the object store by hash; every document release kept by hash                                          |
 | 5     | The open-source release: the tip link (licence, disclaimer and repository done)                                                                                            |
 
 Phase 1 comes first, so rulings start piling up while the rest is built.
