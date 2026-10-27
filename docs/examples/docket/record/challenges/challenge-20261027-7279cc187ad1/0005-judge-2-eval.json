@@ -1,0 +1,65 @@
+{
+  "v": 1,
+  "seq": 5,
+  "prev": "32df77c1b465ff6c43f3e63ad73d7c885f3acf9cd2a5deecdcd0fc2ca54d01ae",
+  "actor": "judge-2",
+  "device": "eval",
+  "time": "2026-10-27T20:13:07Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [
+    {
+      "target": 5,
+      "ground": "counterexample",
+      "argument": "The stipulation in C5 (and C9's reuse of it) names 'the player who lost first' as chooser in any multiplayer Commander match whose previous game had a winner and several players who lost. It does not exclude team games. CR 104.2c settles that in a multiplayer game between teams a player who lost earlier can still end up a winner, because every member of the winning team wins even if they had previously lost. Under C5 the first player to lose, who may be on the winning team and is therefore a winner of the previous game, would choose who goes first. CR 103.1 gives that choice to the loser of the previous game, and a winner is not one. CR 903.2 makes the Free-for-All variant only the default multiplayer setup, so team setups are not outside 'multiplayer Commander'. The stipulation is overbroad and, on those facts, contradicts 103.1.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "F1"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.2c",
+            "excerpt": "Each player on the winning team wins the game, even if one or more of those players had previously lost that game.",
+            "text_sha256": "7c602b36a136b9ed7e6a54d52205594ae1ed14eabfe261426a381c0476898551"
+          },
+          "assumption": false,
+          "conclusion": "In a multiplayer team game, a player who lost first can be a winner of that game, because that player's team went on to win."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "F1",
+            "C2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "903.2",
+            "excerpt": "The default multiplayer setup is the Free-for-All variant",
+            "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+          },
+          "assumption": false,
+          "conclusion": "Free-for-All is only the default setup of a multiplayer Commander game, so multiplayer Commander matches within the scope of C5 can use other setups, including team games, and the stipulation's scope covers them."
+        },
+        {
+          "id": 3,
+          "premises": [
+            "S1",
+            "S2",
+            "C5"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "the loser of the previous game chooses who takes the first turn",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "In such a team game C5 gives the choice to the first player to lose, who won the previous game under 104.2c and is not its loser, so C5 contradicts 103.1's allocation of the choice to the loser."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

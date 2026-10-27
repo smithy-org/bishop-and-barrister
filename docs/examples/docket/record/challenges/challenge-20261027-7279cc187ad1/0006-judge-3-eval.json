@@ -1,0 +1,51 @@
+{
+  "v": 1,
+  "seq": 6,
+  "prev": "db1a16e7cf06a706476972a41ca5fe5f9dfe0dccb089c1b656d1fea86bad784c",
+  "actor": "judge-3",
+  "device": "eval",
+  "time": "2026-10-27T20:13:08Z",
+  "type": "file",
+  "round": 1,
+  "refutations": [
+    {
+      "target": 6,
+      "ground": "counterexample",
+      "argument": "Simulate a three-player Commander match over three games. Game 1: P1 loses first, then P2 loses, P3 wins; C5 makes P1 the chooser for game 2. Game 2: P1, who chose, plays and wins: P2 and P3 lose in the same state-based-action check (for example both at 0 life, 704.3), so F4's simultaneous-loss branch applies. C6 then says 'the player who made the choice in the previous game chooses again', and that player is P1, the winner of game 2. So the winner chooses who takes the first turn of game 3, although 103.1 gives that choice to the loser, and the winner cannot be the loser (104.2a: a player still in the game wins; the losers have left). C7 repairs only the case where the previous chooser is not in the game or match; it does not cover a previous chooser who is present and won. The same hole opens whenever the previous chooser is the sole survivor. The result contradicts 103.1's loser-chooses principle that the whole proposal builds on, and a winner who can pick the start of the next game gains an advantage the loser-chooses rule exists to remove.",
+      "steps": [
+        {
+          "id": 1,
+          "premises": [
+            "C6",
+            "F4",
+            "F2"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "104.2a",
+            "excerpt": "A player still in the game wins the game if that player’s opponents have all left the game.",
+            "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+          },
+          "assumption": false,
+          "conclusion": "When the two losers lose simultaneously, the remaining third player is the winner; if that player was the previous game's chooser, C6 hands the next choice to the winner of the previous game."
+        },
+        {
+          "id": 2,
+          "premises": [
+            "S1",
+            "C6"
+          ],
+          "source": {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          "assumption": false,
+          "conclusion": "103.1 gives the choice to a loser of the previous game, never the winner, so C6 gives a wrong answer in this situation, which 103.1 settles, and C7 does not cover it."
+        }
+      ]
+    }
+  ],
+  "concedes": ""
+}

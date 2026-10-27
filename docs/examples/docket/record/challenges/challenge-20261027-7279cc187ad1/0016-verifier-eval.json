@@ -1,0 +1,20 @@
+{
+  "v": 1,
+  "seq": 16,
+  "prev": "327adb1f22b75f4c2a682fced9c80fc0eb0a1f1b166801f6b96e1d413bbe7f14",
+  "actor": "verifier",
+  "device": "eval",
+  "time": "2026-10-27T20:15:58Z",
+  "type": "report",
+  "round": 2,
+  "stage": "attack",
+  "passed": true,
+  "level1_conflict": false,
+  "standing": [
+    {
+      "judge": 3,
+      "index": 1
+    }
+  ],
+  "notes": []
+}

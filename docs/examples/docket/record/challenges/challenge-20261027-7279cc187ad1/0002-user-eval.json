@@ -1,0 +1,166 @@
+{
+  "v": 1,
+  "seq": 2,
+  "prev": "eb5a76fa2d4995399c291247127b9ad62f2505c915b2c814622f15fe729257c2",
+  "actor": "user",
+  "device": "eval",
+  "time": "2026-10-27T20:11:36Z",
+  "type": "edit",
+  "case": {
+    "facts": [
+      {
+        "id": 1,
+        "text": "It is a Commander match of several games with three players (the rule is also proposed for four-player pods)."
+      },
+      {
+        "id": 2,
+        "text": "In the previous game, two of the three players lost the game and one player won it (the user: 'two of us lost')."
+      },
+      {
+        "id": 3,
+        "text": "In the first-loser case, the two losing players did not lose at the same moment: one of them lost first, 'lost first' meaning the moment the loss happens, not the moment of leaving."
+      },
+      {
+        "id": 4,
+        "text": "In the simultaneous-loss case, both losing players lost at the same moment, in one state-based-action check, so neither lost first."
+      },
+      {
+        "id": 5,
+        "text": "In the draw case, the previous game was a draw, with no winner."
+      }
+    ],
+    "open_questions": [
+      "In a four-player pod, if two players lose simultaneously first and a third loses later, does the simultaneous-loss branch apply (nobody lost first) or does one of the simultaneous pair count as having lost first? The user's words do not say.",
+      "In the simultaneous-loss branch, if the previous game's chooser is not in the game or match and the winner is also not in the match, who picks? (The user would accept the rule without the winner clause.)",
+      "In the first-loser branch, if every loser has left the match, who chooses? The user's words do not say.",
+      "In the first game of a match, 'the player who made the choice' is whoever the players' agreed method picked as chooser; is that the player meant for a later simultaneous loss or draw in game 2? The user's words do not say."
+    ],
+    "rule": "In a multiplayer Commander match of several games, when the previous game had a winner and several losing players, the player who lost first (the moment the loss happens) and is still in the match chooses who takes the first turn; if none lost first because the losers lost simultaneously, the player who made the choice in the previous game chooses again, or, if that player is not in the game or match, the winner of the previous game picks which of the simultaneous losers chooses; if the previous game was a draw, whoever actually made the choice in that game chooses again, whether under rule 103.1 or this rule.",
+    "applies_when": [
+      "a multiplayer Commander match of several games, the previous game having a winner and several losing players who lost at different moments",
+      "a multiplayer Commander match of several games, the previous game having a winner and losing players who lost at the same moment (one state-based-action check)",
+      "a multiplayer Commander match of several games, the previous game having been a draw"
+    ],
+    "challenges": "none: a gap",
+    "steps": [
+      {
+        "id": 1,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "In a match of several games the chooser of the first turn is described as the loser of the previous game, a single player."
+      },
+      {
+        "id": 2,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "903.2",
+          "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+          "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+        },
+        "assumption": false,
+        "conclusion": "A three-player Commander game is a multiplayer game, and no Commander rule is quoted here that replaces 103.1's choice of who takes the first turn."
+      },
+      {
+        "id": 3,
+        "premises": [
+          "F2",
+          "F3"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        },
+        "assumption": false,
+        "conclusion": "Players can lose and leave a multiplayer game one after another while the game continues, so two losers can be ordered by when each lost."
+      },
+      {
+        "id": 4,
+        "premises": [
+          "F2",
+          "S1",
+          "S3"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "the loser of the previous game chooses who takes the first turn",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "With two losing players, 103.1 names 'the loser' as if there were one and gives no way to pick which of the two chooses, whether they lost at different moments or at the same moment: this is a gap."
+      },
+      {
+        "id": 5,
+        "premises": [
+          "F1",
+          "F2",
+          "F3",
+          "S2",
+          "S4"
+        ],
+        "stipulation": true,
+        "conclusion": "Stipulated new rule, limited to multiplayer Commander matches (including four-player pods): when the previous game had a winner and several players lost at different moments, the player who lost first, meaning at the moment the loss happens and not the moment of leaving, is 'the loser of the previous game' for 103.1 and chooses who takes the first turn; if that player has left the match, the next-earliest loser still present chooses."
+      },
+      {
+        "id": 6,
+        "premises": [
+          "F1",
+          "F2",
+          "F4",
+          "S2",
+          "S4"
+        ],
+        "stipulation": true,
+        "conclusion": "Stipulated new rule, limited to multiplayer Commander matches: when the previous game had a winner and the losing players lost at the same moment (one state-based-action check), no one lost first, and the player who made the choice in the previous game chooses again."
+      },
+      {
+        "id": 7,
+        "premises": [
+          "F4",
+          "S6"
+        ],
+        "stipulation": true,
+        "conclusion": "Stipulated new rule, limited to multiplayer Commander matches: in that simultaneous-loss case, if the player who made the choice in the previous game is not in the game or match anymore, the winner of the previous game picks which of the simultaneous losers chooses."
+      },
+      {
+        "id": 8,
+        "premises": [
+          "F5"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "If the previous game was a draw, 103.1 has the player who made the choice in that game make the choice in this game."
+      },
+      {
+        "id": 9,
+        "premises": [
+          "F1",
+          "F5",
+          "S2",
+          "S8"
+        ],
+        "stipulation": true,
+        "conclusion": "Stipulated clarification, limited to multiplayer Commander matches: in a draw, 'the player who made the choice in that game' is whoever actually made the choice in the drawn game, whether it was made under 103.1 or under this rule, and that player chooses again."
+      }
+    ]
+  },
+  "words": "Simultaneous loss: no one lost first; the player who made the choice in the previous game chooses again; if that player is not in the game or match anymore, the winner picks which simultaneous loser chooses (I'd accept just the first half). Lost first means the moment the loss happens. Multiplayer Commander only, including four-player pods. If the first loser left the match, the next-earliest loser still present chooses. Draw: whoever actually made the choice in the drawn game chooses again. This is a Comprehensive Rules gap-filler proposal, not a house rule."
+}

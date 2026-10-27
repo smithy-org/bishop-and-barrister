@@ -111,45 +111,72 @@ def vote(evt):
             f'<details><summary>Evidence cited ({len(evt["evidence"])})</summary><ul class="evid">{ev_html}</ul></details></article>')
 
 
-# split events by round
-rounds = {1: [], 2: [], 3: []}
-for x in ev[3:27]:
-    rounds[x["round"]].append(x)
-votes = ev[27:32]
+# group events by type; rounds by their round number
+openev = next(x for x in ev if x["type"] == "open")
+brief = next(x for x in ev if x["type"] == "brief")
+edits = [x for x in ev if x["type"] == "edit"]
+confirm = next(x for x in ev if x["type"] == "confirm")
+case = (edits[-1] if edits else brief)["case"]
+round_nums = sorted({x["round"] for x in ev if x["type"] in ("file", "report", "answer")})
+rounds = {r: [x for x in ev if x["type"] in ("file", "report", "answer") and x["round"] == r] for r in round_nums}
+votes = [x for x in ev if x["type"] == "vote"]
+opinions = [x for x in ev if x["type"] == "opinion"]
+responds = [x for x in ev if x["type"] == "respond"]
+opinion = final.get("opinion")
 
-openev, brief, confirm = ev[0], ev[1], ev[2]
-case = brief["case"]
-rule_stages = [("As the clerk filed it", case["rule"])]
-for r in (1, 2, 3):
-    a = [x for x in rounds[r] if x["type"] == "answer"][0]
-    rule_stages.append((f"After the user's answer to round {r}", a["case"]["rule"]))
+rule_stages = [("As the clerk filed it", brief["case"]["rule"])]
+if edits:
+    rule_stages.append(("After the user's corrections, before the judges", edits[-1]["case"]["rule"]))
+for r in round_nums:
+    a = [x for x in rounds[r] if x["type"] == "answer"]
+    if a and a[0].get("case"):
+        rule_stages.append((f"After the user's answer to round {r}", a[0]["case"]["rule"]))
 
 counts = {r: sum(len(x["refutations"]) for x in rounds[r] if x["type"] == "file") for r in rounds}
 total_ref = sum(counts.values())
+STANCE = {"join": "Joins", "concur": "Concurs", "dissent": "Dissents"}
+
+
+def respond(evt):
+    k = int(evt["actor"].split("-")[1])
+    ev_html = "".join(f'<li>{src(x)}<br><q>{e(x["excerpt"])}</q></li>' for x in evt.get("evidence", []))
+    return (f'<article class="filing vote"><div class="filing-head">{judge_tag(evt["actor"])}<span class="when">{hhmmss(evt["time"])} &middot; seq {evt["seq"]}</span></div>'
+            f'<div class="rhead"><span class="badge b-convinced">{STANCE.get(evt["stance"], evt["stance"])}</span><span class="target">revision {evt["revision"]}</span></div>'
+            f'<p>{e(evt["reason"])}</p><details><summary>Evidence cited ({len(evt.get("evidence", []))})</summary><ul class="evid">{ev_html}</ul></details></article>')
+
 
 docket_rows = ""
+LABEL = {"open": "Petition opened", "brief": "Clerk's brief", "edit": "User corrects the brief", "confirm": "User confirms the brief",
+         "file": "Judge's filing", "report": "Verifier's report", "answer": "User's answer", "vote": "Judge's settling position",
+         "opinion": "Opinion of the Court drafted", "respond": "Judge answers the opinion"}
 for x in ev:
     t = x["type"]
-    label = {"open": "Petition opened", "brief": "Clerk's brief", "confirm": "User confirms the brief",
-             "file": "Judge's filing", "report": "Verifier's report", "answer": "User's answer", "vote": "Judge's settling position"}[t]
     detail = ""
     if t == "file":
         detail = f'round {x["round"]}: ' + (f'{len(x["refutations"])} refutation(s)' if x["refutations"] else "concedes")
     elif t == "report":
         detail = f'round {x["round"]}, {x["stage"]}: ' + (f'{len(x["standing"])} stand' if x["standing"] else "none stand")
     elif t == "answer":
-        detail = f'round {x["round"]}: {len(x["replies"])} replies, case revised'
+        detail = f'round {x["round"]}: {len(x["replies"])} replies' + (", case revised" if x.get("case") else "")
     elif t == "vote":
-        detail = "convinced"
-    docket_rows += f'<tr><td>{x["seq"]}</td><td>{hhmmss(x["time"])}</td><td>{e(x["actor"])}</td><td>{label}</td><td>{e(detail)}</td></tr>'
+        detail = "convinced" if x["convinced"] else "not convinced"
+    elif t == "opinion":
+        detail = f'revision {x["revision"]}'
+    elif t == "respond":
+        detail = x["stance"]
+    docket_rows += f'<tr><td>{x["seq"]}</td><td>{hhmmss(x["time"])}</td><td>{e(x["actor"])}</td><td>{LABEL[t]}</td><td>{e(detail)}</td></tr>'
 
+ORD = {1: "First", 2: "Second", 3: "Third", 4: "Fourth"}
+part = 2
 round_html = ""
-titles = {1: "First attack", 2: "Second attack", 3: "Third attack"}
-for r in (1, 2, 3):
+for r in round_nums:
     items = rounds[r]
-    conceded = sum(1 for x in items if x["type"] == "file" and not x["refutations"])
-    round_html += (f'<section class="part" id="round{r}"><h2><span class="pn">Part {r + 2}</span> {titles[r]}</h2>'
-                   f'<p class="lede">{counts[r]} refutations filed, {conceded} judge(s) conceded. Each judge reads the clerk&rsquo;s case through their own lens and files either a sourced refutation or a concession with evidence.</p>')
+    part += 1
+    filed = [x for x in items if x["type"] == "file"]
+    conceded = sum(1 for x in filed if not x["refutations"])
+    targeted = " This was a targeted round: only the judges whose objections were answered looked again, and the others stand on their earlier concessions." if len(filed) < 5 else ""
+    round_html += (f'<section class="part" id="round{r}"><h2><span class="pn">Part {part}</span> {ORD.get(r, str(r) + "th")} attack</h2>'
+                   f'<p class="lede">{len(filed)} judge(s) filed: {counts[r]} refutations and {conceded} concession(s). Each judge reads the case through their own lens and files a sourced refutation or a concession with evidence.{targeted}</p>')
     for x in items:
         if x["type"] == "file":
             round_html += filing(x)
@@ -163,10 +190,26 @@ stage_html = ""
 for i, (lab, txt) in enumerate(rule_stages):
     stage_html += f'<div class="rulestage{" last" if i == len(rule_stages) - 1 else ""}"><div class="rlabel">{e(lab)}</div><p>{e(txt)}</p></div>'
 
-facts = "".join(f'<li><b>F{f["id"]}</b> {e(f["text"])}</li>' for f in case["facts"])
-oq = "".join(f"<li>{e(q)}</li>" for q in case["open_questions"])
+facts = "".join(f'<li><b>F{f["id"]}</b> {e(f["text"])}</li>' for f in brief["case"]["facts"])
+oq = "".join(f"<li>{e(q)}</li>" for q in brief["case"]["open_questions"])
 vote_html = "".join(vote(v) for v in votes)
+concession_note = ""
+if votes and len(votes) < 5:
+    concession_note = f'<div class="note" style="background:var(--info-bg);border-left-color:var(--info)">Only {len(votes)} judges needed to take a position here. The others had already settled by conceding, with evidence, in a round where nobody filed a refutation (their concessions are in the rounds above).</div>'
+part_settle, part_op, part_judg = part + 1, part + 2, part + 3
+edit_html = ""
+for x in edits:
+    edit_html += (f'<article class="answer"><div class="filing-head"><span class="judge user">The user</span><span class="lens">corrects the brief</span><span class="when">{hhmmss(x["time"])} &middot; seq {x["seq"]}</span></div>'
+                  f'<p class="words">{e(x["words"])}</p></article>')
 
+op_html = ""
+for o in opinions:
+    op_html += (f'<article class="filing"><div class="filing-head">{judge_tag(o["actor"])}<span class="lens">drafts the Opinion of the Court, revision {o["revision"]}</span><span class="when">{hhmmss(o["time"])} &middot; seq {o["seq"]}</span></div>'
+                f'<div class="box rule"><h4>Holding</h4><p>{e(o["holding"])}</p></div>{steps_html(o["steps"], "Opinion step")}</article>')
+resp_html = "".join(respond(x) for x in responds)
+joined = len(opinion["joined"]) if opinion else 0
+conc_n = len(opinion["concurrences"]) if opinion else 0
+diss_n = len(opinion["dissents"]) if opinion else 0
 page = f"""<title>Case File: Who Chooses</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Libre+Franklin:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -267,11 +310,11 @@ footer{{padding-block:30px 48px;color:var(--muted);font-size:.85rem}}
 <div><div class="k">Provision challenged</div><div class="v">Comprehensive Rules 103.1</div></div></div>
 <div class="disp"><span class="stamp">Rule introduced</span>
 <div class="facts-row"><span><b>Docket</b> {e(final["id"])}</span><span><b>Opened</b> {hhmmss(openev["time"])}</span><span><b>Closed</b> {hhmmss(ev[-1]["time"])}</span><span><b>Level</b> {final["level"]}</span></div></div>
-<div class="facts-row" style="margin-top:8px"><span><b>{len(ev)}</b> events</span><span><b>3</b> attack rounds and a settling pass</span><span><b>{total_ref}</b> refutations, all verified</span><span><b>5</b> judges, unanimous</span></div>
+<div class="facts-row" style="margin-top:8px"><span><b>{len(ev)}</b> events</span><span><b>{len(round_nums)}</b> attack rounds</span><span><b>{total_ref}</b> refutations, all verified</span><span><b>{joined}</b> of 5 judges joined the opinion</span></div>
 </div></header>
 <main class="wrap">
-<div class="note"><b>Read this first.</b> This is a recorded evaluation run, not a real dispute. The petitioner was an AI playing a user, the clerk and the five judges were separate AI agents (Sonnet 5.5), and nobody has adopted the rule below. The words on this page are the recorded events, lightly laid out. Nothing is paraphrased except the headings.</div>
-<nav class="toc"><a href="#petition">Petition</a><a href="#brief">Clerk&rsquo;s brief</a><a href="#round1">Round 1</a><a href="#round2">Round 2</a><a href="#round3">Round 3</a><a href="#settling">Settling</a><a href="#judgment">Judgment</a><a href="#docket">Docket</a></nav>
+<div class="note"><b>Read this first.</b> This is a recorded evaluation run, not a real dispute. The petitioner was an AI playing a user, the clerk and the five judges were separate AI agents (Sonnet 5.5), and nobody has adopted the rule below. The words on this page are the recorded events, laid out. Nothing is paraphrased except the headings.</div>
+<nav class="toc"><a href="#petition">Petition</a><a href="#brief">Clerk&rsquo;s brief</a>{"".join(f'<a href="#round{r}">Round {r}</a>' for r in round_nums)}<a href="#settling">Settling</a><a href="#opinion">Opinion</a><a href="#judgment">Judgment</a><a href="#docket">Docket</a></nav>
 
 <section class="part" id="petition"><h2><span class="pn">Part 1</span> The petition</h2>
 <p class="lede">Filed by the user, in their own words. This is the only thing a person writes; everything after it is the process.</p>
@@ -280,28 +323,32 @@ footer{{padding-block:30px 48px;color:var(--muted);font-size:.85rem}}
 <section class="part" id="brief"><h2><span class="pn">Part 2</span> The clerk&rsquo;s brief</h2>
 <p class="lede">The clerk turns the petition into a case in the proof standard: numbered facts, the rule asked for, when it applies, what it challenges, and a chain of steps that each cite one pinned source or say plainly that they are a stipulation. The judges then attack this document.</p>
 <div class="box"><h4>Facts</h4><ul style="list-style:none;padding:0">{facts}</ul></div>
-<div class="box rule"><h4>Proposed rule</h4><p>{e(case["rule"])}</p></div>
-<div class="box"><h4>Applies when</h4><ul>{"".join(f"<li>{e(a)}</li>" for a in case["applies_when"])}</ul><h4 style="margin-top:10px">What it challenges</h4><p style="margin:0">{e(case["challenges"])} <span class="lens">(No official answer exists, so this fills a gap. A gap rule must say so, and its gap-filling step is flagged a stipulation.)</span></p></div>
-<h3>The chain of steps</h3>{steps_html(case["steps"])}
+<div class="box rule"><h4>Proposed rule</h4><p>{e(brief["case"]["rule"])}</p></div>
+<div class="box"><h4>Applies when</h4><ul>{"".join(f"<li>{e(a)}</li>" for a in brief["case"]["applies_when"])}</ul><h4 style="margin-top:10px">What it challenges</h4><p style="margin:0">{e(brief["case"]["challenges"])} <span class="lens">(No official answer exists, so this fills a gap. A gap rule must say so, and its gap-filling step is flagged a stipulation.)</span></p></div>
+<h3>The chain of steps</h3>{steps_html(brief["case"]["steps"])}
 <h3>Questions the clerk left open for the petitioner</h3><div class="box"><ul>{oq}</ul></div>
+{edit_html}
 <article class="answer"><div class="filing-head"><span class="judge user">The user</span><span class="lens">confirms the brief</span><span class="when">{hhmmss(confirm["time"])} &middot; seq {confirm["seq"]}</span></div><p class="words">{e(confirm["words"])}</p></article>
 </section>
 
 {round_html}
 
-<section class="part" id="settling"><h2><span class="pn">Part 6</span> The judges settle</h2>
-<p class="lede">With no refutation standing, each judge says whether they are convinced, with reasoning and evidence. Introducing a rule needs all five. These are the recorded positions, in the order they were filed.</p>
-{vote_html}
-<div class="note" style="background:var(--info-bg);border-left-color:var(--info)">Judge 3&rsquo;s first position was refused by the program because one quote did not match the source. It was corrected and filed again (seq 31). That is the verifier doing its job.</div>
+<section class="part" id="settling"><h2><span class="pn">Part {part_settle}</span> The judges settle</h2>
+<p class="lede">With no refutation standing, each judge who has not already settled says whether they are convinced, with reasoning and evidence. These are the recorded positions, in the order they were filed.</p>
+{vote_html}{concession_note}
 </section>
 
-<section class="part" id="judgment"><h2><span class="pn">Part 7</span> Judgment</h2>
-<p class="lede">Five of five judges were convinced, no verified refutation stands, and the stipulation sits in a gap, so the program closes the case as <b>introduced</b>. Here is how the rule changed on the way.</p>
+<section class="part" id="opinion"><h2><span class="pn">Part {part_op}</span> The Opinion of the Court</h2>
+<p class="lede">A rule is introduced only by an opinion that all five judges join. One judge drafts it, with a holding and sourced steps. Each judge then joins it, concurs (right rule, different reasons) or dissents. A concurrence alone does not make it unanimous.</p>
+{op_html}{resp_html}
+</section>
+
+<section class="part" id="judgment"><h2><span class="pn">Part {part_judg}</span> Judgment</h2>
+<p class="lede">{joined} of 5 judges joined the opinion ({conc_n} concurrences, {diss_n} dissents), no verified refutation stands, and the stipulation sits in a gap, so the program closes the case as <b>introduced</b>. Here is how the rule changed on the way.</p>
 <h3>The rule, as it changed</h3>{stage_html}
 <h3>The rule as recorded</h3>
 <div class="box rule"><h4>Introduced at level {final["level"]}</h4><p>{e(final["rule"])}</p></div>
 <div class="box"><h4>Stipulation, carried with the rule</h4><p>{e(final["stipulations"][0])}</p></div>
-<div class="box"><h4>Opinion of the Court</h4><p>This run predates the opinion step (a pending change). It has the five settling positions above but no written opinion, no joins, concurrences or dissents. Those will appear here, in the same place, once that change merges.</p></div>
 <h3>Where the chain ends</h3><p class="hash">Final hash {e(final["final_hash"])}</p>
 </section>
 
@@ -310,7 +357,7 @@ footer{{padding-block:30px 48px;color:var(--muted);font-size:.85rem}}
 <div class="tablewrap"><table><thead><tr><th>Seq</th><th>Time</th><th>Actor</th><th>Event</th><th>Detail</th></tr></thead><tbody>{docket_rows}</tbody></table></div>
 </section>
 </main>
-<footer><div class="wrap">Source: <code>multiplayer-match-who-chooses</code>, second challenge eval run (consensus model), 2026-10-27. Built from the recorded event files.</div></footer>
+<footer><div class="wrap">Source: <code>{e(final["id"])}</code>, challenge eval run on the Opinion-of-the-Court model, 2026-10-27. Built from the recorded event files.</div></footer>
 """
 OUT.write_text(page, encoding="utf-8")
 print(len(page), "bytes")

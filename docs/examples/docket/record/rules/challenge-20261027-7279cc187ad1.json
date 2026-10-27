@@ -1,0 +1,587 @@
+{
+  "id": "challenge-20261027-7279cc187ad1",
+  "kind": "rule",
+  "level": 5,
+  "house_rule": false,
+  "state": "current",
+  "challenge": "challenge-20261027-7279cc187ad1",
+  "final_hash": "a9aafb42372da896b633ce40c2d20247f9273fb8990047f019b02ec87b6cc575",
+  "rule": "In a free-for-all (no teams) Commander match of several games, when the previous game had a winner and more than one losing player, the player who lost first in that game is 'the loser of the previous game' for 103.1 and chooses who takes the first turn; if several players lost at that same earliest moment, the winner of that game picks which of those players chooses. If the previous game was a draw, rule 103.1's draw sentence applies unchanged.",
+  "applies_when": [
+    "a free-for-all (no teams) multiplayer Commander match of several games",
+    "the previous game had a winner and two or more losing players",
+    "or the previous game was a draw"
+  ],
+  "challenges": "none: a gap",
+  "facts": [
+    {
+      "id": 1,
+      "text": "It is a Commander match of several games with three players, with no teams (free-for-all)."
+    },
+    {
+      "id": 2,
+      "text": "In the previous game, two of the three players lost the game and one player won it."
+    },
+    {
+      "id": 3,
+      "text": "The two losing players did not lose at the same moment: one of them lost first."
+    },
+    {
+      "id": 4,
+      "text": "The previous game was not a draw (it had a winner), in the case where the first-loser rule is wanted."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "premises": [
+        "F1"
+      ],
+      "source": {
+        "doc": "cr",
+        "ref": "103.1",
+        "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+        "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+      },
+      "assumption": false,
+      "conclusion": "In a match of several games the chooser of the first turn is described as the loser of the previous game, a single player."
+    },
+    {
+      "id": 2,
+      "premises": [
+        "F1"
+      ],
+      "source": {
+        "doc": "cr",
+        "ref": "903.2",
+        "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+        "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+      },
+      "assumption": false,
+      "conclusion": "A three-player Commander game is a multiplayer game, and no Commander rule is quoted here that replaces 103.1's choice of who takes the first turn."
+    },
+    {
+      "id": 3,
+      "premises": [
+        "F2",
+        "F3"
+      ],
+      "source": {
+        "doc": "cr",
+        "ref": "800.4",
+        "excerpt": "multiplayer games can continue after one or more players have left the game.",
+        "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+      },
+      "assumption": false,
+      "conclusion": "Players can lose and leave a multiplayer game one after another while the game continues, so two losers can be ordered by when each lost."
+    },
+    {
+      "id": 4,
+      "premises": [
+        "F2",
+        "S1",
+        "S3"
+      ],
+      "source": {
+        "doc": "cr",
+        "ref": "103.1",
+        "excerpt": "the loser of the previous game chooses who takes the first turn",
+        "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+      },
+      "assumption": false,
+      "conclusion": "With two losing players, 103.1 names 'the loser' as if there were one and gives no way to pick which of the two chooses: this is a gap."
+    },
+    {
+      "id": 5,
+      "premises": [
+        "F1",
+        "F2",
+        "F3",
+        "S4"
+      ],
+      "stipulation": true,
+      "conclusion": "Stipulated new rule for free-for-all games only: when the previous game had a winner and more than one losing player, the player who lost first is 'the loser of the previous game' for 103.1 and chooses; if several players lost at that same earliest moment, the winner of that game picks which of those players chooses. No turn order is used, and the chooser is always a player who lost."
+    },
+    {
+      "id": 6,
+      "premises": [
+        "F1"
+      ],
+      "source": {
+        "doc": "cr",
+        "ref": "103.1",
+        "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+        "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+      },
+      "assumption": false,
+      "conclusion": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game; the stipulation leaves this sentence untouched and applies only to games with a winner."
+    }
+  ],
+  "stipulations": [
+    "Stipulated new rule for free-for-all games only: when the previous game had a winner and more than one losing player, the player who lost first is 'the loser of the previous game' for 103.1 and chooses; if several players lost at that same earliest moment, the winner of that game picks which of those players chooses. No turn order is used, and the chooser is always a player who lost."
+  ],
+  "votes": [
+    {
+      "judge": 1,
+      "convinced": true,
+      "reason": "No verified refutation stands: the round-1 team-game and winner-chooses refutations were fixed (free-for-all only, chooser always a loser), and Judge 3's round-2 turn-order ambiguity was removed when the tie-break moved to the winner picking among the tied first losers; round 3 filed nothing. The derivation holds step by step. 103.1 names 'the loser' as a single player (step 1), and with two or more losers in a multiplayer game it gives no way to pick one (steps 3-4, the gap). The stipulation in step 5 fills that gap and never conflicts with a quoted rule. In free-for-all (806.1) players compete as individuals, so 104.2c's early-loser-wins exception cannot arise and the winner is never one of the losers. A tied first loser is a player who lost, so the chooser always satisfies 103.1's 'loser' requirement. A game where all remaining players lose together is a draw under 104.4a and goes to 103.1's draw sentence, which step 6 leaves untouched, so the winner-based tie-break never meets a drawn game. I accept the stipulation as the rule: the earliest loser chooses, ties go to the winner's pick among them, and the draw sentence stays. Remaining points (a first loser who left the match, or a tie not stated as its own fact) are drafting gaps shared with 103.1, not contradictions of any rule I checked.",
+      "evidence": [
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "806.1",
+          "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+          "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.4a",
+          "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+          "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.2a",
+          "excerpt": "A player still in the game wins the game if that player",
+          "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+        }
+      ],
+      "how": "vote"
+    },
+    {
+      "judge": 2,
+      "convinced": true,
+      "reason": "My only filed refutation (round 1: the first-loser rule could name an early loser who won under 104.2c in a team game, contradicting 103.1) was answered by narrowing the rule to free-for-all, where 806.1 says players compete as individuals, so 104.2c's exception cannot arise. In round 2 judge 3's turn-order objection (Aeon Engine reversing turn order) was the only refutation that stood; the user dropped turn order and now the winner picks among players who lost at the same earliest moment. In round 3 no refutation was filed and the verifier reports nothing standing. Step by step: 103.1 gives the choice to 'the loser of the previous game' and speaks of one loser, 800.4 shows players leave a multiplayer game one after another so losers can be ordered, so with two or more losers 103.1 is silent on who chooses (a real gap). Stipulation S5 fills it with a player who actually lost (the first to lose, or if tied, one the winner picks among the tied), so the chooser is always a loser and never the winner, which keeps 103.1's allocation to a loser. The draw sentence of 103.1 is quoted unchanged in step 6 and applies only to games with no winner (104.4a), so the two branches do not overlap. I accept S5 as the rule. Leftover points (a first loser who has left the match; the tie branch not being a separate fact) are drafting gaps shared with 103.1, not contradictions with a pinned source. The 103.1 text pinned in steps 1, 4 and 6 is enough to establish both the gap and the untouched draw rule.",
+      "evidence": [
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "806.1",
+          "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+          "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.4a",
+          "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+          "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+        },
+        {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        }
+      ],
+      "how": "vote"
+    },
+    {
+      "judge": 3,
+      "convinced": true,
+      "reason": "My round-2 refutation (C5's tie-break by 'earliest in turn order' is ambiguous because Aeon Engine can reverse the turn order, so two readings pick different choosers) is answered: the revised C5 drops turn order entirely and has the winner of that game pick which of the tied first losers chooses. I re-simulated the revised rule. (1) Free-for-all, A wins, B and C lose in one state-based-action check: the tie-break names a unique decider, the winner, and the chooser is always one of the tied players, who are losers, so the winner can never be the chooser (the round-1 counterexample against the 'previous chooser' fallback is gone). (2) B loses first alone, then C: no tie, B chooses, and no turn order or reversal matters. (3) Four-player pod where B and C lose together, then D, then A wins: the earliest losing moment is the B/C tie, so A picks between B and C; the mixed case is covered. (4) If the remaining players all lose together the game is a draw under 104.4a and goes to 103.1's draw sentence, which C6 leaves untouched, so the winner-based tie-break never meets a drawn game. (5) The winner is well defined in free-for-all (806.1: players compete as individuals, so 104.2c's early-loser-wins exception cannot arise). What remains is a policy objection that the winner influences who chooses, which no quoted rule forbids: 103.1 fixes only that the chooser is a loser, and the stipulation keeps that. A tie-branch fact is also not stated separately from F3, and a first loser who has left the match is unspecified, but those are drafting gaps and gaps shared with 103.1, not contradictions with an official source. I find no step where the case's sequence differs from real game flow.",
+      "evidence": [
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "the loser of the previous game chooses who takes the first turn",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.4a",
+          "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+          "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+        },
+        {
+          "doc": "cr",
+          "ref": "806.1",
+          "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+          "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.2a",
+          "excerpt": "This happens immediately and overrides all effects that would preclude that player from winning the game.",
+          "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+        }
+      ],
+      "how": "filing"
+    },
+    {
+      "judge": 4,
+      "convinced": true,
+      "reason": "No verified refutation stands on the final case: the round-3 attack filed none (verifier report standing: []), and judge 3's round-2 turn-order refutation was answered by dropping turn order. The round-1 refutations (team games via 104.2c; winner choosing via the previous-chooser fallback, which was my own) are answered by the fix: the stipulation is limited to free-for-all (806.1, players compete as individuals, so 104.2c's early-loser-wins exception cannot arise) and names only a player who lost. The derivation holds step by step. S1 (103.1) names one 'loser' who chooses. S3 (800.4) shows multiplayer games continue as players leave one after another, so losers are ordered in time. S4 (103.1) then correctly finds the gap: 'the loser' with two losers does not say which one chooses. C5 is a stipulation, not a sourced claim, so it is judged on its merits. It does not contradict 103.1 because the chooser is always a loser: the first loser alone, or, on a tie at the earliest moment, one of the tied losers picked by the winner, who is never the chooser. It covers the mixed four-player case (B and C lose together, D later, A wins) with one rule. A game where all remaining players lose together is a draw under 104.4a and goes to 103.1's draw sentence, which C6 quotes and leaves untouched, so the winner-based tie-break never meets a drawn game. Remaining points, such as a first loser who has left the match, are gaps shared with 103.1 itself, not contradictions with a quoted rule. I accept C5 as the rule: it is the minimal and natural reading of 'the loser of the previous game chooses' for several losers, and it keeps the loser-chooses purpose.",
+      "evidence": [
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.4a",
+          "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+          "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+        },
+        {
+          "doc": "cr",
+          "ref": "806.1",
+          "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+          "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+        },
+        {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        }
+      ],
+      "how": "vote"
+    },
+    {
+      "judge": 5,
+      "convinced": true,
+      "reason": "No verified refutation stands: the round-1 refutations (team-game early loser who wins under 104.2c; winner choosing via the previous-chooser fallback) were fixed by narrowing to free-for-all (806.1, individuals) and removing the fallback, and the round-2 refutation (turn-order tie-break ambiguous under turn-order reversal) was fixed by dropping turn order so the winner picks among tied first losers. Derivation holds step by step: C1 and C4 pin 103.1 as naming 'the loser' as a single player, and with two losers it gives no way to pick which one chooses, a genuine gap (my tournament-document check found MTR 2.2 mirrors 103.1 for two players and says nothing about several losers, so no MTR/IPG/JAR rule or format fills it). The stipulation C5 fills the gap while staying inside 103.1's allocation: the chooser is always a player who lost (a winner under 104.2a is never among the losers, and ties are only among losers). The game cannot end with a winner and an all-tied loser set that is a draw, because 104.4a sends simultaneous loss of all remaining players to 103.1's draw sentence, which C6 quotes and leaves untouched. I accept the stipulation as the rule; the remaining open points (first loser who left the match, four-player scope) are drafting gaps shared with 103.1, not contradictions.",
+      "evidence": [
+        {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.4a",
+          "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+          "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+        },
+        {
+          "doc": "cr",
+          "ref": "806.1",
+          "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+          "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+        },
+        {
+          "doc": "cr",
+          "ref": "104.2a",
+          "excerpt": "A player still in the game wins the game",
+          "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+        },
+        {
+          "doc": "mtr",
+          "ref": "2.2",
+          "excerpt": "For the first game of a match, a designated player",
+          "heading": "Play/Draw Rule",
+          "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+          "version": "February 27, 2026",
+          "level": 2
+        }
+      ],
+      "how": "vote"
+    }
+  ],
+  "opinion": {
+    "author": 1,
+    "revision": 0,
+    "revisions": 0,
+    "holding": "In a free-for-all (no teams) Commander match of several games, when the previous game had a winner and more than one losing player, the player who lost first in that game is 'the loser of the previous game' for 103.1 and chooses who takes the first turn; if several players lost at that same earliest moment, the winner of that game picks which of those players chooses. If the previous game was a draw, rule 103.1's draw sentence applies unchanged.",
+    "steps": [
+      {
+        "id": 1,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "In a match of several games the chooser of the first turn is described as the loser of the previous game, a single player."
+      },
+      {
+        "id": 2,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "903.2",
+          "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+          "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+        },
+        "assumption": false,
+        "conclusion": "A three-player Commander game is a multiplayer game, and no Commander rule is quoted here that replaces 103.1's choice of who takes the first turn."
+      },
+      {
+        "id": 3,
+        "premises": [
+          "F2",
+          "F3"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "800.4",
+          "excerpt": "multiplayer games can continue after one or more players have left the game.",
+          "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+        },
+        "assumption": false,
+        "conclusion": "Players can lose and leave a multiplayer game one after another while the game continues, so two losers can be ordered by when each lost."
+      },
+      {
+        "id": 4,
+        "premises": [
+          "F2",
+          "S1",
+          "S3"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "the loser of the previous game chooses who takes the first turn",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "With two losing players, 103.1 names 'the loser' as if there were one and gives no way to pick which of the two chooses: this is a gap."
+      },
+      {
+        "id": 5,
+        "premises": [
+          "F1",
+          "F2",
+          "F3",
+          "S4"
+        ],
+        "stipulation": true,
+        "conclusion": "Stipulated new rule for free-for-all games only: when the previous game had a winner and more than one losing player, the player who lost first is 'the loser of the previous game' for 103.1 and chooses; if several players lost at that same earliest moment, the winner of that game picks which of those players chooses. No turn order is used, and the chooser is always a player who lost."
+      },
+      {
+        "id": 6,
+        "premises": [
+          "F1"
+        ],
+        "source": {
+          "doc": "cr",
+          "ref": "103.1",
+          "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+          "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+        },
+        "assumption": false,
+        "conclusion": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game; the stipulation leaves this sentence untouched and applies only to games with a winner."
+      }
+    ],
+    "stipulations": [
+      "Stipulated new rule for free-for-all games only: when the previous game had a winner and more than one losing player, the player who lost first is 'the loser of the previous game' for 103.1 and chooses; if several players lost at that same earliest moment, the winner of that game picks which of those players chooses. No turn order is used, and the chooser is always a player who lost."
+    ],
+    "joined": [
+      {
+        "judge": 1,
+        "revision": 0,
+        "reason": "I adopt the opinion as written. The holding matches the case's rule word for word. Step 1 (CR 103.1) correctly reads the chooser as 'the loser of the previous game', a single player. Steps 3 and 4 establish the gap: in a multiplayer game losers leave one after another (800.4), and 103.1 does not say which of several losers chooses. Step 5 is the stipulation, and I accept it as the rule: the first loser chooses, and if several lost at the same earliest moment, the winner picks which of them chooses. The chooser is always a player who lost, so 103.1's allocation to a loser is kept. The rule is limited to free-for-all, where players compete as individuals (806.1), so the team-game exception in 104.2c that defeated the earlier version cannot arise. The winner never chooses, and no turn order is used, which removes the turn-order-reversal ambiguity. Step 6 leaves 103.1's draw sentence untouched. A game in which all remaining players lose at once is a draw (104.4a) and goes to that sentence, so the winner-based tie-break never meets a drawn game. I re-checked the pinned text of 103.1, 806.1 and 104.4a with lookup.py. The remaining gaps, such as a first loser who has left the match, are shared with 103.1 itself and contradict no rule. The reasoning is mine as well as the author's.",
+        "evidence": [
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "806.1",
+            "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+            "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+          },
+          {
+            "doc": "cr",
+            "ref": "104.4a",
+            "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+            "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+          },
+          {
+            "doc": "cr",
+            "ref": "800.4",
+            "excerpt": "multiplayer games can continue after one or more players have left the game.",
+            "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+          }
+        ]
+      },
+      {
+        "judge": 2,
+        "revision": 0,
+        "reason": "I adopt the opinion as written. Verified with lookup.py: 103.1 gives the choice to 'the loser of the previous game' in a match of several games, in the singular, and separately says that after a draw the earlier chooser chooses again. 903.2 makes a three-player Commander game a multiplayer game under the Free-for-All default, and no Commander rule replaces 103.1's choice of who goes first. 800.4 says multiplayer games continue after players leave, so losers can leave one after another and be ordered by when each lost. With two losers, 103.1 therefore names one 'loser' and does not say which of two chooses: a real gap, which the opinion states in steps 1-4. The holding fills that gap through step 5, a stipulation worded exactly as the case words it. The first loser is 'the loser of the previous game' and chooses. If several lost at that same earliest moment, the winner picks which of them chooses. This is limited to free-for-all, where 806.1 says players compete as individuals, so my round-1 team-game objection (104.2c making an early loser a winner) cannot arise. The chooser is always a player who lost, which keeps 103.1's allocation of the choice to a loser. The draw sentence is untouched (step 6) and applies only where there is no winner, so the branches do not overlap (104.4a). Turn order is not used, which answers judge 3's Aeon Engine objection. Leftover edge cases (a first loser who has left the match) are drafting gaps shared with 103.1 itself, not contradictions with a pinned source.",
+        "evidence": [
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "903.2",
+            "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+            "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+          },
+          {
+            "doc": "cr",
+            "ref": "800.4",
+            "excerpt": "multiplayer games can continue after one or more players have left the game.",
+            "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+          },
+          {
+            "doc": "cr",
+            "ref": "806.1",
+            "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+            "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+          }
+        ]
+      },
+      {
+        "judge": 3,
+        "revision": 0,
+        "reason": "I checked the sources with lookup.py. 103.1 speaks of 'the loser of the previous game' as one player and has no sentence for several losers (S1, S4). 903.2 and 806 put a Commander game in the Free-for-All variant by default, and nothing there or in 103.1 replaces the choice of who goes first (S2). 800.4 confirms multiplayer games continue as players leave one by one, so losers are ordered in time (S3). The stipulation (S5) fills that gap, and the winner-picks tie-break for simultaneous first losers keeps the chooser a loser and uses no turn order. Its free-for-all limit matches 806.1 and the holding. The draw sentence of 103.1 is untouched (S6): the player who made the choice, first-loser or tie-break pick, chooses again. Holding, each step and the stipulation are as the case words them; I adopt the reasoning as my own.",
+        "evidence": [
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn. If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "800.4",
+            "excerpt": "Unlike two-player games, multiplayer games can continue after one or more players have left the game.",
+            "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+          },
+          {
+            "doc": "cr",
+            "ref": "903.2",
+            "excerpt": "A Commander game may be a two-player game or a multiplayer game. The default multiplayer setup is the Free-for-All variant",
+            "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+          },
+          {
+            "doc": "cr",
+            "ref": "806.1",
+            "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+            "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+          }
+        ]
+      },
+      {
+        "judge": 4,
+        "revision": 0,
+        "reason": "I checked each pinned excerpt with lookup.py and all match the CR text. Step 1: 103.1 says 'the loser of the previous game' chooses, a single player. Step 2: 903.2 makes a three-player Commander game a multiplayer game, and the opinion correctly claims only that it quotes no Commander rule replacing 103.1's choice. Step 3: 800.4 says multiplayer games continue after players leave, so losers can be ordered in time. Step 4: with two losers 103.1 does not say which one chooses. That is a real gap, and 103.1 is the only place that rule is stated. Step 5 is a stipulation worded as the case words it. It fills the gap narrowly: the first loser chooses, simultaneous first losers are resolved by the winner picking among them, and the chooser is always a loser, as the user intended. Step 6 leaves 103.1's draw sentence untouched, as the user asked. The holding limits the rule to free-for-all games with a winner and more than one loser. I accept the holding, every step and the stipulation as the rule, and the reasoning is mine too.",
+        "evidence": [
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn. If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "903.2",
+            "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+            "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+          },
+          {
+            "doc": "cr",
+            "ref": "800.4",
+            "excerpt": "multiplayer games can continue after one or more players have left the game.",
+            "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+          }
+        ]
+      },
+      {
+        "judge": 5,
+        "revision": 0,
+        "reason": "I adopt the opinion. S1 and S4 correctly pin 103.1 as naming a single 'loser' with no way to pick among two, a real gap (my tournament-document check found MTR 2.2 only mirrors 103.1 for two players, so nothing fills it). S2 (903.2: a three-player Commander game is multiplayer, default Free-for-All) and S3 (800.4: players leave one after another, so losers are ordered in time) hold. Stipulation S5 is stated as the case words it. It fits inside 103.1 because the chooser is always a player who lost (a winner is never among the losers, ties are only among losers). The earlier refutations (team games via 104.2c, winner-choosing fallback, turn-order ambiguity) are answered by limiting to free-for-all (806.1) and dropping turn order. S6 leaves 103.1's draw sentence untouched, and 104.4a sends simultaneous loss of all remaining players to that draw sentence, so the tie-break never meets a drawn game. The holding matches the rule word for word. I accept it as the rule.",
+        "evidence": [
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "103.1",
+            "excerpt": "If the previous game was a draw, the player who made the choice in that game makes the choice in this game.",
+            "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+          },
+          {
+            "doc": "cr",
+            "ref": "800.4",
+            "excerpt": "multiplayer games can continue after one or more players have left the game.",
+            "text_sha256": "7406683a60039786bdf3ff384268eb54f6f974500086e656775489649ca9decf"
+          },
+          {
+            "doc": "cr",
+            "ref": "903.2",
+            "excerpt": "A Commander game may be a two-player game or a multiplayer game.",
+            "text_sha256": "44aa4cd008c1efe7713f3d98413ef4121079a1295d8ba04525811d6d5f5afe2b"
+          },
+          {
+            "doc": "cr",
+            "ref": "806.1",
+            "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+            "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+          },
+          {
+            "doc": "cr",
+            "ref": "104.4a",
+            "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+            "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+          }
+        ]
+      }
+    ],
+    "concurrences": [],
+    "dissents": []
+  },
+  "verifier_report_sha256": "0ae259311861a878bdfb02ed13ef6123417490bc595706e1ee3a3c96af0a82a0",
+  "opened": {
+    "device": "eval",
+    "time": "2026-10-27T20:08:27Z"
+  },
+  "introduced": {
+    "device": "eval",
+    "time": "2026-10-27T20:21:12Z"
+  }
+}

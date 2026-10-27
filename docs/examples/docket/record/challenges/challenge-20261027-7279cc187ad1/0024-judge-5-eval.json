@@ -1,0 +1,46 @@
+{
+  "v": 1,
+  "seq": 24,
+  "prev": "cb23c05eff5bc752f61ff1470e56920c35be637f4deeaf4b7b824cbbd59aefce",
+  "actor": "judge-5",
+  "device": "eval",
+  "time": "2026-10-27T20:19:12Z",
+  "type": "vote",
+  "convinced": true,
+  "reason": "No verified refutation stands: the round-1 refutations (team-game early loser who wins under 104.2c; winner choosing via the previous-chooser fallback) were fixed by narrowing to free-for-all (806.1, individuals) and removing the fallback, and the round-2 refutation (turn-order tie-break ambiguous under turn-order reversal) was fixed by dropping turn order so the winner picks among tied first losers. Derivation holds step by step: C1 and C4 pin 103.1 as naming 'the loser' as a single player, and with two losers it gives no way to pick which one chooses, a genuine gap (my tournament-document check found MTR 2.2 mirrors 103.1 for two players and says nothing about several losers, so no MTR/IPG/JAR rule or format fills it). The stipulation C5 fills the gap while staying inside 103.1's allocation: the chooser is always a player who lost (a winner under 104.2a is never among the losers, and ties are only among losers). The game cannot end with a winner and an all-tied loser set that is a draw, because 104.4a sends simultaneous loss of all remaining players to 103.1's draw sentence, which C6 quotes and leaves untouched. I accept the stipulation as the rule; the remaining open points (first loser who left the match, four-player scope) are drafting gaps shared with 103.1, not contradictions.",
+  "evidence": [
+    {
+      "doc": "cr",
+      "ref": "103.1",
+      "excerpt": "In a match of several games, the loser of the previous game chooses who takes the first turn.",
+      "text_sha256": "025bde04aa0393651bfefac14f2347b1e6dc11c408f294b6df76cc638e1e434c"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.4a",
+      "excerpt": "If all the players remaining in a game lose simultaneously, the game is a draw.",
+      "text_sha256": "1d3766ff3fda80b7016540d9f37bbbb3cba7be3d1aaea3fa5c3c08682ecdfade"
+    },
+    {
+      "doc": "cr",
+      "ref": "806.1",
+      "excerpt": "In Free-for-All multiplayer games, a group of players compete as individuals against each other.",
+      "text_sha256": "2dc3e1d93ea9085f7f59d37b7a861165a9624d92134a3c9d462a3bf7eeded57a"
+    },
+    {
+      "doc": "cr",
+      "ref": "104.2a",
+      "excerpt": "A player still in the game wins the game",
+      "text_sha256": "22309ff7e5b8baf479c517a8f3369980f9cb15ca81ff5d9aa69eb164fb820a09"
+    },
+    {
+      "doc": "mtr",
+      "ref": "2.2",
+      "excerpt": "For the first game of a match, a designated player",
+      "heading": "Play/Draw Rule",
+      "text_sha256": "3a4049da7b682e722145289f694cc5aede2eee07dfec55475ce04467dda9a5fd",
+      "version": "February 27, 2026",
+      "level": 2
+    }
+  ]
+}
