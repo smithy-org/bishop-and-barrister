@@ -54,27 +54,30 @@ def source(ref, excerpt=None):
     return s
 
 
-def step(n, premises, src, assumption=False):
-    return {"id": n, "premises": premises, "source": src, "assumption": assumption, "conclusion": f"conclusion {n}"}
+def step(n, premises, src, assumption=False, stipulation=False):
+    return {"id": n, "premises": premises, "source": src, "assumption": assumption, "stipulation": stipulation,
+            "conclusion": f"conclusion {n}"}
 
 
-def case(steps=None):
+def case(steps=None, challenges="none: a gap"):
     return {
         "facts": [{"id": 1, "text": "Three players; game 2 of a match"}],
         "open_questions": [],
         "rule": "The player who lost game 1 chooses who plays first in game 2",
         "applies_when": ["a three-player match"],
-        "challenges": "none: a gap",
+        "challenges": challenges,
         "steps": steps or [step(1, ["F1"], source("103.1a", "the loser of the previous game chooses")),
                            step(2, ["F1", "S1"], source("103.1"))],
     }
 
 
-CONCEDE = {"type": "file", "round": 1, "refutations": [], "concedes": "I can't refute it"}
+EVIDENCE = [source("103.1")]
+CONCEDE = {"type": "file", "round": 1, "refutations": [], "concedes": "I checked 103.1 and 103.1a; I can't refute it",
+           "concede_evidence": EVIDENCE}
 REFUTE = {"type": "file", "round": 1, "refutations": [{
     "target": 1, "ground": "counterexample", "argument": "It says nothing about three players",
     "steps": [step(1, ["C1"], source("100.1"))]}]}
-VOTE = {"type": "vote", "convinced": True, "reason": "step 1 settled it"}
+VOTE = {"type": "vote", "convinced": True, "reason": "step 1 settled it", "evidence": EVIDENCE}
 ANSWER = {"type": "answer", "round": 1, "words": "103.1a covers any match", "replies": [{
     "judge": 1, "index": 1, "kind": "rebut", "words": "103.1a covers any match",
     "steps": [step(1, ["C1"], source("103.1a"))]}]}
@@ -131,28 +134,68 @@ class ChallengeTest(unittest.TestCase):
     def file(self, cid, k, event=CONCEDE, env=None):
         return self.ok("add", cid, self.write(f"filing-{k}.json", event), "--as", f"judge-{k}", env=env)
 
+    def vote(self, cid, k, convinced=True):
+        return self.ok("add", cid, self.write("vote.json", {**VOTE, "convinced": convinced}), "--as", f"judge-{k}")
+
+    def introduce(self, cid=None):
+        """Every judge concedes on the unchanged case, so their concessions are their settled positions."""
+        cid = cid or self.to_attack()
+        for k in range(1, 6):
+            self.file(cid, k)
+        self.ok("verify", cid)
+        return cid
+
+    def to_voting(self):
+        """Judge 1 refutes, the user rebuts with a source, the case is unchanged: the judges settle."""
+        cid = self.to_attack()
+        self.file(cid, 1, REFUTE)
+        for k in range(2, 6):
+            self.file(cid, k)
+        self.ok("verify", cid)
+        self.ok("add", cid, self.write("answer.json", ANSWER), "--as", "user")
+        self.ok("verify", cid)
+        return cid
+
+    def to_conceded(self):
+        """The user concedes the standing refutation and revises nothing: the judges settle with it standing."""
+        cid = self.to_attack()
+        self.file(cid, 1, REFUTE)
+        for k in range(2, 6):
+            self.file(cid, k)
+        self.ok("verify", cid)
+        concede = {"type": "answer", "round": 1, "words": "Fair, it doesn't cover three players",
+                   "replies": [{"judge": 1, "index": 1, "kind": "concede", "words": "Fair point"}]}
+        self.ok("add", cid, self.write("answer.json", concede), "--as", "user")
+        self.ok("verify", cid)
+        return cid
+
     def git_log(self):
         return subprocess.run(["git", "-C", str(self.home), "log", "--format=%B%n---"], capture_output=True, text=True,
                               encoding="utf-8").stdout
 
     # --- the paths -------------------------------------------------------------------------
 
-    def test_a_unanimous_panel_introduces_the_rule(self):
+    def test_five_concessions_on_the_unchanged_case_introduce_the_rule(self):
         cid = self.to_attack()
         self.assertRegex(cid, r"^challenge-\d{8}-[0-9a-f]{12}$")
         for k in range(1, 6):
             self.file(cid, k)
         out = self.ok("verify", cid)
         self.assertIn("Case passes; 0 refutation(s) standing", out)
-        self.assertEqual(self.status(cid)["state"], "voting")
-        for k in range(1, 6):
-            self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
-        self.assertEqual(self.status(cid)["state"], "introduced")
+        self.assertEqual(self.status(cid)["state"], "introduced")  # no separate vote: the concessions are the votes
         self.assertIn("traces", self.ok("trace", cid))
         log = self.git_log()
         self.assertIn(f"{cid}: Open a challenge", log)
         self.assertIn('Decided-by: user ("Yes, that\'s my case")', log)
-        self.assertIn("Drafted-by: judge-5", log)
+        self.assertIn("Decided-by: panel", log)
+
+    def test_a_vote_introduces_the_rule_when_all_five_are_convinced(self):
+        cid = self.to_voting()
+        self.assertEqual(self.status(cid)["state"], "voting")
+        self.assertIn("The judges settle", self.ok("status", cid))
+        for k in range(1, 6):
+            self.vote(cid, k)
+        self.assertEqual(self.status(cid)["state"], "introduced")
 
     def test_the_brief_pins_its_sources(self):
         cid = self.open_briefed()
@@ -161,7 +204,7 @@ class ChallengeTest(unittest.TestCase):
         self.assertEqual(len(src["text_sha256"]), 64)
         self.assertIn("determine which one of them", src["excerpt"])
 
-    def test_a_standing_refutation_goes_to_the_user_then_round_2(self):
+    def test_a_standing_refutation_goes_to_the_user_then_the_judges_settle(self):
         cid = self.to_attack()
         self.file(cid, 1, REFUTE)
         for k in range(2, 6):
@@ -173,22 +216,33 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn("answers each verified refutation", self.ok("status", cid))
         self.ok("add", cid, self.write("answer.json", ANSWER), "--as", "user")
         self.ok("verify", cid)
-        state = self.status(cid)
-        self.assertEqual((state["state"], state["round"]), ("attack", 2))
+        # The rebuttal is sourced and the case unchanged: nothing is re-attacked, the judges settle.
+        self.assertEqual(self.status(cid)["state"], "voting")
 
-    def test_conceding_a_refutation_refutes_the_case(self):
+    def test_a_revised_case_is_attacked_again(self):
         cid = self.to_attack()
         self.file(cid, 1, REFUTE)
         for k in range(2, 6):
             self.file(cid, k)
         self.ok("verify", cid)
-        concede = {"type": "answer", "round": 1, "words": "Fair, it doesn't cover three players",
-                   "replies": [{"judge": 1, "index": 1, "kind": "concede", "words": "Fair point"}]}
-        self.ok("add", cid, self.write("answer.json", concede), "--as", "user")
+        revised = case()
+        revised["steps"][0]["conclusion"] = "In a match of several games, the loser of the previous game chooses"
+        fix = {"type": "answer", "round": 1, "words": "I've reworded step 1", "case": revised,
+               "replies": [{"judge": 1, "index": 1, "kind": "fix", "words": "Reworded"}]}
+        self.ok("add", cid, self.write("answer.json", fix), "--as", "user")
         self.ok("verify", cid)
         state = self.status(cid)
+        self.assertEqual((state["state"], state["round"]), ("attack", 2))
+
+    def test_conceding_a_refutation_sends_the_case_to_the_judges_to_settle(self):
+        cid = self.to_conceded()
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["standing"]), ("voting", [{"judge": 1, "index": 1}]))
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=False)
+        state = self.status(cid)
         self.assertEqual(state["state"], "refuted")
-        self.assertIn("the user conceded judge 1's refutation 1", state["why"])
+        self.assertIn("a verified refutation stands", state["why"])
 
     def test_a_single_agent_panel_cannot_introduce(self):
         cid = self.open_briefed(panel="single-agent")
@@ -196,8 +250,6 @@ class ChallengeTest(unittest.TestCase):
         for k in range(1, 6):
             self.file(cid, k)
         self.ok("verify", cid)
-        for k in range(1, 6):
-            self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
         state = self.status(cid)
         self.assertEqual(state["state"], "open")
         self.assertIn("single-agent", state["why"])
@@ -250,9 +302,9 @@ class ChallengeTest(unittest.TestCase):
         out = self.ok("verify", cid)
         self.assertIn("Case fails", out)
         self.assertIn("CR 103.1a has changed since it was pinned", out)
-        for k in range(1, 6):
-            self.ok("add", cid, self.write("vote.json", VOTE), "--as", f"judge-{k}")
-        self.assertEqual(self.status(cid)["state"], "refuted")
+        state = self.status(cid)
+        self.assertEqual(state["state"], "open")  # unproven, not defeated
+        self.assertIn("unsourced step or a position without evidence", state["why"])
 
     # --- forks, the id and trace -------------------------------------------------------------
 
@@ -304,16 +356,6 @@ class ChallengeTest(unittest.TestCase):
         files[0].write_bytes(original[files[0]])
         self.assertIn("traces", self.ok("trace", cid))
 
-    def introduce(self, cid=None, convinced=lambda k: True):
-        cid = cid or self.to_attack()
-        for k in range(1, 6):
-            self.file(cid, k)
-        self.ok("verify", cid)
-        for k in range(1, 6):
-            vote = {**VOTE, "convinced": convinced(k)}
-            self.ok("add", cid, self.write("vote.json", vote), "--as", f"judge-{k}")
-        return cid
-
     def test_an_introduced_challenge_writes_its_rule(self):
         cid = self.introduce()
         state = self.status(cid)
@@ -321,6 +363,8 @@ class ChallengeTest(unittest.TestCase):
         self.assertEqual((rule["kind"], rule["state"], rule["challenge"]), ("rule", "current", cid))
         self.assertEqual(rule["final_hash"], state["head"])
         self.assertEqual(len(rule["votes"]), 5)
+        self.assertTrue(all(v["convinced"] and v["evidence"] and v["reason"] for v in rule["votes"]))
+        self.assertEqual(rule["stipulations"], [])
         self.assertEqual(len(rule["verifier_report_sha256"]), 64)
         self.assertEqual(rule["rule"], case()["rule"])
         self.assertIn("Decided-by: panel", self.git_log())
@@ -334,7 +378,7 @@ class ChallengeTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         graded = json.loads(result.stdout)
         self.assertEqual((graded["challenge"], graded["state"], graded["outcome_ok"]), (cid, "introduced", True))
-        self.assertEqual((graded["concessions"], len(graded["votes"]), graded["traces"]), (5, 5, True))
+        self.assertEqual((graded["concessions"], len(graded["votes"]), graded["traces"]), (5, 0, True))
         wrong = subprocess.run([sys.executable, str(grade), "urborg-still-swamps", "--home", str(self.home)],
                                capture_output=True, text=True, encoding="utf-8", env=self.env)
         self.assertEqual(wrong.returncode, 1)
@@ -363,13 +407,89 @@ class ChallengeTest(unittest.TestCase):
                                           text=True, encoding="utf-8").stdout)
 
     def test_a_refuted_challenge_can_be_kept_as_a_house_rule(self):
-        cid = self.introduce(convinced=lambda k: k != 5)
+        cid = self.to_conceded()
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=False)
+        self.assertEqual(self.status(cid)["state"], "refuted")
         self.assertFalse((self.home / "rules" / f"{cid}.json").exists())
         self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "We play it this way anyway"}),
                 "--as", "user")
         rule = json.loads((self.home / "rules" / f"house-{cid}.json").read_text(encoding="utf-8"))
         self.assertTrue(rule["house_rule"])
         self.assertEqual(rule["id"], f"house-{cid}")
+        self.assertIn("traces", self.ok("trace", cid))  # trace accepts a house rule's rule file
+
+    def test_an_open_challenge_can_be_kept_as_a_house_rule_too(self):
+        cid = self.to_voting()
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)  # three not convinced, nothing standing: unproven
+        self.assertEqual(self.status(cid)["state"], "open")
+        self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "At our table, yes"}), "--as", "user")
+        self.assertEqual(self.status(cid)["state"], "house-rule")
+        self.assertTrue((self.home / "rules" / f"house-{cid}.json").exists())
+
+    # --- consensus: the thresholds, the split, evidence, stipulations -----------------------
+
+    def test_three_not_convinced_refuse_the_case_as_unproven(self):
+        cid = self.to_voting()
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k > 3)
+        state = self.status(cid)
+        self.assertEqual(state["state"], "open")
+        self.assertIn("3 of 5 judges were not convinced and no refutation stands", state["why"])
+
+    def test_a_split_calls_another_round_until_the_limit(self):
+        cid = self.to_voting()
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=k != 5)  # one dissenter: no consensus
+        state = self.status(cid)
+        self.assertEqual((state["state"], state["round"]), ("attack", 2))
+        # The dissenter's reasoning is visible to the judges in the next round.
+        seen = json.loads(self.ok("show", cid, "--judge", "1"))
+        self.assertIn("vote", [e["type"] for e in seen if e["actor"] == "judge-5"])
+
+    def test_a_position_needs_evidence(self):
+        cid = self.to_voting()
+        no_evidence = {"type": "vote", "convinced": True, "reason": "settled"}
+        self.assertIn("a vote needs evidence", self.refused("add", cid, self.write("v.json", no_evidence), "--as", "judge-1"))
+        forged = {**VOTE, "evidence": [source("103.1", "the youngest player always goes first")]}
+        self.assertIn("the quote isn't in CR 103.1", self.refused("add", cid, self.write("v.json", forged), "--as", "judge-1"))
+        cid2 = self.to_attack()
+        bare = {"type": "file", "round": 1, "refutations": [], "concedes": "I can't refute it"}
+        self.assertIn("concession needs evidence", self.refused("add", cid2, self.write("f.json", bare), "--as", "judge-1"))
+
+    def stip_case(self, challenges="none: a gap"):
+        return case([step(1, ["F1"], source("103.1a", "the loser of the previous game chooses")),
+                     step(2, ["F1", "S1"], None, stipulation=True)], challenges=challenges)
+
+    def test_a_stipulation_fills_a_gap(self):
+        cid = self.ok("open", "--statement", "Who chooses when several players lost?").split()[0]
+        self.ok("brief", cid, self.write("case.json", self.stip_case()))
+        self.ok("confirm", cid, "--user-said", "yes")
+        for k in range(1, 6):
+            self.file(cid, k)
+        out = self.ok("verify", cid)
+        self.assertIn("Case passes", out)
+        self.assertEqual(self.status(cid)["state"], "introduced")
+        rule = json.loads((self.home / "rules" / f"{cid}.json").read_text(encoding="utf-8"))
+        self.assertEqual(rule["stipulations"], ["conclusion 2"])
+        judge_py = [sys.executable, str(CHALLENGE.parent / "judge.py")]
+        shown = subprocess.run([*judge_py, "show", cid, "--agent"], env=self.env, capture_output=True, text=True,
+                               encoding="utf-8").stdout
+        self.assertIn("<stipulation>conclusion 2</stipulation>", shown)
+
+    def test_a_stipulation_is_refused_outside_a_gap(self):
+        cid = self.ok("open", "--statement", "a case").split()[0]
+        out = self.refused("brief", cid, self.write("case.json", self.stip_case("Official ruling on Urborg (2021-03-19)")))
+        self.assertIn("stipulations are for gaps", out)
+
+    def test_a_stipulation_cannot_quote_a_source_or_be_an_assumption(self):
+        cid = self.ok("open", "--statement", "a case").split()[0]
+        both = case([step(1, ["F1"], source("103.1"), stipulation=True)])
+        self.assertIn("doesn't quote a source", self.refused("brief", cid, self.write("case.json", both)))
+        also = case([step(1, ["F1"], None, assumption=True, stipulation=True)])
+        self.assertIn("not both", self.refused("brief", cid, self.write("case.json", also)))
+
 
     def recheck(self):
         return subprocess.run([sys.executable, str(CHALLENGE.parent / "judge.py"), "recheck", "--offline"], env=self.env,
@@ -470,7 +590,11 @@ class ChallengeTest(unittest.TestCase):
         self.file(cid, 5)
         self.assertIn(f"challenge.py verify {cid}", self.ok("status", cid))
         self.ok("verify", cid)
-        self.assertIn("The panel votes, blind", self.ok("status", cid))
+        self.assertIn(f"{cid}  introduced", self.ok("list"))
+
+    def test_status_names_the_judges_still_to_settle(self):
+        cid = self.to_voting()
+        self.assertIn("The judges settle", self.ok("status", cid))
         self.assertIn(f"{cid}  voting; next: judge-1", self.ok("list"))
 
     # --- the binary --------------------------------------------------------------------------

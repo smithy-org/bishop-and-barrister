@@ -476,6 +476,9 @@ def render_rule(r: dict) -> str:
     out.append(f"  <rule>{escape(r['rule'])}</rule>")
     out.append("  <applies_when>" + "".join(f"<fact>{escape(a)}</fact>" for a in r.get("applies_when", [])) + "</applies_when>")
     out.append(f"  <challenged>{escape(r.get('challenges', ''))}</challenged>")
+    if r.get("stipulations"):
+        # The part of the rule no official source says: what the judges agreed to adopt.
+        out.append("  <stipulations>" + "".join(f"<stipulation>{escape(t)}</stipulation>" for t in r["stipulations"]) + "</stipulations>")
     out.append("  <steps>" + "".join(
         f"<step {attrs(n=st['id'], premises=' '.join(st.get('premises', [])), doc=(st.get('source') or {}).get('doc'), ref=(st.get('source') or {}).get('ref'))}>"
         f"{escape((st.get('source') or {}).get('excerpt', ''))} → {escape(st.get('conclusion', ''))}</step>" for st in r.get("steps", [])) + "</steps>")

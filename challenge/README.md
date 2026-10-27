@@ -22,7 +22,9 @@ Users don't need Lean: the binary is downloaded from the release, checked agains
 ## The guarantees
 
 1. **No unearned rule.** `Phase.introduced` holds an `Earned`, which can only be built from five convinced
-   votes, a passing verifier report, no level 1 conflict, no unsupported step and an independent panel.
+   positions, each with evidence; a passing verifier report with no level 1 conflict and nothing standing; a case
+   whose every step is sourced or a stipulation; and an independent panel. A stipulation, the rule's own new
+   content, is only allowed in a case that fills a gap (`stipulations_only_in_gaps`).
 2. **Determinism.** `replay` gives the same result for any order of the same events (`determinism`).
 3. **Terminal states are final.** No event leaves `introduced`, `withdrawn` or `house-rule`; `refuted` leaves
    only for `house-rule`, at the user's request.

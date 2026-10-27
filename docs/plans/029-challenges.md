@@ -3,7 +3,24 @@
 **Status:** built (phases 1 to 6, merged 2026-10-26 to 27). **Revised 2026-10-27: the panel is five judges, not
 seven**, at the maintainer's request, to cut the cost of a challenge (each judge is an agent, and starting any agent
 costs about 60k tokens before it does any work). The five lenses are the original seven merged by their overlap, in
-the table below. Everything else, unanimity included, is unchanged; where this document still says seven, read five.
+the table below. Where this document still says seven, read five.
+
+**Revised 2026-10-27: the judges close the case by consensus** (decided with the maintainer after the first eval run,
+`evals/BASELINE.md`). What changed, and why:
+
+- **A judge is settled** when its latest position is on the final version of the case and carries evidence (pinned
+  sources, checked by the core and the verifier) and reasoning. Concessions and votes needed neither before.
+- **Introduction** needs all five convinced. **Refusal** needs three not convinced, and ends `refuted` if a
+  verified refutation stands (or the case contradicts a level 1 source) and `open` if the case is merely
+  unproven. One or two not convinced is no consensus: another round with the dissent visible, up to three rounds,
+  then `open`.
+- **Stipulations.** A gap rule is new content, which no source can support, so a case that fills a gap may mark
+  steps `stipulation`: the judges attack them on their merits and vote on accepting them. Before, no gap rule could
+  ever be introduced. They are refused in any case that challenges an official answer.
+- **Nothing closes a case for the judges.** An answer that revises the case is attacked again; one that doesn't
+  goes to the judges to settle, with no re-attack of an unchanged case. Five concessions on the unchanged case are
+  the five settled positions, so no separate vote runs. The round limit is three.
+- A case that ends `open` can also be kept as a house rule, as a `refuted` one can.
 **Decided with the user (2026-10-26):**
 
 - **Nothing the skill answers enters the database.** Established rules are only what official sources say:
