@@ -3,14 +3,19 @@ open Lean Challenge
 
 /-! Example event sequences for every path through both machines, and refused events. `lake test` runs this. -/
 
+/-- A JSON string. -/
 def jstr (s : String) : Json := toJson s
+/-- A JSON whole number. -/
 def jnat (n : Nat) : Json := toJson n
 
+/-- A valid pin: the SHA-256 of some text. -/
 def pin : String := hashString "pinned text"
 
+/-- A quoted source at `ref`, pinned by `sha`. -/
 def source (ref : String) (sha := pin) : Json :=
   Json.mkObj [("doc", jstr "cr"), ("ref", jstr ref), ("excerpt", jstr "quoted text"), ("text_sha256", jstr sha)]
 
+/-- A step citing `premises`. With no source it is an assumption unless told otherwise. -/
 def stepJ (id : Nat) (premises : List String) (src : Option Json) (assumption := src.isNone) (stip := false) : Json :=
   Json.mkObj [("id", jnat id), ("premises", toJson premises.toArray), ("source", src.getD Json.null),
     ("assumption", toJson assumption), ("stipulation", toJson stip), ("conclusion", jstr s!"conclusion {id}")]
@@ -18,20 +23,24 @@ def stepJ (id : Nat) (premises : List String) (src : Option Json) (assumption :=
 /-- What a concession or a vote rests on: the pinned sources checked. -/
 def evidenceJ : Json := Json.arr #[source "103.1"]
 
+/-- A case with one fact, the rule that the loser of game 1 chooses who plays first, and these steps. -/
 def caseJ (steps : List Json) (challenges : String := "none: a gap") : Json := Json.mkObj [
   ("facts", Json.arr #[Json.mkObj [("id", jnat 1), ("text", jstr "three players; game 2 of a match")]]),
   ("open_questions", Json.arr #[]), ("rule", jstr "the player who lost game 1 chooses who plays first"),
   ("applies_when", Json.arr #[jstr "a three-player match"]), ("challenges", jstr challenges),
   ("steps", Json.arr steps.toArray)]
 
+/-- A sound case: two sourced steps. -/
 def goodCase : Json :=
   caseJ [stepJ 1 ["F1"] (some (source "103.1")), stepJ 2 ["F1", "S1"] (some (source "103.2"))]
 
 /-- A gap rule: one sourced step, and the rule's own new content as a stipulation. -/
 def stipJ (id : Nat) (premises : List String) : Json := stepJ id premises none (assumption := false) (stip := true)
+/-- A case with a sourced step and a stipulation; a gap unless `challenges` says otherwise. -/
 def stipCase (challenges : String := "none: a gap") : Json :=
   caseJ [stepJ 1 ["F1"] (some (source "103.1")), stipJ 2 ["F1", "S1"]] challenges
 
+/-- A counterexample refutation of step `target`, with a sourced derivation by default. -/
 def refutationJ (target : Nat) (steps : List Json := [stepJ 1 ["C1"] (some (source "103.3"))]) : Json :=
   Json.mkObj [("target", jnat target), ("ground", jstr "counterexample"),
     ("argument", jstr "it gives the wrong answer for two players"), ("steps", Json.arr steps.toArray)]
@@ -39,10 +48,12 @@ def refutationJ (target : Nat) (steps : List Json := [stepJ 1 ["C1"] (some (sour
 /-- actor, type, the event's own fields -/
 abbrev Spec := String × String × List (String × Json)
 
+/-- One event file's text: event `seq` after `prev`, written on `device`. -/
 def mkEvent (seq : Nat) (prev : Option String) (device : String) (sp : Spec) : String :=
   (Json.mkObj ([("v", jnat 1), ("seq", jnat seq), ("prev", toJson prev), ("actor", jstr sp.1),
     ("device", jstr device), ("time", jstr "2026-10-26T10:00:00Z"), ("type", jstr sp.2.1)] ++ sp.2.2)).compress
 
+/-- Event files for these events, each linked to the one before it. -/
 def chain (specs : List Spec) (device : String := "laptop") : List String := Id.run do
   let mut prev : Option String := none
   let mut out : Array String := #[]
@@ -52,26 +63,37 @@ def chain (specs : List Spec) (device : String := "laptop") : List String := Id.
     prev := some (hashString raw)
   return out.toList
 
+/-- The user opens a challenge with this panel. -/
 def opening (panel : String := "independent") : Spec :=
   ("user", "open", [("statement", jstr "who chooses who plays first in game 2?"), ("panel", jstr panel)])
+/-- The clerk writes the brief for this case. -/
 def briefWith (c : Json) : Spec := ("clerk", "brief", [("case", c)])
+/-- The clerk writes the brief for the sound case. -/
 def briefS : Spec := briefWith goodCase
+/-- The user confirms the brief. -/
 def confirmS : Spec := ("user", "confirm", [("words", jstr "yes, that's my case")])
+/-- Judge `k` concedes in round `n`, with evidence. -/
 def concede (k n : Nat) : Spec :=
   (s!"judge-{k}", "file", [("round", jnat n), ("refutations", Json.arr #[]), ("concedes", jstr "I can't refute it"),
     ("concede_evidence", evidenceJ)])
+/-- Judge `k` files this refutation in round `n`. -/
 def refuteWith (k n : Nat) (r : Json) : Spec := (s!"judge-{k}", "file", [("round", jnat n), ("refutations", Json.arr #[r])])
+/-- Judge `k` refutes step `target` in round `n`. -/
 def refute (k n target : Nat) : Spec := refuteWith k n (refutationJ target)
+/-- Slots as JSON, from (judge, index) pairs. -/
 def slotsJ (slots : List (Nat × Nat)) : Json :=
   Json.arr (slots.map fun (j, i) => Json.mkObj [("judge", jnat j), ("index", jnat i)]).toArray
+/-- The verifier's report on round `n` at this stage, with these refutations standing. -/
 def reportS (n : Nat) (stage : String) (standing : List (Nat × Nat)) (passed := true) (conflict := false) : Spec :=
   ("verifier", "report", [("round", jnat n), ("stage", jstr stage), ("passed", toJson passed),
     ("level1_conflict", toJson conflict), ("standing", slotsJ standing)])
+/-- The user rebuts these refutations in round `n`. -/
 def answerS (n : Nat) (slots : List (Nat × Nat)) : Spec :=
   ("user", "answer", [("round", jnat n), ("words", jstr "my answers"),
     ("replies", Json.arr (slots.map fun (j, i) => Json.mkObj [("judge", jnat j), ("index", jnat i),
       ("kind", jstr "rebut"), ("words", jstr "that situation isn't a match"),
       ("steps", Json.arr #[stepJ 1 ["C1"] (some (source "103.4"))])]).toArray)])
+/-- The user replies to these refutations in round `n` with one kind of reply, and maybe a revised case. -/
 def replyS (kind : String) (n : Nat) (slots : List (Nat × Nat)) (revised : Option Json := none) : Spec :=
   ("user", "answer", [("round", jnat n), ("words", jstr "my answers"),
     ("replies", Json.arr (slots.map fun (j, i) => Json.mkObj [("judge", jnat j), ("index", jnat i),
@@ -79,15 +101,21 @@ def replyS (kind : String) (n : Nat) (slots : List (Nat × Nat)) (revised : Opti
     (match revised with
      | some c => [("case", c)]
      | none => []))
+/-- Judge `k` votes, convinced or not, with reasons and evidence. -/
 def voteS (k : Nat) (convinced : Bool) : Spec :=
   (s!"judge-{k}", "vote", [("convinced", toJson convinced), ("reason", jstr "step 2 settled it"),
     ("evidence", evidenceJ)])
+/-- An event whose only field is the actor's own words, such as a withdrawal. -/
 def words (actor type_ : String) : Spec := (actor, type_, [("words", jstr "in my own words")])
 
+/-- The five judges. -/
 def panel : List Nat := List.range' 1 5
+/-- All five judges concede in round `n`. -/
 def allConcede (n : Nat) : List Spec := panel.map (concede · n)
+/-- The judges in `ks` vote, each convinced or not as `convinced` says. -/
 def votesBy (ks : List Nat) (convinced : Nat → Bool) : List Spec := ks.map fun k => voteS k (convinced k)
 
+/-- The first refutation of each judge in `ks`. -/
 def standingOf (ks : List Nat) : List (Nat × Nat) := ks.map (·, 1)
 
 /-- Round 1: the judges in `refuters` file a refutation, the rest concede. -/
@@ -96,9 +124,11 @@ def roundOne (refuters : List Nat) : List Spec :=
 
 /-- The refutations fail verification, so nothing stands; the judges who didn't concede settle. -/
 def toVotingWith (refuters : List Nat) : List Spec := roundOne refuters ++ [reportS 1 "attack" []]
+/-- Judge 1's refutation fails verification: the judges settle by vote. -/
 def toVoting : List Spec := toVotingWith [1]
 /-- The refutations by `ks` are verified and stand. -/
 def toAnswerBy (ks : List Nat) : List Spec := roundOne ks ++ [reportS 1 "attack" (standingOf ks)]
+/-- Judge 1's refutation stands: the user answers it. -/
 def toAnswer : List Spec := toAnswerBy [1]
 
 /-- The judges are settled with no refutation standing, so the opinion of the court is drafted next. -/
@@ -106,20 +136,28 @@ def toDrafting : List Spec := [opening, briefS, confirmS] ++ allConcede 1 ++ [re
 
 /-- The opinion's holding is the case's rule; its reasoning is sourced. -/
 def holdingText : String := "the player who lost game 1 chooses who plays first"
+/-- The opinion's reasoning: one sourced step. -/
 def opinionSteps : List Json := [stepJ 1 ["F1"] (some (source "103.1"))]
+/-- Judge `k` writes revision `rev` of the opinion with these steps and this holding. -/
 def draftWith (rev : Nat) (steps : List Json) (holding : String := holdingText) (k : Nat := 1) : Spec :=
   (s!"judge-{k}", "opinion", [("revision", jnat rev), ("holding", jstr holding), ("steps", Json.arr steps.toArray)])
+/-- Judge 1 writes revision `rev` of a sound opinion. -/
 def draftS (rev : Nat := 0) : Spec := draftWith rev opinionSteps
+/-- An opinion's reasoning that states the gap case's stipulation. -/
 def stipOpinion : List Json := [stepJ 1 ["F1"] (some (source "103.1")), stipJ 2 ["F1", "S1"]]
+/-- Judge `k` answers revision `rev` of the draft with this stance. -/
 def respondS (k rev : Nat) (stance : String) : Spec :=
   (s!"judge-{k}", "respond", [("revision", jnat rev), ("stance", jstr stance),
     ("reason", jstr "the opinion states the rule and its reasons"), ("evidence", evidenceJ)])
+/-- All five judges answer revision `rev`, each with the stance `stance` gives it. -/
 def respondAll (rev : Nat) (stance : Nat → String) : List Spec := panel.map fun k => respondS k rev (stance k)
+/-- All five judges join revision `rev`. -/
 def allJoin (rev : Nat := 0) : List Spec := respondAll rev (fun _ => "join")
 /-- Everyone joins except the judges in `others`, who give `stance`. -/
 def allJoinBut (others : List Nat) (stance : String) (rev : Nat := 0) : List Spec :=
   respondAll rev (fun k => if others.contains k then stance else "join")
 
+/-- The first draft is out: the judges answer it. -/
 def toJoining : List Spec := toDrafting ++ [draftS]
 
 /-- The user revises the case; in round 1 all five judges attack it, and after that only the judges whose
@@ -148,17 +186,20 @@ def toRoundTwo : List Spec := [opening, briefS, confirmS] ++ roundSpecs 1
 /-- Judge 1 concedes the revised case; judges 2 to 5 last looked at the case before the revision. -/
 def toSettling : List Spec := toRoundTwo ++ [concede 1 2, reportS 2 "attack" []]
 
+/-- The outcome's name: the phase, or how replay failed. -/
 def outcomeName : Outcome → String
   | .state s _ => s.phase.name
   | .fork => "fork"
   | .broken _ => "broken"
   | .refused seq why => s!"refused {seq}: {why}"
 
+/-- Replays these event files and names the outcome. -/
 def stateOf (raws : List String) : String :=
   match parseAll raws with
   | .error e => s!"parse error: {e}"
   | .ok evs => outcomeName (replay evs)
 
+/-- How many of these events judge `k` can't see; 999 if replay fails. -/
 def hiddenFor (raws : List String) (k : Nat) : Nat :=
   match parseAll raws with
   | .ok evs =>
@@ -167,29 +208,37 @@ def hiddenFor (raws : List String) (k : Nat) : Nat :=
     | _ => 999
   | .error _ => 999
 
+/-- A named check: its name, whether it passed, and what went wrong. -/
 abbrev Check := String × Bool × String
 
+/-- Checks that a result is exactly what was expected. -/
 def expect (name actual expected : String) : Check :=
   (name, actual == expected, s!"got \"{actual}\", expected \"{expected}\"")
+/-- Checks that replay refused an event. -/
 def expectRefused (name actual : String) : Check :=
   (name, actual.startsWith "refused", s!"got \"{actual}\", expected a refusal")
+/-- Checks that an event file couldn't be read. -/
 def expectParseError (name actual : String) : Check :=
   (name, actual.startsWith "parse error", s!"got \"{actual}\", expected a parse error")
+/-- Checks that a count is exactly what was expected. -/
 def expectNat (name : String) (actual expected : Nat) : Check :=
   (name, actual == expected, s!"got {actual}, expected {expected}")
 
 /-- One field of the replay's JSON, as text. -/
 def replayField (raws : List String) (name : String) : String := ((replayJson raws).getObjValD name).compress
 
+/-- Two devices act in the same state: two events name the same predecessor. -/
 def forked : List String :=
   let base := chain [opening, briefS, confirmS]
   let head := hashString base.getLast!
   base ++ [mkEvent 3 (some head) "laptop" (concede 1 1), mkEvent 3 (some head) "phone" (concede 2 1)]
 
+/-- The brief is edited after the fact, so its hash no longer matches the next event's link. -/
 def edited : List String :=
   let raws := chain [opening, briefS, confirmS]
   [raws[0]!, raws[1]!.replace "three players" "four players", raws[2]!]
 
+/-- Every check, in order. -/
 def checks : List Check := [
   -- SHA-256 against the FIPS 180-4 vectors
   expect "sha256 of the empty string" (hashString "")
@@ -486,6 +535,7 @@ def checks : List Check := [
     ((ruleJson (Json.mkObj [("state", jstr "retired"), ("event", jstr "challenge-reopened")])).getObjValD "accepted").compress
     "false"]
 
+/-- Runs every check and prints each result; exits 1 if any failed. -/
 def main : IO UInt32 := do
   let mut failed := 0
   for (name, ok, detail) in checks do

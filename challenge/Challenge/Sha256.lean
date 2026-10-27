@@ -3,10 +3,16 @@
 
 The events of a challenge form a hash chain, and a challenge's id is the start of its opening event's hash, so
 the core computes SHA-256 itself (FIPS 180-4). Checked against the standard test vectors in `Tests.lean`.
+
+## Main definitions
+
+* `Challenge.Sha256.hash`: the SHA-256 of some bytes, in hex.
+* `Challenge.hashString`: the SHA-256 of a string's UTF-8 bytes.
 -/
 
 namespace Challenge.Sha256
 
+/-- The 64 round constants (FIPS 180-4, section 4.2.2). -/
 def roundConstants : Array UInt32 := #[
   0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
   0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
@@ -17,9 +23,11 @@ def roundConstants : Array UInt32 := #[
   0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2]
 
+/-- The initial hash value (FIPS 180-4, section 5.3.3). -/
 def initialHash : Array UInt32 :=
   #[0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]
 
+/-- Rotates a 32-bit word right by `n` bits. -/
 @[inline] def rotr (x n : UInt32) : UInt32 := (x >>> n) ||| (x <<< (32 - n))
 
 /-- The message, a 1 bit, zeros, and the message length in bits, to a multiple of 64 bytes. -/
@@ -33,6 +41,7 @@ def pad (msg : ByteArray) : ByteArray := Id.run do
     out := out.push (UInt8.ofNat ((bits >>> (8 * (7 - i))) % 256))
   return out
 
+/-- Byte `i` of `b`, as a 32-bit word. -/
 def byteAt (b : ByteArray) (i : Nat) : UInt32 := (b.get! i).toUInt32
 
 /-- One 64-byte block, starting at `off`. -/
@@ -73,8 +82,10 @@ def compress (st : Array UInt32) (blk : ByteArray) (off : Nat) : Array UInt32 :=
     a := t1 + t2
   return #[st[0]! + a, st[1]! + b, st[2]! + c, st[3]! + d, st[4]! + e, st[5]! + f, st[6]! + g, st[7]! + h]
 
+/-- The lowercase hex digit for `n`, from 0 to 15. -/
 def hexDigit (n : Nat) : Char := if n < 10 then Char.ofNat (48 + n) else Char.ofNat (87 + n)
 
+/-- A 32-bit word as 8 lowercase hex digits. -/
 def hex32 (x : UInt32) : String := Id.run do
   let mut s := ""
   for i in [0:8] do

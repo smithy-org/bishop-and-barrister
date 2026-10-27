@@ -10,6 +10,8 @@ named below must exist and may rest only on Lean's three standard axioms, never 
 
 open Lean Elab Command
 
+/-- `#assert_proved` checks that each named theorem rests only on `propext`, `Classical.choice` and `Quot.sound`,
+and fails the build if one doesn't. -/
 elab "#assert_proved " ids:ident* : command => do
   for id in ids do
     let name ← resolveGlobalConstNoOverload id

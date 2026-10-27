@@ -1,6 +1,15 @@
 import Challenge
+
+/-!
+# The `bab-challenge` command
+
+The command-line tool the Python wrapper runs. It reads one JSON object on stdin and prints one JSON reply on
+stdout: `replay`, `check`, `view --judge k` and `rule` are in `Challenge.Api`, and `version` prints the version.
+-/
+
 open Lean Challenge
 
+/-- The help text, printed for a command it doesn't know. -/
 def usage : String :=
   "usage: bab-challenge replay | check | view --judge <k> | rule | version
   replay  stdin {\"events\": [<event file text>...]}                → the state and who acts next
@@ -8,12 +17,15 @@ def usage : String :=
   view    stdin {\"events\": [...]}                                 → the event files judge k may see
   rule    stdin {\"state\": \"current\", \"event\": \"source-changed\"} → the rule's next state"
 
+/-- The tool's version and the event format it reads. -/
 def version : String := "bab-challenge 0.2.0 (challenge format v1)"
 
+/-- Reads a stream to its end. -/
 partial def readAll (h : IO.FS.Stream) (acc : String) : IO String := do
   let line ← h.getLine
   if line.isEmpty then pure acc else readAll h (acc ++ line)
 
+/-- The event files' text from the input's `events` list. -/
 def eventsOf (j : Json) : Except String (List String) := do
   (← getArr j "events").mapM fun v =>
     match v with
@@ -32,6 +44,7 @@ def respond (args : List String) (j : Json) : Except String Json := do
     | none => throw usage
   | _ => throw usage
 
+/-- Runs one command: reads stdin, prints the reply, and exits 0, or 2 if the input or the command is wrong. -/
 def main (args : List String) : IO UInt32 := do
   if args == ["version"] || args == ["--version"] then
     IO.println version
