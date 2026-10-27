@@ -51,10 +51,11 @@ def replay (evs : List Entry) : Outcome :=
   | .fork => .fork
   | .broken why => .broken why
 
-/-- A judge's filing or vote: what the other judges mustn't see until the round is complete. -/
+/-- A judge's filing, vote or response to the draft opinion: what the other judges mustn't see until the phase is
+complete. (The draft itself is not hidden: the judges must read it to answer it.) -/
 def isPanelAct (x : Entry) : Bool :=
   match x.event with
-  | .file _ | .vote _ => true
+  | .file _ | .vote _ | .respond _ => true
   | _ => false
 
 /-- Hidden from judge `k` while the phase that started at `cur` lasts: another judge's filing or vote in it. -/

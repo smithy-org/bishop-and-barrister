@@ -12,7 +12,7 @@ Usage:
     python scripts/challenge.py brief <id> case.json                 # the clerk's brief
     python scripts/challenge.py edit <id> case.json --user-said "F2 is wrong: it was game 2"
     python scripts/challenge.py confirm <id> --user-said "Yes, that's my case"
-    python scripts/challenge.py add <id> event.json --as judge-3     # a filing, an answer, a vote...
+    python scripts/challenge.py add <id> event.json --as judge-3     # a filing, an answer, a vote, the opinion...
     python scripts/challenge.py verify <id>                          # the verifier's report
     python scripts/challenge.py status <id>                          # the state, and who acts next
     python scripts/challenge.py show <id> [--judge 3]                # the events (judge 3's view)
@@ -239,23 +239,89 @@ def save_rule(rule: dict, path: Path) -> None:
     path.write_text(json.dumps(rule, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def positions(events: list[dict]) -> list[dict]:
+def judge_of(event: dict) -> int:
+    return int(event["actor"].removeprefix("judge-"))
+
+
+def positions(events: list[dict], responses: bool = False) -> list[dict]:
     """Each judge's settled position, with its reasoning and evidence: their last vote, or their last filing (a
-    concession is a convinced position, a refutation not)."""
+    concession is a convinced position, a refutation not). With `responses`, a judge's answer to the draft opinion
+    is a later position: a dissent is not convinced; a join or a concurrence is."""
     latest = {}
     for e in events:
         if not e.get("actor", "").startswith("judge-"):
             continue
-        k = int(e["actor"].removeprefix("judge-"))
+        k = judge_of(e)
         if e["type"] == "vote":
             latest[k] = {"judge": k, "convinced": e["convinced"], "reason": e["reason"], "evidence": e.get("evidence", []),
                          "how": "vote"}
         elif e["type"] == "file":
-            conceded = not e["refutations"]
-            latest[k] = {"judge": k, "convinced": conceded,
-                         "reason": e.get("concedes", "") if conceded else "filed refutations",
-                         "evidence": e.get("concede_evidence", []) if conceded else [], "how": "filing"}
+            if not e["refutations"]:
+                latest[k] = {"judge": k, "convinced": True, "reason": e.get("concedes", ""),
+                             "evidence": e.get("concede_evidence", []), "how": "filing"}
+            else:
+                sources = [st["source"] for r in e["refutations"] for st in r.get("steps", [])
+                           if isinstance(st.get("source"), dict)]
+                latest[k] = {"judge": k, "convinced": False,
+                             "reason": "; ".join(r["argument"] for r in e["refutations"]), "evidence": sources,
+                             "how": "filing"}
+        elif e["type"] == "respond" and responses:
+            latest[k] = {"judge": k, "convinced": e["stance"] != "dissent", "reason": e["reason"],
+                         "evidence": e.get("evidence", []), "how": e["stance"]}
     return [latest[k] for k in sorted(latest)]
+
+
+def opinion_record(events: list[dict]) -> dict | None:
+    """The final Opinion of the Court: its holding, reasoning and stipulations, who joined it, and every
+    concurrence and dissent a draft drew along the way."""
+    drafts = [e for e in events if e["type"] == "opinion"]
+    if not drafts:
+        return None
+    final = drafts[-1]
+    record = {"author": judge_of(final), "revision": final["revision"], "revisions": len(drafts) - 1,
+              "holding": final["holding"], "steps": final["steps"],
+              "stipulations": [st["conclusion"] for st in final["steps"] if st.get("stipulation")],
+              "joined": [], "concurrences": [], "dissents": []}
+    for e in events:
+        if e["type"] != "respond":
+            continue
+        item = {"judge": judge_of(e), "revision": e["revision"], "reason": e["reason"],
+                "evidence": e.get("evidence", [])}
+        if e["stance"] == "join":
+            if e["seq"] > final["seq"]:
+                record["joined"].append(item)
+        else:
+            record["concurrences" if e["stance"] == "concur" else "dissents"].append(item)
+    return record
+
+
+def cited(sources: list[dict]) -> str:
+    return "; ".join(f"{s.get('doc', 'cr').upper()} {s.get('ref')}" for s in sources) or "no sources"
+
+
+def per_curiam(cid: str, state: dict, events: list[dict]) -> dict:
+    """The short record of a refused case, assembled from the judges' settled positions: no agent writes it."""
+    case = events[state["case_seq"]]["case"]
+    pos = positions(events, responses=True)
+    against = [p for p in pos if not p["convinced"]]
+    prose = [f"Per curiam. The court refused the rule \"{case['rule']}\": {state.get('why') or state['state']}."]
+    for label, group in (("Not convinced", against), ("Convinced", [p for p in pos if p["convinced"]])):
+        if group:
+            prose.append(f"{label} ({len(group)}): " + " ".join(
+                f"Judge {p['judge']}: {p['reason']} [{cited(p['evidence'])}]." for p in group))
+    prose.append("The established answer stands." if state["state"] == "refuted" else
+                 "The case is unproven; the established answer stands for now.")
+    return {"type": "per-curiam", "challenge": cid, "outcome": state["state"], "why": state.get("why"),
+            "final_hash": state["head"], "rule": case["rule"], "positions": pos, "text": " ".join(prose)}
+
+
+def write_per_curiam(cid: str, state: dict) -> Path:
+    folder = challenge_dir(cid) / "record"
+    folder.mkdir(exist_ok=True)
+    path = folder / "per-curiam.json"
+    path.write_text(json.dumps(per_curiam(cid, state, events_in_order(cid)), indent=2, ensure_ascii=False) + "\n",
+                    encoding="utf-8")
+    return path
 
 
 def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
@@ -266,6 +332,8 @@ def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
     case = events[state["case_seq"]]["case"]
     reports = [e for e in events if e["type"] == "report"]
     opening, last = events[0], events[-1]
+    # An introduced rule carries its Opinion of the Court; a house rule departs from the court and has none.
+    opinion = None if house_rule else opinion_record(events)
     return {
         "id": f"house-{cid}" if house_rule else cid, "kind": "rule", "level": 5, "house_rule": house_rule,
         "state": "current", "challenge": cid, "final_hash": state["head"],
@@ -273,6 +341,7 @@ def rule_from(cid: str, state: dict, house_rule: bool) -> dict:
         "facts": case["facts"], "steps": case["steps"],
         "stipulations": [st["conclusion"] for st in case["steps"] if st.get("stipulation")],
         "votes": positions(events),
+        "opinion": opinion,
         "verifier_report_sha256": sha256_file(files[reports[-1]["seq"]]) if reports else None,
         "opened": {"device": opening["device"], "time": opening["time"]},
         "introduced": {"device": last["device"], "time": last["time"]},
@@ -289,7 +358,7 @@ def settle(cid: str, state: dict) -> str | None:
         rule = load_rule(path)
         if state["state"] == "introduced":
             fresh = rule_from(cid, state, house_rule=False)
-            rule.update({k: fresh[k] for k in ("rule", "applies_when", "challenges", "facts", "steps")})
+            rule.update({k: fresh[k] for k in ("rule", "applies_when", "challenges", "facts", "steps", "opinion")})
             rule.setdefault("renewals", []).append({"challenge": cid, "final_hash": state["head"],
                                                     "votes": fresh["votes"], "time": fresh["introduced"]["time"]})
             rule["state"] = rule_step(rule["state"], "challenge-introduced")
@@ -305,6 +374,9 @@ def settle(cid: str, state: dict) -> str | None:
     if state["state"] == "house-rule":
         save_rule(rule_from(cid, state, house_rule=True), RULES_DIR / f"house-{cid}.json")
         return f"Kept as a house rule: rules/house-{cid}.json."
+    if state["state"] in ("refuted", "open"):
+        path = write_per_curiam(cid, state)
+        return f"Per curiam record: {path.relative_to(judge.HOME).as_posix()}."
     return None
 
 
@@ -317,12 +389,13 @@ def recheck_rules(offline: bool = False) -> list[tuple[str, list[str], str]]:
         if rule["state"] != "current":
             continue
         reasons = []
-        for st in rule["steps"]:
-            src = st.get("source")
-            if isinstance(src, dict) and not (offline and src.get("doc") == "oracle"):
-                why = verify_source(src)
-                if why:
-                    reasons.append(f"step {st['id']}: {why}")
+        for label, steps in (("step", rule["steps"]), ("opinion step", (rule.get("opinion") or {}).get("steps", []))):
+            for st in steps:
+                src = st.get("source")
+                if isinstance(src, dict) and not (offline and src.get("doc") == "oracle"):
+                    why = verify_source(src)
+                    if why:
+                        reasons.append(f"{label} {st['id']}: {why}")
         if not reasons:
             continue
         rule["state"] = rule_step(rule["state"], "source-changed")
@@ -356,12 +429,15 @@ def sources_in(fields: dict) -> list[tuple[str, dict]]:
 
     if isinstance(fields.get("case"), dict):
         steps("case", fields["case"].get("steps"))
+    if fields.get("type") == "opinion":
+        steps("the opinion", fields.get("steps"))
     for i, r in enumerate(fields.get("refutations") or [], 1):
         steps(f"refutation {i}", r.get("steps"))
     for rp in fields.get("replies") or []:
         steps(f"reply to judge {rp.get('judge')}'s refutation {rp.get('index')}", rp.get("steps"))
-    # A concession and a vote each rest on the sources the judge checked.
-    for key, label in (("concede_evidence", "the concession"), ("evidence", "the vote")):
+    # A concession, a vote and a response to the draft opinion each rest on the sources the judge checked.
+    for key, label in (("concede_evidence", "the concession"),
+                       ("evidence", "the response" if fields.get("type") == "respond" else "the vote")):
         for i, src in enumerate(fields.get(key) or [], 1):
             if isinstance(src, dict):
                 found.append((f"{label}'s evidence {i}", src))
@@ -551,14 +627,22 @@ def build_report(cid: str, state: dict) -> dict:
 NEXT = {
     "draft": "The clerk writes the brief in the proof standard: challenge.py brief {id} case.json",
     "briefed": "The user confirms the brief (challenge.py confirm {id} --user-said ...) or corrects it (edit)",
-    "attack": "Round {round}: {waiting} still to file. Each judge files refutations or concedes (challenge.py add {id} filing.json "
-              "--as judge-<k>). They can't see each other's filings until all five have filed",
+    "attack": "Round {round}: {waiting} still to file. Each convened judge files refutations or concedes (challenge.py add {id} "
+              "filing.json --as judge-<k>). They can't see each other's filings until all have filed. After a revision "
+              "only the judges whose refutation it answered are convened; the others' concessions stand for now",
     "verify": "The verifier checks round {round}'s refutations: challenge.py verify {id}",
     "answer": "The user answers each verified refutation still standing ({standing}): concede, fix the case, or "
               "rebut (challenge.py add {id} answer.json --as user)",
     "verify-answers": "The verifier checks the user's answers to round {round}: challenge.py verify {id}",
-    "voting": "The judges settle, blind to each other's positions; {waiting} still to settle. Each vote needs its "
-              "reasoning and evidence (challenge.py add {id} vote.json --as judge-<k>)",
+    "voting": "The judges settle on the case as it now stands, blind to each other's positions; {waiting} still to "
+              "settle (a concession counts only if it came in a round with no refutation). Each vote needs its reasoning and "
+              "evidence (challenge.py add {id} vote.json --as judge-<k>)",
+    "drafting": "All five are settled and convinced. {waiting} writes the Opinion of the Court: the holding (the rule's "
+                "text), the reasoning with pinned sources, and the case's stipulations (challenge.py add {id} "
+                "opinion.json --as judge-<k>)",
+    "joining": "The draft opinion is out; {waiting} still to answer it, blind to each other. Each joins, concurs in the "
+               "judgment only, or dissents, with reasoning and evidence (challenge.py add {id} response.json --as "
+               "judge-<k>). The rule is introduced only if all five join",
     "open": "Open: the user can return with new facts or sources (a reopen event), keep it as a house rule, or "
             "withdraw it",
 }
@@ -571,6 +655,10 @@ def status_text(cid: str, state: dict) -> str:
              f" ({state['panel']} panel)"]
     if state.get("why"):
         lines.append(f"Why: {state['why']}")
+    if state.get("revision"):
+        lines.append(f"The opinion is on revision {state['revision']} (at most 2).")
+    if state["state"] in ("refuted", "open") and (CHALLENGES_DIR / cid / "record" / "per-curiam.json").exists():
+        lines.append(f"A per curiam record of the judges' positions is in challenges/{cid}/record/per-curiam.json.")
     if state["settled"]:
         lines.append("Settled: nothing more happens." if state["state"] != "refuted" else
                      "Settled. The user may still keep the case as a house rule (add a house-rule event).")
@@ -632,7 +720,7 @@ def cmd_add(args) -> int:
     for key in ("v", "seq", "prev", "actor", "device", "time"):
         fields.pop(key, None)
     if "type" not in fields:
-        judge.die("The event needs a \"type\" (file, answer, vote, house-rule, reopen...).")
+        judge.die("The event needs a \"type\" (file, answer, vote, opinion, respond, house-rule, reopen...).")
     _, state = propose(args.id, args.actor, fields, f"{args.actor}: {fields['type']}", words=fields.get("words"))
     print(status_text(args.id, state))
     return 0
