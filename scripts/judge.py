@@ -224,6 +224,43 @@ def append_deliberation(rid: str, entries: list[dict]) -> None:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
+def validate_citation(c: dict, label: str) -> list[str]:
+    """One citation: what it cites exists in the current documents, or it carries its own excerpt."""
+    doc = c.get("doc", "cr")
+    if doc == "cr":
+        if c.get("ref") not in cr_rules():
+            return [f"{label} cites CR {c.get('ref')}, which doesn't exist in the current CR"]
+    elif doc in lookup.DOCS:
+        if not (lookup.DOCS_DIR / f"{doc}.json").exists():
+            return [f"{label} cites the {lookup.DOCS[doc]}, which isn't downloaded (python scripts/sources.py update {doc})"]
+        if not lookup.doc_section(doc, str(c.get("ref", ""))):
+            return [f"{label} cites {doc.upper()} {c.get('ref')!r}, which doesn't name exactly one section of the current "
+                    f"{lookup.DOCS[doc]} (see lookup.py --doc {doc} toc)"]
+    elif not c.get("excerpt"):
+        return [f"{label} ({doc}) needs an 'excerpt'"]
+    return []
+
+
+def pin_citation(c: dict) -> None:
+    """Pin one valid citation to the exact text it relies on (text_sha256), with an excerpt of it."""
+    c.setdefault("doc", "cr")
+    if c["doc"] == "cr":
+        text = cr_rules()[c["ref"]]
+        c["text_sha256"] = sha256_text(text)
+        c.setdefault("excerpt", text[:300])
+    elif c["doc"] in lookup.DOCS:
+        # Store the section's own key, so a heading quoted in 'ref' still finds it after an update.
+        section = lookup.doc_section(c["doc"], str(c["ref"]))
+        c["ref"] = section["key"]
+        c["heading"] = section["heading"]
+        c["text_sha256"] = sha256_text(section["text"])
+        c["version"] = lookup.load_doc(c["doc"]).get("effective")
+        c.setdefault("level", 2)
+        c.setdefault("excerpt", section["text"][:300])
+    elif c.get("excerpt"):
+        c["text_sha256"] = sha256_text(c["excerpt"])
+
+
 def validate(r: dict) -> list[str]:
     """The fields an agent relies on must be there. Empty lists are fine: they mean 'none'."""
     errors = []
@@ -256,19 +293,7 @@ def validate(r: dict) -> list[str]:
     if len(set(ids)) != len(ids) or not all(ids):
         errors.append("every citation needs a unique 'id'")
     for c in items("citations"):
-        doc = c.get("doc", "cr")
-        if doc == "cr":
-            if c.get("ref") not in cr_rules():
-                errors.append(f"citation {c.get('id')} cites CR {c.get('ref')}, which doesn't exist in the current CR")
-        elif doc in lookup.DOCS:
-            if not (lookup.DOCS_DIR / f"{doc}.json").exists():
-                errors.append(f"citation {c.get('id')} cites the {lookup.DOCS[doc]}, which isn't downloaded "
-                              f"(python scripts/sources.py update {doc})")
-            elif not lookup.doc_section(doc, str(c.get("ref", ""))):
-                errors.append(f"citation {c.get('id')} cites {doc.upper()} {c.get('ref')!r}, which doesn't name exactly one "
-                              f"section of the current {lookup.DOCS[doc]} (see lookup.py --doc {doc} toc)")
-        elif not c.get("excerpt"):
-            errors.append(f"citation {c.get('id')} ({doc}) needs an 'excerpt'")
+        errors += validate_citation(c, f"citation {c.get('id')}")
     for i, step in enumerate(items("steps"), 1):
         refs = step.get("refs") or []
         if not refs:
@@ -288,24 +313,8 @@ def validate(r: dict) -> list[str]:
 def fill_sources(r: dict) -> list[str]:
     """Pin each rules citation and card to the exact text it relied on. Returns warnings."""
     warnings = []
-    rules = cr_rules()
     for c in r["citations"]:
-        c.setdefault("doc", "cr")
-        if c["doc"] == "cr":
-            text = rules[c["ref"]]
-            c["text_sha256"] = sha256_text(text)
-            c.setdefault("excerpt", text[:300])
-        elif c["doc"] in lookup.DOCS:
-            # Store the section's own key, so a heading quoted in 'ref' still finds it after an update.
-            section = lookup.doc_section(c["doc"], str(c["ref"]))
-            c["ref"] = section["key"]
-            c["heading"] = section["heading"]
-            c["text_sha256"] = sha256_text(section["text"])
-            c["version"] = lookup.load_doc(c["doc"]).get("effective")
-            c.setdefault("level", 2)
-            c.setdefault("excerpt", section["text"][:300])
-        elif c.get("excerpt"):
-            c["text_sha256"] = sha256_text(c["excerpt"])
+        pin_citation(c)
     for card in r["cards"]:
         found = resolve_card(card["name"])
         if found:
