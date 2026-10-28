@@ -100,10 +100,10 @@ git clone https://github.com/smithy-org/bishop-and-barrister ~/.claude/skills/bi
 
 ### claude.ai
 
-1. Get `bishop-and-barrister.zip`. Releases after v0.2.0 attach it; until then, build it from a clone with
-   `python tools/package_skill.py`, which writes `dist/bishop-and-barrister.zip`. Don't use GitHub's
-   "Download ZIP": its folder is named `bishop-and-barrister-main`, and claude.ai needs the folder to match the
-   skill's name.
+1. Download `bishop-and-barrister.zip` from the
+   [latest release](https://github.com/smithy-org/bishop-and-barrister/releases/latest), or build it from a
+   clone with `python tools/package_skill.py`. Don't use GitHub's "Download ZIP": its folder is named
+   `bishop-and-barrister-main`, and claude.ai needs the folder to match the skill's name.
 2. Turn on code execution: Settings, Capabilities, "Code execution and file creation". On Team and Enterprise
    plans an owner enables code execution and skills for the organization first.
 3. Upload the zip under Skills on the same page.
