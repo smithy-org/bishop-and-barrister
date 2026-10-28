@@ -15,7 +15,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest import mock
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "plugin" / "skills" / "bishop-and-barrister" / "scripts"))
 import lookup  # noqa: E402
 import paths  # noqa: E402
 

@@ -8,7 +8,7 @@ on:
   push:
     branches: [main]
     tags: ['v[0-9]+.[0-9]+.[0-9]+']
-    paths: ['challenge/**', 'scripts/**', 'tests/test_challenge.py', 'evals/challenges/**', '.github/workflows/challenge.yml']
+    paths: ['challenge/**', 'plugin/**', 'tests/test_challenge.py', 'evals/challenges/**', '.github/workflows/challenge.yml']
   # Every pull request, whatever it touches: proofs is a required check on main, and a required check that
   # never starts would hold the pull request open.
   pull_request:
@@ -65,9 +65,9 @@ jobs:
             echo "::error::the tag is $GITHUB_REF_NAME but bab-challenge says $built; bump the version in challenge/Main.lean first"
             exit 1
           fi
-          plugin=$(python3 -c "import json; print(json.load(open('../.claude-plugin/plugin.json'))['version'])")
+          plugin=$(python3 -c "import json; print(json.load(open('../plugin/.claude-plugin/plugin.json'))['version'])")
           if [ "v$plugin" != "$GITHUB_REF_NAME" ]; then
-            echo "::error::the tag is $GITHUB_REF_NAME but .claude-plugin/plugin.json says $plugin; Claude Code only updates installs when it changes"
+            echo "::error::the tag is $GITHUB_REF_NAME but plugin/.claude-plugin/plugin.json says $plugin; Claude Code only updates installs when it changes"
             exit 1
           fi
       - name: No sorry or admit in the sources
@@ -156,7 +156,7 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes "" || true
           gh release upload "$GITHUB_REF_NAME" "$ASSET" "$ASSET.sha256" --clobber
 
-  # The pins for challenge/binaries.json: each binary's file name and SHA-256, attached as pins.json.
+  # The pins for plugin/skills/bishop-and-barrister/binaries.json: each binary's file name and SHA-256, attached as pins.json.
   pins:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: binaries

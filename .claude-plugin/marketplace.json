@@ -5,7 +5,7 @@
   "plugins": [
     {
       "name": "bishop-and-barrister",
-      "source": "./",
+      "source": "./plugin",
       "description": "Answers Magic: the Gathering rules questions from the Comprehensive Rules, current Oracle text and the tournament documents, with rule citations."
     }
   ]

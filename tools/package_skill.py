@@ -2,10 +2,10 @@
 """Build bishop-and-barrister.zip, the skill as claude.ai's skills settings take it.
 
 claude.ai wants one folder at the top of the zip, named after the skill, with SKILL.md inside, and a
-description of at most 200 characters. The zip holds only what the skill needs at run time: SKILL.md,
-CHALLENGE.md, the scripts, the shipped reference files and the challenge binary's pins. Tests, evals, the
-docs, the Lean sources and anything downloaded stay out. `when_to_use`, which Claude Code reads beside the
-description, is dropped from the zip's SKILL.md because claude.ai documents only `name` and `description`.
+description of at most 200 characters. The zip holds the skill's folder, plugin/skills/bishop-and-barrister,
+the same files the Claude Code plugin installs, plus the plugin's LICENSE and NOTICE. Anything downloaded into
+it stays out. `when_to_use`, which Claude Code reads beside the description, is dropped from the zip's
+SKILL.md because claude.ai documents only `name` and `description`.
 
 Usage:
     python tools/package_skill.py                          # dist/bishop-and-barrister.zip
@@ -22,9 +22,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 NAME = "bishop-and-barrister"
+PLUGIN = ROOT / "plugin"
+SKILL = PLUGIN / "skills" / NAME
 DESCRIPTION_LIMIT = 200
-FILES = ("SKILL.md", "CHALLENGE.md", "README.md", "LICENSE", "NOTICE", "requirements.txt")
-TREES = ("scripts", "reference")
+LEGAL = ("LICENSE", "NOTICE")
 # Downloaded by earlier versions into reference/, and never shipped.
 DOWNLOADED = {"MagicCompRules.txt", "version.json", "sources.json", "docs", ".gitignore"}
 
@@ -61,7 +62,7 @@ def skill_md_for_claude_ai() -> str:
     Raises:
         SystemExit: When the name doesn't match the folder or the description is too long.
     """
-    fields, body = frontmatter((ROOT / "SKILL.md").read_text(encoding="utf-8"))
+    fields, body = frontmatter((SKILL / "SKILL.md").read_text(encoding="utf-8"))
     if fields.get("name") != NAME:
         sys.exit(f"SKILL.md's name is {fields.get('name')!r}; claude.ai needs it to match the folder, {NAME!r}")
     description = fields.get("description", "")
@@ -71,13 +72,13 @@ def skill_md_for_claude_ai() -> str:
 
 
 def runtime_files() -> list[Path]:
-    """Every file the skill needs at run time, relative to the repository root."""
-    files = [Path(f) for f in FILES if (ROOT / f).exists()]
-    for tree in TREES:
-        for path in sorted((ROOT / tree).rglob("*")):
-            rel = path.relative_to(ROOT)
-            if path.is_file() and "__pycache__" not in rel.parts and not DOWNLOADED & set(rel.parts[1:2]):
-                files.append(rel)
+    """Every file in the skill's folder, relative to it, leaving out caches and anything downloaded into reference/."""
+    files = []
+    for path in sorted(SKILL.rglob("*")):
+        rel = path.relative_to(SKILL)
+        downloaded = rel.parts[0] == "reference" and DOWNLOADED & set(rel.parts[1:2])
+        if path.is_file() and "__pycache__" not in rel.parts and not downloaded:
+            files.append(rel)
     return files
 
 
@@ -86,7 +87,7 @@ def build(out: Path, pins: Path | None = None) -> list[str]:
 
     Args:
         out: Where to write it.
-        pins: A release's pins.json to ship as challenge/binaries.json; the repository's copy if None.
+        pins: A release's pins.json to ship as binaries.json; the repository's copy if None.
 
     Returns:
         The names inside the zip.
@@ -95,9 +96,11 @@ def build(out: Path, pins: Path | None = None) -> list[str]:
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr(f"{NAME}/SKILL.md", skill_md_for_claude_ai())
         for rel in runtime_files():
-            if rel.as_posix() != "SKILL.md":
-                z.write(ROOT / rel, f"{NAME}/{rel.as_posix()}")
-        z.write(pins or ROOT / "challenge" / "binaries.json", f"{NAME}/challenge/binaries.json")
+            if rel.as_posix() not in ("SKILL.md", "binaries.json"):
+                z.write(SKILL / rel, f"{NAME}/{rel.as_posix()}")
+        z.write(pins or SKILL / "binaries.json", f"{NAME}/binaries.json")
+        for name in LEGAL:
+            z.write(PLUGIN / name, f"{NAME}/{name}")
         return z.namelist()
 
 
@@ -109,7 +112,7 @@ def main() -> int:
     """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out", type=Path, default=ROOT / "dist" / f"{NAME}.zip")
-    parser.add_argument("--pins", type=Path, help="a release's pins.json, shipped as challenge/binaries.json")
+    parser.add_argument("--pins", type=Path, help="a release's pins.json, shipped as binaries.json")
     args = parser.parse_args()
     names = build(args.out, args.pins)
     print(f"Wrote {args.out}: {len(names)} files, {args.out.stat().st_size // 1024} KB")

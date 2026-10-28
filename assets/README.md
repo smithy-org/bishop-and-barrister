@@ -15,7 +15,7 @@ needed to show them.
 Colours: Ink navy `#1C2B3A`, Oxblood `#6B1E23` (the ampersand on light), Parchment gold `#E3C9A8` (the
 ampersand on dark), Ivory `#FBFAF7`.
 
-`.claude-plugin/icon.png` is `bb-tile.svg` at 1024 px. Claude Code accepts only PNG or JPEG there, so
+`plugin/.claude-plugin/icon.png` is `bb-tile.svg` at 1024 px. Claude Code accepts only PNG or JPEG there, so
 re-render it when the tile changes, for example with headless Chrome or Edge:
 
 ```bash

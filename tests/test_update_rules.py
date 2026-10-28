@@ -15,7 +15,7 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from unittest import mock
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "plugin" / "skills" / "bishop-and-barrister" / "scripts"))
 import paths  # noqa: E402
 import update_rules  # noqa: E402
 

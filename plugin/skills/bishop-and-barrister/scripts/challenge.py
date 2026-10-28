@@ -42,7 +42,7 @@ import paths  # noqa: E402  (where the user's data lives)
 import judge  # noqa: E402  (the record: git, citations, the index)
 import lookup  # noqa: E402
 
-BINARIES = Path(os.environ.get("BISHOP_AND_BARRISTER_BINARIES") or judge.SKILL_DIR / "challenge" / "binaries.json")
+BINARIES = Path(os.environ.get("BISHOP_AND_BARRISTER_BINARIES") or judge.SKILL_DIR / "binaries.json")
 RELEASES = os.environ.get("BISHOP_AND_BARRISTER_RELEASES") or "https://github.com/smithy-org/bishop-and-barrister/releases/download"
 # A locally built core (challenge/.lake/build/bin/bab-challenge), for working on the core itself. Not checked.
 DEV_BIN = os.environ.get("BISHOP_AND_BARRISTER_CHALLENGE_BIN")
@@ -59,7 +59,7 @@ class Unavailable(Exception):
 
 
 def platform_key() -> str | None:
-    """Name this platform as challenge/binaries.json does ("linux-x64", "macos-arm64"...), or None if unknown."""
+    """Name this platform as binaries.json does ("linux-x64", "macos-arm64"...), or None if unknown."""
     system = {"linux": "linux", "darwin": "macos", "win32": "windows"}.get(sys.platform)
     arch = {"x86_64": "x64", "amd64": "x64", "arm64": "arm64", "aarch64": "arm64"}.get(platform.machine().lower())
     return f"{system}-{arch}" if system and arch else None
@@ -77,7 +77,7 @@ def sha256_file(path: Path) -> str:
 def find_binary() -> Path:
     """Find the core for this platform, downloading it once from the pinned release.
 
-    The download is refused unless its SHA-256 matches challenge/binaries.json, so a tampered or
+    The download is refused unless its SHA-256 matches binaries.json, so a tampered or
     mismatched release never runs. A core named by BISHOP_AND_BARRISTER_CHALLENGE_BIN is used as it is,
     unchecked: that is for working on the core itself.
 
@@ -106,7 +106,7 @@ def find_binary() -> Path:
     digest = hashlib.sha256(data).hexdigest()
     if digest != entry["sha256"]:
         raise Unavailable(f"refused the challenge core from {url}: its SHA-256 is {digest}, "
-                          f"not the {entry['sha256']} pinned in challenge/binaries.json")
+                          f"not the {entry['sha256']} pinned in binaries.json")
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".part")
     tmp.write_bytes(data)
