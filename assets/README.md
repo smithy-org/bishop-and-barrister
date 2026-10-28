@@ -1,16 +1,21 @@
 # Brand assets
 
-From the Bishop & Barrister brand guide. The lettering is Playfair Display, outlined to paths, so no font is
-needed to show them.
+From the Bishop & Barrister brand guide. The lettering is Playfair Display, and the katakana are Shippori
+Mincho, both outlined to paths, so no font is needed to show them.
 
-| File                     | Use                                                            |
-| ------------------------ | -------------------------------------------------------------- |
-| `bb-lockup-light-bg.svg` | The README header on a light background                        |
-| `bb-lockup-dark-bg.svg`  | The README header on a dark background                         |
-| `bb-tile.svg`            | App icons, avatars, the GitHub picture; source of the plugin icon |
-| `bb-mark.svg`            | The mark alone, on light backgrounds                           |
-| `bb-mark-reversed.svg`   | The mark alone, on dark backgrounds                            |
-| `bb-favicon.svg`         | Small sizes: the ampersand alone                               |
+| File                        | Use                                                               |
+| --------------------------- | ----------------------------------------------------------------- |
+| `bb-lockup-light-bg.svg`    | The README header on a light background                           |
+| `bb-lockup-dark-bg.svg`     | The README header on a dark background                            |
+| `bb-lockup-ja-light-bg.svg` | The Japanese README header on a light background                  |
+| `bb-lockup-ja-dark-bg.svg`  | The Japanese README header on a dark background                   |
+| `bb-tile.svg`               | App icons, avatars, the GitHub picture; source of the plugin icon |
+| `bb-mark.svg`               | The mark alone, on light backgrounds                              |
+| `bb-mark-reversed.svg`      | The mark alone, on dark backgrounds                               |
+| `bb-favicon.svg`            | Small sizes: the ampersand alone                                  |
+
+The Japanese lockups add the katakana reading, ビショップ・バリスター, under the name. A nakaguro (・) joins the
+two names, as Japanese firm names do, in the ampersand's colour.
 
 Colours: Ink navy `#1C2B3A`, Oxblood `#6B1E23` (the ampersand on light), Parchment gold `#E3C9A8` (the
 ampersand on dark), Ivory `#FBFAF7`.
