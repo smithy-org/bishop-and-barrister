@@ -61,7 +61,7 @@ text and tournament documents, and cite the rule.
 
 ## Functionally Designed
 
-**Tested.** Rules questions with known answers, asked with and without the skill and graded against the
+**Bishop.** Rules questions with known answers, asked with and without the skill and graded against the
 official rules (share of checks passed, latest run of each group; details in
 [`evals/BASELINE.md`](evals/BASELINE.md)):
 
@@ -72,7 +72,7 @@ official rules (share of checks passed, latest run of each group; details in
 | Tournament penalties and fixes      | 52%               | **100%**                |
 | Answers citing real rules that fit  | 68%               | **100%**                |
 
-**Proved.** A rule enters your record only through a challenge, and that process is written in
+**Barrister.** A rule enters your record only through a challenge, and that process is written in
 [Lean 4](https://lean-lang.org), a functional language whose compiler checks mathematical proofs. 23 theorems
 are checked on every build; if one breaks, nothing ships.
 
