@@ -85,10 +85,10 @@ official rules (share of checks passed, latest run of each group; details in
 
 |                                     | Claude on its own | With Bishop & Barrister |
 | ----------------------------------- | ----------------- | ----------------------- |
-| All questions (29)                  | 69%               | **98%**                 |
+| All questions (30)                  | 68%               | **100%**                 |
 | Cards newer than Claude's training  | 39%               | **100%**                |
 | Tournament penalties and fixes      | 52%               | **100%**                |
-| Answers citing real rules that fit  | 68%               | **100%**                |
+| Answers citing real rules that fit  | 57%               | **100%**                |
 
 **Barrister.** A rule enters your record only through a challenge, and that process is written in
 [Lean 4](https://lean-lang.org), a functional language whose compiler checks mathematical proofs. 23 theorems

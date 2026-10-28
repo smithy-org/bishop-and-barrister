@@ -92,10 +92,10 @@ ufficiali (percentuale di verifiche superate, ultima esecuzione di ciascun grupp
 
 |                                     | Claude da solo | Con Bishop & Barrister |
 | ----------------------------------- | ----------------- | ----------------------- |
-| Tutte le domande (29)               | 69%               | **98%**                 |
+| Tutte le domande (30)               | 68%               | **100%**                 |
 | Carte più recenti dell'addestramento di Claude | 39%    | **100%**                |
 | Penalità e correzioni di torneo     | 52%               | **100%**                |
-| Risposte che citano regole reali e pertinenti | 68%     | **100%**                |
+| Risposte che citano regole reali e pertinenti | 57%     | **100%**                |
 
 **Barrister.** Una regola entra nel tuo registro solo tramite un ricorso, e quel procedimento è scritto in
 [Lean 4](https://lean-lang.org), un linguaggio funzionale il cui compilatore verifica dimostrazioni matematiche.

@@ -6,6 +6,30 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
+## Cost per question, 2026-10-28
+
+Six cases, each answered by one fresh agent with the skill and one without (no tools but reading the prompt and
+writing the answer), on the skill as merged in #59. One question per agent, so each agent's token count is that
+question's cost. These answers weren't graded; the scores are in the next section.
+
+| Case                             | With the skill | Without | Skill's share | Time with | Time without |
+| -------------------------------- | -------------- | ------- | ------------- | --------- | ------------ |
+| `blood-moon-urborg`              | 71.1k          | 64.1k   | 7.0k          | 20.1 s    | 19.4 s       |
+| `extra-card-competitive-rel`     | 72.0k          | 64.8k   | 7.2k          | 25.3 s    | 28.5 s       |
+| `languages-ja-blood-moon-urborg` | 71.5k          | 64.1k   | 7.4k          | 22.8 s    | 17.6 s       |
+| `sting-hone-counters-move`       | 72.7k          | 64.5k   | 8.1k          | 25.0 s    | 23.2 s       |
+| `three-player-first-draw`        | 72.8k          | 63.5k   | 9.3k          | 21.9 s    | 13.5 s       |
+| `trample-deathtouch-damage`      | 70.2k          | 63.6k   | 6.6k          | 17.8 s    | 13.8 s       |
+| **Mean**                         | **71.7k**      | **64.1k** | **7.6k (+12%)** | **22.1 s** | **19.3 s** |
+
+- **The skill now adds 7.6k tokens a question,** down from about 12k (78k against 66.5k) in iterations 3 to 8.
+  The shorter answers and batched script calls outweigh the longer `SKILL.md`.
+- **Most of each figure is the cost of starting an agent** (about 64k with no skill at all), which a user already
+  in a conversation doesn't pay again.
+- **It takes about 3 s longer,** for the card and rule lookups.
+- **Answers with the skill are now shorter than without:** 107 to 260 words against 136 to 385 in English.
+- One run per arm; the no-skill figures run 2k lower than earlier iterations', so compare within this table.
+
 ## Answer format: the README example, 2026-10-28
 
 `SKILL.md` step 4 rewritten so answers take the README example's shape: the verdict first, then one paragraph

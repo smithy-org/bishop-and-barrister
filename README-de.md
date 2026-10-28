@@ -92,10 +92,10 @@ offiziellen Regeln gemessen (Anteil bestandener Prüfungen, jeweils der letzte D
 
 |                                     | Claude allein | Mit Bishop & Barrister |
 | ----------------------------------- | ------------- | ---------------------- |
-| Alle Fragen (29)                    | 69%           | **98%**                |
+| Alle Fragen (30)                    | 68%           | **100%**                |
 | Karten, die neuer sind als Claudes Training | 39%   | **100%**               |
 | Turnierstrafen und Korrekturen      | 52%           | **100%**               |
-| Antworten, die echte, passende Regeln zitieren | 68% | **100%**             |
+| Antworten, die echte, passende Regeln zitieren | 57% | **100%**             |
 
 **Barrister.** Eine Regel kommt nur durch eine Anfechtung in dein Archiv, und dieser Ablauf ist in
 [Lean 4](https://lean-lang.org) geschrieben, einer funktionalen Sprache, deren Compiler mathematische Beweise

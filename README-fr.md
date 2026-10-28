@@ -91,10 +91,10 @@ règles officielles (part des vérifications réussies, dernière exécution de 
 
 |                                                  | Claude seul | Avec Bishop & Barrister |
 | ------------------------------------------------ | ----------- | ----------------------- |
-| Toutes les questions (29)                        | 69%         | **98%**                 |
+| Toutes les questions (30)                        | 68%         | **100%**                 |
 | Cartes plus récentes que l'entraînement de Claude | 39%         | **100%**                |
 | Pénalités et corrections en tournoi              | 52%         | **100%**                |
-| Réponses citant des règles réelles et pertinentes | 68%         | **100%**                |
+| Réponses citant des règles réelles et pertinentes | 57%         | **100%**                |
 
 **Barrister.** Une règle n'entre dans votre registre qu'à l'issue d'une contestation, et cette procédure est écrite
 en [Lean 4](https://lean-lang.org), un langage fonctionnel dont le compilateur vérifie des preuves mathématiques.
