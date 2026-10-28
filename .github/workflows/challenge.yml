@@ -30,6 +30,17 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o elan-init.sh
           sh elan-init.sh -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Install the Lean toolchain
+        # releases.lean-lang.org sometimes refuses the TLS connection, and lake build would fail on its first
+        # download. Install the pinned toolchain first, trying three times.
+        shell: bash
+        run: |
+          for try in 1 2 3; do
+            elan toolchain install "$(cat lean-toolchain)" && exit 0
+            echo "::warning::Lean toolchain download failed (try $try of 3)"
+            sleep 20
+          done
+          exit 1
       - name: Build and check the proofs
         run: |
           set -o pipefail
@@ -105,6 +116,17 @@ jobs:
           curl.exe -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.ps1 -o elan-init.ps1
           ./elan-init.ps1 -NoPrompt 1 -DefaultToolchain none
           "$env:USERPROFILE\.elan\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+      - name: Install the Lean toolchain
+        # releases.lean-lang.org sometimes refuses the TLS connection, and lake build would fail on its first
+        # download. Install the pinned toolchain first, trying three times.
+        shell: bash
+        run: |
+          for try in 1 2 3; do
+            elan toolchain install "$(cat lean-toolchain)" && exit 0
+            echo "::warning::Lean toolchain download failed (try $try of 3)"
+            sleep 20
+          done
+          exit 1
       - name: Build and check the proofs
         run: lake build
       - name: Package
