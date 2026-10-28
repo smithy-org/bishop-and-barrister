@@ -6,6 +6,33 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
+## Languages, 2026-10-28
+
+The `blood-moon-urborg` question asked in German, French, Spanish, Italian and Japanese, with the cards' official
+printed names (`languages-*`). Each was answered once with the skill and once from memory, and graded on the
+English case's five graders plus three for language: the answer is in the user's language, official text is quoted
+in English with any translation marked unofficial, and cards are named `[[English name]]` with their official local
+name. The answers ran as subagents, because `claude plugin eval` can't grant Bash on this Windows machine.
+
+| Language | With the skill | From memory | Lost from memory                                   |
+| -------- | -------------- | ----------- | -------------------------------------------------- |
+| German   | 8/8            | 5/8         | English quotes, card names, Urborg stays legendary |
+| French   | 8/8            | 6/8         | English quotes, card names                         |
+| Spanish  | 8/8            | 6/8         | English quotes, card names                         |
+| Italian  | 8/8            | 6/8         | English quotes, card names                         |
+| Japanese | 8/8            | 6/8         | English quotes, card names                         |
+| **All**  | **100%**       | **73%**     |                                                    |
+
+- **Every answer reached the right ruling in every language**, with and without the skill. This question is well
+  known, so it tests the language handling, not the rules; harder questions in other languages are still to do.
+- **From memory, Claude quoted card text in the user's language as if it were the card's text**, and never gave the
+  English name. With the skill, all five quoted the English Oracle text and the official ruling, marked their
+  translations unofficial, and used the printed names `card.py --lang` gave (Blutmond, Lune de sang, Luna de
+  sangre, Luna Insanguinata, 血染めの月).
+- The French answer from memory also gave Urborg a "{T}: Add {B}" ability it doesn't have; the graders don't
+  check for that.
+- One sample per arm, graded by hand.
+
 ## Challenges, second run: the consensus model (#16), 2026-10-27
 
 The four cases that went wrong in the first run, rerun on the merged consensus model (#16): five judges, evidence and
