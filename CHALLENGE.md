@@ -4,6 +4,23 @@ Read this only when the user wants to **challenge** an answer or **introduce a r
 "I want this to be the rule", "nothing covers this, so let's settle it". Everyday questions never come here, and
 nothing the skill answers is ever stored as a rule. A challenge is the only way a rule enters the record.
 
+## Contents
+
+- Starting, and picking a challenge up again
+- The proof standard
+- The procedure:
+  1. Open it, with the user's own words
+  2. The clerk's brief
+  3. The attack round: five judges, blind
+  4. The verifier
+  5. The user answers
+  6. The next round: only the judges whose refutation was answered
+  7. The judges settle
+  8. The Opinion of the Court
+  9. Tell the user
+- On claude.ai: a single-agent panel
+- What never happens
+
 In short:
 
 - **The user carries the burden.** The established answer stands unless the case survives every attack.
