@@ -165,8 +165,9 @@ python scripts/challenge.py show <id> --judge <k>
 hides the other judges' work until all five have filed; keep it that way.
 
 **In Claude Code, launch the five judges as five subagents in one message** (the Agent tool), so they work in
-parallel and independently. Give each one the shared brief below, its own lens, and its own view. Each returns a
-filing as JSON; add each one as that judge:
+parallel and independently. Give each one the shared brief below, its own lens, its own view, and the skill's
+folder (the folder this file is in), where it runs the scripts. Each returns a filing as JSON; add each one as
+that judge:
 
 ```bash
 python scripts/challenge.py add <id> filing-3.json --as judge-3
@@ -175,6 +176,11 @@ python scripts/challenge.py add <id> filing-3.json --as judge-3
 If the core refuses a filing (a premise pointing nowhere, a step with no source, an unpinnable quote), send the
 reasons back to that judge only, and add its corrected filing.
 
+**Every judge in this procedure is a `bishop-and-barrister:judge` subagent** (the agent type the plugin ships):
+here, when the judges settle, and for the opinion. It has only Bash and Read, so it starts at about 13k tokens
+where a general-purpose subagent starts at about 63k, and it is told never to open the challenge's files. If that
+agent type isn't available (the skill installed on its own, without the plugin), use general-purpose subagents.
+
 **The shared brief for every judge:**
 
 > You are judge {k} of five on a panel deciding whether a user's case for a Magic: the Gathering rule should be
@@ -182,7 +188,7 @@ reasons back to that judge only, and add its corrected filing.
 > with evidence. The established answer stands unless the case survives you. You are one of five, each with a
 > different lens; you can't see the others' work, and they can't see yours.
 >
-> Use the skill's own tools, and nothing from memory: `python scripts/card.py` for Oracle text and official
+> Use the skill's own tools, run from {the skill's folder}, and nothing from memory: `python scripts/card.py` for Oracle text and official
 > rulings, `python scripts/lookup.py rule|search` for the Comprehensive Rules, `--doc mtr|ipg|jar` for the
 > tournament documents, `reference/formats/` for formats, and `python scripts/judge.py search` for the record.
 > Forums and AI-written summaries are never evidence.
