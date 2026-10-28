@@ -6,6 +6,30 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
+## Answer format: the README example, 2026-10-28
+
+`SKILL.md` step 4 rewritten so answers take the README example's shape: the verdict first, then one paragraph
+with each rule cited in brackets; no headings or sections; quotes only when the wording decides. Every answer case
+was rerun with the skill (35 cases) and graded against the current graders, checking each cited rule with
+`lookup.py`. Cases that lost a point were fixed in the skill and rerun, with five cases that had passed
+rerun alongside as a check.
+
+|                     | Last run      | First pass    | After the fixes   |
+| ------------------- | ------------- | ------------- | ----------------- |
+| English (30 cases)  | 135/139 (97%) | 137/139 (99%) | **139/139 (100%)** |
+| Languages (5 cases) | 40/40         | 35/40         | **40/40**          |
+| Mean answer length  | 379 words     | 161 words     | 165 words          |
+
+- **Shorter answers lost three kinds of point, each fixed in step 4:** what a card keeps as well as what it loses
+  (Urborg stays legendary and keeps its name), the section number when citing a tournament document (`JAR 4`), and
+  leaving an unsettled question open instead of picking a reading (`magar-aftermath-unsettled`).
+- **One fix caused a new miss:** told to describe rather than quote, the language answers put their own
+  translations in quotation marks. Step 4 now says only English text goes in quotation marks.
+- **Four cases gained a point** they had lost before (`deck-problem-59-cards-game-one`, `die-roll-decides-match`,
+  `empower-jace-existing-token`, `sting-hone-counters-move`).
+- One sample per case. 23 English cases were answered under the first version of step 4 and not rerun after
+  the fixes, which only add requirements; the five rerun as a check all still passed.
+
 ## Languages, 2026-10-28
 
 The `blood-moon-urborg` question asked in German, French, Spanish, Italian and Japanese, with the cards' official
