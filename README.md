@@ -67,10 +67,9 @@ Sources are ranked by authority, and the skill reads them in order:
 | ----- | ------ |
 | 1 | The Comprehensive Rules, Oracle text and Wizards' official rulings |
 | 2 | The tournament documents (MTR, IPG, JAR), and rules binding for one format |
+| 3 | Informal posts by Wizards staff: on X, Bluesky or Discord, and articles that aren't rules documents |
 | 4 | Judges' and community consensus, and Scryfall's own notes |
 | 5 | Rules you introduced by challenge, which never override level 1 |
-
-Level 3 is reserved for informal posts by Wizards staff, which the skill doesn't use.
 
 Forums and AI-written summaries are never sources ([`trusted-sources.json`](plugin/skills/bishop-and-barrister/reference/trusted-sources.json)).
 Nothing Claude answers is recorded: your rulings record in `~/.claude/bishop-and-barrister/` starts with the
