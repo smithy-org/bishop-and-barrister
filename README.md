@@ -34,6 +34,7 @@ Comprehensive Rules and Oracle card text instead of answering from memory, and c
 - [Usage](#usage)
 - [How it works](#how-it-works)
 - [Development](#development)
+- [Future plans](#future-plans)
 - [Support](#support)
 - [Licence](#licence)
 - [Fan Content](#fan-content)
@@ -203,6 +204,15 @@ then `lake build` and `lake test` in `challenge/`.
   documents.
 - [`evals/`](evals) holds rules questions with known answers.
 - [`docs/RELEASING.md`](docs/RELEASING.md) explains how a version is numbered and released.
+
+## Future plans
+
+Planned for the future, depending on interest:
+
+- **Cloud upload:** keep your rulings record backed up and in step across your devices.
+- **A social rules platform:** share rulings and challenges with other players and settle them together.
+
+If either would help you, say so in an [issue](https://github.com/smithy-org/bishop-and-barrister/issues).
 
 ## Support
 
