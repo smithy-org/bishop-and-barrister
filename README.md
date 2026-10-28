@@ -20,11 +20,13 @@ Claude answers Magic rules questions from memory, and memory misses new sets, er
 intuition fails. Bishop & Barrister makes Claude look the answer up in the current Comprehensive Rules, Oracle
 text and tournament documents, and cite the rule.
 
-> **You:** I have Blood Moon out. Does my opponent's Urborg, Tomb of Yawgmoth still make their lands Swamps?
+> **You:** I have `[[Blood Moon]]` out. Does my opponent's `[[Urborg, Tomb of Yawgmoth]]` still make their
+> lands Swamps?
 >
-> **Claude:** No. Blood Moon makes Urborg a Mountain, and a land set to a basic land type loses its other
-> abilities (305.7), so no land becomes a Swamp. Both effects apply in layer 4 (613.1d), and Urborg's depends
-> on Blood Moon's (613.8a), so their order doesn't matter.
+> **Claude:** No. `[[Blood Moon]]` makes `[[Urborg, Tomb of Yawgmoth]]` a Mountain, and a land set to a basic
+> land type loses its other abilities (305.7), so no land becomes a Swamp. Both effects apply in layer 4
+> (613.1d), and the effect of `[[Urborg, Tomb of Yawgmoth]]` depends on that of `[[Blood Moon]]` (613.8a), so
+> their order doesn't matter.
 
 ## Contents
 
@@ -154,7 +156,7 @@ Claude downloads the Comprehensive Rules and the tournament documents the first 
 Ask the way you'd ask a judge; the skill loads by itself:
 
 - "Does deathtouch plus trample let me assign 1 damage to the blocker?"
-- "Humility and Opalescence are both on the battlefield. What are the creatures' power and toughness?"
+- "`[[Humility]]` and `[[Opalescence]]` are both on the battlefield. What are the creatures' power and toughness?"
 - "At Competitive REL, what's the penalty for drawing an extra card?"
 
 If an answer has no citations, call it by name: `/bishop-and-barrister:bishop-and-barrister <question>`.
