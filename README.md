@@ -23,10 +23,9 @@ text and tournament documents, and cite the rule.
 > **You:** I have `[[Blood Moon]]` out. Does my opponent's `[[Urborg, Tomb of Yawgmoth]]` still make their
 > lands Swamps?
 >
-> **Claude:** No. `[[Blood Moon]]` makes `[[Urborg, Tomb of Yawgmoth]]` a Mountain, and a land set to a basic
-> land type loses its other abilities (305.7), so no land becomes a Swamp. Both effects apply in layer 4
-> (613.1d), and the effect of `[[Urborg, Tomb of Yawgmoth]]` depends on that of `[[Blood Moon]]` (613.8a), so
-> their order doesn't matter.
+> **Claude:** No. `[[Blood Moon]]` turns it into a Mountain, and a land set to a basic land type loses its other
+> abilities (305.7). Both effects apply in layer 4 (613.1d); because one removes the other, `[[Blood Moon]]`
+> applies first (613.8a), so no land becomes a Swamp.
 
 ## Contents
 
@@ -156,7 +155,7 @@ Claude downloads the Comprehensive Rules and the tournament documents the first 
 Ask the way you'd ask a judge; the skill loads by itself:
 
 - "Does deathtouch plus trample let me assign 1 damage to the blocker?"
-- "`[[Humility]]` and `[[Opalescence]]` are both on the battlefield. What are the creatures' power and toughness?"
+- "With `[[Humility]]` and `[[Opalescence]]` both out, what are the creatures' power and toughness?"
 - "At Competitive REL, what's the penalty for drawing an extra card?"
 
 If an answer has no citations, call it by name: `/bishop-and-barrister:bishop-and-barrister <question>`.
