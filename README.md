@@ -105,10 +105,8 @@ all make the same mistake; they work in parallel and can't see each other's work
 2. **Cards and rulings.** Reads card wording word by word, since card text overrides the rules, and looks for
    official rulings on similar cards that point the other way.
 3. **Game-state simulation.** Plays the situation out step by step: the stack, priority, triggers,
-   state-based actions, layers. It found that breaking a tie "by turn order" is ambiguous once Aeon Engine has
-   reversed the turn order.
-4. **Counterexamples and logic.** Finds other situations the rule gets wrong, and gaps in the argument. It
-   found a fallback that could hand the choice to the game's winner.
+   state-based actions, layers.
+4. **Counterexamples and logic.** Finds other situations the rule gets wrong, and gaps in the argument.
 5. **Tournament documents and formats.** Checks whether a format or event level changes the answer, or a
    tournament rule already settles it.
 
@@ -149,8 +147,7 @@ Not yet tested on claude.ai; the skill needs to reach scryfall.com, media.wizard
 ### The rules documents
 
 Claude downloads the Comprehensive Rules and the tournament documents the first time it needs them, into
-`~/.claude/bishop-and-barrister/documents/`. They aren't bundled: they belong to Wizards of the Coast and
-change several times a year.
+`~/.claude/bishop-and-barrister/documents/`.
 
 ## Usage
 
