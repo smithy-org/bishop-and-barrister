@@ -9,12 +9,14 @@ Usage:
     python scripts/card.py "Lightning Bolt"
     python scripts/card.py "Ulamog" --rulings
     python scripts/card.py "Blood Moon" "Urborg, Tomb of Yawgmoth"
+    python scripts/card.py "Does [[Blood Moon]] turn off [[?Urborg, Tomb of Yawgmoth]]?"
 """
 
 import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -58,6 +60,27 @@ FORMATS = {
     "brawl": "Brawl (Arena, 100 cards)",
     "oathbreaker": "Oathbreaker",
 }
+
+# Scryfall's shorthand for naming a card in text, as its Discord bot reads it: [[Blood Moon]].
+# [[Name|SET]] names a printing; Oracle text is the same in every printing, so the set is dropped.
+# [[?Name]] asks for the card's rulings; the bot's other prefixes (! image, # legality, $ price) are dropped.
+CARD_REF = re.compile(r"\[\[\s*([!?#$]?)\s*([^\[\]|]+?)\s*(?:\|[^\[\]]*)?\]\]")
+
+
+def card_refs(text: str) -> list[tuple[str, bool]]:
+    """Find the cards named in text with Scryfall's [[Name]] shorthand.
+
+    Args:
+        text: A card name, or any text naming cards as [[Name]].
+
+    Returns:
+        (name, wants_rulings) for each [[...]] in text, in order; for text with none, the text itself as one
+        name, without rulings.
+    """
+    refs = CARD_REF.findall(text)
+    if not refs:
+        return [(text.strip(), False)]
+    return [(name, prefix == "?") for prefix, name in refs]
 
 
 class _Lock:
@@ -296,13 +319,17 @@ def main() -> int:
         The exit status: 0 when every card was found, 1 otherwise.
     """
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("names", nargs="+", help="one or more card names (fuzzy matched)")
+    parser.add_argument("names", nargs="+", help="card names (fuzzy matched), or text naming cards as [[Name]]")
     parser.add_argument("--rulings", action="store_true", help="include official Scryfall rulings")
     args = parser.parse_args()
 
+    wanted: dict[str, bool] = {}  # each card once, in order; rulings if any mention asked for them
+    for arg in args.names:
+        for name, wants_rulings in card_refs(arg):
+            wanted[name] = wanted.get(name, False) or wants_rulings
     status = 0
-    for name in args.names:
-        status |= show(name, args.rulings)
+    for name, wants_rulings in wanted.items():
+        status |= show(name, args.rulings or wants_rulings)
     return status
 
 
