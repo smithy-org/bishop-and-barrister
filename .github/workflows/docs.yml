@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  python:
+  docs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
