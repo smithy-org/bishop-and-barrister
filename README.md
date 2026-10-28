@@ -20,11 +20,12 @@ Claude answers Magic rules questions from memory, and memory misses new sets, er
 intuition fails. Bishop & Barrister makes Claude look the answer up in the current Comprehensive Rules, Oracle
 text and tournament documents, and cite the rule.
 
-> **You:** I have Blood Moon out. Does my opponent's Urborg, Tomb of Yawgmoth still make their lands Swamps?
+> **You:** I have `[[Blood Moon]]` out. Does my opponent's `[[Urborg, Tomb of Yawgmoth]]` still make their
+> lands Swamps?
 >
-> **Claude:** No. Blood Moon makes Urborg a Mountain, and a land set to a basic land type loses its other
-> abilities (305.7), so no land becomes a Swamp. Both effects apply in layer 4 (613.1d), and Urborg's depends
-> on Blood Moon's (613.8a), so their order doesn't matter.
+> **Claude:** No. `[[Blood Moon]]` turns it into a Mountain, and a land set to a basic land type loses its other
+> abilities (305.7). Both effects apply in layer 4 (613.1d); because one removes the other, `[[Blood Moon]]`
+> applies first (613.8a), so no land becomes a Swamp.
 
 ## Contents
 
@@ -105,10 +106,8 @@ all make the same mistake; they work in parallel and can't see each other's work
 2. **Cards and rulings.** Reads card wording word by word, since card text overrides the rules, and looks for
    official rulings on similar cards that point the other way.
 3. **Game-state simulation.** Plays the situation out step by step: the stack, priority, triggers,
-   state-based actions, layers. It found that breaking a tie "by turn order" is ambiguous once Aeon Engine has
-   reversed the turn order.
-4. **Counterexamples and logic.** Finds other situations the rule gets wrong, and gaps in the argument. It
-   found a fallback that could hand the choice to the game's winner.
+   state-based actions, layers.
+4. **Counterexamples and logic.** Finds other situations the rule gets wrong, and gaps in the argument.
 5. **Tournament documents and formats.** Checks whether a format or event level changes the answer, or a
    tournament rule already settles it.
 
@@ -149,15 +148,14 @@ Not yet tested on claude.ai; the skill needs to reach scryfall.com, media.wizard
 ### The rules documents
 
 Claude downloads the Comprehensive Rules and the tournament documents the first time it needs them, into
-`~/.claude/bishop-and-barrister/documents/`. They aren't bundled: they belong to Wizards of the Coast and
-change several times a year.
+`~/.claude/bishop-and-barrister/documents/`.
 
 ## Usage
 
 Ask the way you'd ask a judge; the skill loads by itself:
 
 - "Does deathtouch plus trample let me assign 1 damage to the blocker?"
-- "Humility and Opalescence are both on the battlefield. What are the creatures' power and toughness?"
+- "With `[[Humility]]` and `[[Opalescence]]` both out, what are the creatures' power and toughness?"
 - "At Competitive REL, what's the penalty for drawing an extra card?"
 
 If an answer has no citations, call it by name: `/bishop-and-barrister:bishop-and-barrister <question>`.
