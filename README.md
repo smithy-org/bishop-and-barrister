@@ -20,9 +20,8 @@
   English · <a href="README-de.md">Deutsch</a> · <a href="README-es.md">Español</a> · <a href="README-fr.md">Français</a> · <a href="README-it.md">Italiano</a> · <a href="README-ja.md">日本語</a>
 </p>
 
-Claude answers Magic rules questions from memory, and memory misses new sets, errata and the interactions where
-intuition fails. Bishop & Barrister makes Claude look the answer up in the current Comprehensive Rules, Oracle
-text and tournament documents, and cite the rule.
+A Claude skill that answers Magic: The Gathering rules questions from the official Comprehensive Rules and
+current Oracle card text instead of from memory, and cites the rules it relies on.
 
 > **You:** I have `[[Blood Moon]]` out. Does my opponent's `[[Urborg, Tomb of Yawgmoth]]` still make their
 > lands Swamps?
