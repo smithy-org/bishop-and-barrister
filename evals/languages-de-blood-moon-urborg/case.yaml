@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: languages-de-blood-moon-urborg
+expected_outcome: |
+  The same answer as blood-moon-urborg, asked in German with the cards' official German names, and answered in German: Blood Moon makes Urborg a Mountain and it loses its ability, so no land becomes a Swamp from Urborg, whatever the order the effects started. Urborg taps for {R}; it keeps its name and stays legendary. Blood Moon's effect applies first through dependency (CR 613.8), not timestamps. Official text is quoted in English with any translation marked unofficial; cards are named [[Blood Moon]] (Blutmond) and [[Urborg, Tomb of Yawgmoth]] (Urborg, Grab von Yawgmoth).
+  Question type: interaction, in another language. Sources: as blood-moon-urborg; printed names from Scryfall.
