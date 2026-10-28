@@ -84,10 +84,32 @@ jobs:
           BISHOP_AND_BARRISTER_CHALLENGE_BIN: ${{ github.workspace }}/challenge/.lake/build/bin/bab-challenge
         run: python3 -m unittest tests.test_challenge -v
 
-  # On a tag the binaries go to the release; run by hand, they are kept as the run's artifacts.
-  binaries:
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+  # The repository has immutable releases: once a release is published, its assets and tag are locked, and a
+  # deleted release's tag can never be used again. So the release is made here as a draft, every file is
+  # attached to the draft, and skill-zip publishes it last. One job makes the draft, before the five binary
+  # jobs, so they can't race to make several.
+  release-draft:
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: proofs
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Make the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          state=$(gh api "repos/$GITHUB_REPOSITORY/releases" --paginate             --jq ".[] | select(.tag_name == \"$GITHUB_REF_NAME\") | if .draft then \"draft\" else \"published\" end")
+          case "$state" in
+            *published*) echo "::error::$GITHUB_REF_NAME already has a published release, which is immutable; bump the version and tag again"; exit 1 ;;
+            *draft*) echo "Reusing the draft for $GITHUB_REF_NAME" ;;
+            *) gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --draft --title "$GITHUB_REF_NAME" --notes "" ;;
+          esac
+
+  # On a tag the binaries go to the draft release; run by hand, they are kept as the run's artifacts.
+  binaries:
+    if: ${{ !cancelled() && needs.proofs.result == 'success' && needs.release-draft.result != 'failure' && (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch') }}
+    needs: [proofs, release-draft]
     permissions:
       contents: write
     strategy:
@@ -148,13 +170,11 @@ jobs:
           path: |
             challenge/${{ env.ASSET }}
             challenge/${{ env.ASSET }}.sha256
-      - name: Attach to the release
+      - name: Attach to the draft release
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes "" || true
-          gh release upload "$GITHUB_REF_NAME" "$ASSET" "$ASSET.sha256" --clobber
+        run: gh release upload "$GITHUB_REF_NAME" "$ASSET" "$ASSET.sha256" --clobber
 
   # The pins for plugin/skills/bishop-and-barrister/binaries.json: each binary's file name and SHA-256, attached as pins.json.
   pins:
@@ -200,3 +220,8 @@ jobs:
           gh release download "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" -p pins.json -D release
           python3 tools/package_skill.py --pins release/pins.json --out bishop-and-barrister.zip
           gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" bishop-and-barrister.zip --clobber
+      - name: Publish the release
+        # Last, with every file attached: publishing makes the release immutable.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest
