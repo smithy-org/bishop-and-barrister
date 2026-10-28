@@ -24,9 +24,8 @@
   <em>Dies ist eine Übersetzung des <a href="README.md">English README</a>. Weichen die beiden voneinander ab, gilt die englische Fassung.</em>
 </p>
 
-Claude beantwortet Regelfragen zu Magic aus dem Gedächtnis, und dem Gedächtnis entgehen neue Sets, Errata und genau
-die Interaktionen, bei denen das Bauchgefühl versagt. Bishop & Barrister lässt Claude die Antwort in den aktuellen
-Comprehensive Rules, im Oracle-Text und in den Turnierdokumenten nachschlagen und die Regel zitieren.
+Ein Claude-Skill, der Regelfragen zu Magic: The Gathering anhand der offiziellen Comprehensive Rules und des
+aktuellen Oracle-Kartentexts beantwortet statt aus dem Gedächtnis, und die Regeln zitiert, auf die er sich stützt.
 
 > **Du:** Ich habe `[[Blood Moon]] (Blutmond)` im Spiel. Macht `[[Urborg, Tomb of Yawgmoth]] (Urborg, Grab von Yawgmoth)`
 > meines Gegners dessen Länder trotzdem noch zu Sümpfen?
