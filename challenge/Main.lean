@@ -18,7 +18,7 @@ def usage : String :=
   rule    stdin {\"state\": \"current\", \"event\": \"source-changed\"} → the rule's next state"
 
 /-- The tool's version and the event format it reads. -/
-def version : String := "bab-challenge 0.2.1 (challenge format v1)"
+def version : String := "bab-challenge 0.2.2 (challenge format v1)"
 
 /-- Reads a stream to its end. -/
 partial def readAll (h : IO.FS.Stream) (acc : String) : IO String := do
