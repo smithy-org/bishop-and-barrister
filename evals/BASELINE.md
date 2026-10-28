@@ -1,6 +1,6 @@
 # Baseline
 
-The skill's evals, run before plan 028's phase 1 changes anything, so that later phases can show their effect.
+The skill's evals, run before the rulings record and the tournament documents were added, so that later changes can show their effect.
 Each case was answered once with the skill and once by Claude without it. The run without the skill had no
 skills, no rules files and no web, so it answered from memory. Each answer was graded against the case's
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
@@ -54,7 +54,7 @@ at the expected outcome in 10 of 10 cases (the six were not rerun, see below).
   same verdict. Its value shows on cases they leave open or to a proposal, where it tests the case before it is
   accepted.
 
-## Challenges (plan 029), run 2026-10-27
+## Challenges, run 2026-10-27
 
 The first run of `evals/challenges/`: each case played through the panel in `CHALLENGE.md`, with a simulated user
 following the case's `user.md`, and answered three times by a single agent for comparison. Everything ran on
@@ -383,4 +383,4 @@ the first-draw rule. Iteration 2 added the citation check and the new-set cases.
 - **Repeat runs:** run each configuration more than once, to measure variance.
 - **More cases where memory fails:** recent errata, obscure interactions, and more cases that leave out a
   deciding fact.
-- **After each phase of plan 028:** rerun this set.
+- **After each significant change to the skill:** rerun this set.

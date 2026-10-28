@@ -202,7 +202,6 @@ then `lake build` and `lake test` in `challenge/`.
 - Tests point `$BISHOP_AND_BARRISTER_HOME` at a temporary folder, so they never touch your real rulings or
   documents.
 - [`evals/`](evals) holds rules questions with known answers.
-- [`docs/ROADMAP.md`](docs/ROADMAP.md) lists what's planned; [`docs/plans/`](docs/plans) holds the designs.
 - [`docs/RELEASING.md`](docs/RELEASING.md) explains how a version is numbered and released.
 
 ## Support

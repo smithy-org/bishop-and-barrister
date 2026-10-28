@@ -1,7 +1,7 @@
 /-!
 # The shapes of a challenge
 
-A case and every refutation use one proof standard (plan 029): numbered facts, the proposed rule, and a
+A case and every refutation use one proof standard (see CHALLENGE.md): numbered facts, the proposed rule, and a
 derivation whose every step names its premises and quotes one pinned source, or is labelled an assumption, or, in a
 case that fills a gap, is a stipulation: the rule's own new content. A rule the judges accept is written up as an
 Opinion of the Court, in the same shape, which every judge joins, concurs in, or dissents from.

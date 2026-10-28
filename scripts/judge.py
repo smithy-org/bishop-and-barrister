@@ -1001,7 +1001,7 @@ def cmd_recheck(args) -> int:
     return 0
 
 
-# --- sync: the optional remote store (plan 028, storage modes) ----------------------------------
+# --- sync: the optional remote store (experimental) -------------------------------------------------
 #
 # Local only is the default. With an endpoint set, a RustFS bucket the user chooses holds a synced copy:
 # record/<device>.bundle is each device's whole git history. The local record stays the working copy; sync
