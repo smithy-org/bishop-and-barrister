@@ -95,18 +95,22 @@ flowchart TD
   J -->|not after two revisions| R
 ```
 
-Each judge attacks the case from its own angle:
+A **clerk** puts your argument into numbered facts and steps that each quote one source, and a **verifier**
+script checks every quote against the rules it cites. Each of the five judges has a different lens, so they don't
+all make the same mistake; they work in parallel and can't see each other's work until all five have filed:
 
-1. **The Comprehensive Rules.** Reads every cited rule in full, with its subrules, for skipped conditions,
-   exceptions and later rules that modify it.
-2. **Cards and rulings.** Reads each card's Oracle text word by word, since card text overrides the rules, and
-   looks for official rulings on these cards or on cards worded the same way that point the other way.
-3. **Game state.** Plays the situation out step by step (the stack, priority, triggers, state-based actions,
-   layers) to find where the case's sequence differs from the real one.
-4. **Counterexamples and logic.** Finds another situation where the proposed rule gives the wrong answer, and
-   checks the argument for hidden assumptions, gaps and quotes stretched past what they say.
-5. **Tournaments and formats.** Checks the tournament rules and format rules: whether the question is about
-   gameplay at all, and whether a format or enforcement level changes or already settles it.
+1. **The rulebook.** Reads every cited rule in full for conditions the case skips, exceptions and later rules.
+   In one eval case it found that "the first player to lose chooses" breaks in team games, where an early loser
+   can still win (104.2c).
+2. **Cards and rulings.** Reads card wording word by word, since card text overrides the rules, and looks for
+   official rulings on similar cards that point the other way.
+3. **Game-state simulation.** Plays the situation out step by step: the stack, priority, triggers,
+   state-based actions, layers. It found that breaking a tie "by turn order" is ambiguous once Aeon Engine has
+   reversed the turn order.
+4. **Counterexamples and logic.** Finds other situations the rule gets wrong, and gaps in the argument. It
+   found a fallback that could hand the choice to the game's winner.
+5. **Tournament documents and formats.** Checks whether a format or event level changes the answer, or a
+   tournament rule already settles it.
 
 The theorems guarantee:
 
