@@ -1,6 +1,6 @@
 # challenge/: the Lean core of a challenge
 
-The challenge state machine of [plan 029](../docs/plans/029-challenges.md), written in Lean 4 so its guarantees
+The challenge state machine described in [CHALLENGE.md](../CHALLENGE.md), written in Lean 4 so its guarantees
 are proved rather than only tested. It builds to one binary, `bab-challenge`, which `scripts/challenge.py` runs.
 Users don't need Lean: the binary is downloaded from the release, checked against the SHA-256 in
 `binaries.json`.

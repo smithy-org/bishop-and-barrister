@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Challenges: the only way a rule enters the record (plan 029).
+"""Challenges: the only way a rule enters the record (see CHALLENGE.md).
 
 A challenge is a folder of event files in the record, each holding the hash of the one before it:
 challenges/challenge-<YYYYMMDD>-<12 hex>/<seq>-<actor>-<device>.json. The Lean core, `bab-challenge`,

@@ -1,6 +1,6 @@
 {
   "checked": "2026-10-25",
-  "about": "Where the judge may look when the rulings record, the scripts and the skill's own files don't answer a question. Anything not listed here is not a source. 'level' follows plan 028: 1 official, 2 binding for tournaments or one format, 4 judge and community consensus; null means a finding aid that is never cited.",
+  "about": "Where the judge may look when the rulings record, the scripts and the skill's own files don't answer a question. Anything not listed here is not a source. 'level': 1 official, 2 binding for tournaments or one format, 4 judge and community consensus; null means a finding aid that is never cited.",
   "sources": [
     {
       "name": "Scryfall API",

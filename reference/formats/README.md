@@ -1,7 +1,7 @@
 # Formats
 
 One file per format the skill covers, plus `matches.md` for starting a game and for matches of several games.
-Every fact names its source and that source's level (plan 028): **1** the Comprehensive Rules (CR) and other
+Every fact names its source and that source's level (as in `../trusted-sources.json`): **1** the Comprehensive Rules (CR) and other
 official Wizards rules and pages; **2** the Magic Tournament Rules (MTR) and a community-run format's own rules,
 for that format only; **4** community consensus and data. Digital clients are described for comparison, not as
 rules.

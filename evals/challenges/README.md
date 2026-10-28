@@ -1,7 +1,7 @@
 # Challenge evals
 
 Ten challenges a user might put forward, each with a known outcome, to check that the panel in `CHALLENGE.md`
-earns its cost (plan 029). Each one is run three ways, and all three are graded the same way.
+earns its cost. Each one is run three ways, and all three are graded the same way.
 
 | Case | Expected | What it tests |
 | --- | --- | --- |

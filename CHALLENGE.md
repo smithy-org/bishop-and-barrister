@@ -4,7 +4,7 @@ Read this only when the user wants to **challenge** an answer or **introduce a r
 "I want this to be the rule", "nothing covers this, so let's settle it". Everyday questions never come here, and
 nothing the skill answers is ever stored as a rule. A challenge is the only way a rule enters the record.
 
-The design and its reasons are in `docs/plans/029-challenges.md`. In short:
+In short:
 
 - **The user carries the burden.** The established answer stands unless the case survives every attack.
 - **Five adversarial judges** each try to defeat the case through a different lens, with evidence from the
@@ -86,7 +86,7 @@ The case and every refutation and rebuttal have the same shape. `challenge.py` p
   rule's own paragraph, never its `Example:` lines or a section heading: those aren't in the pinned text, and the
   core refuses the quote.
 - **Precedence**, when sources conflict: card text over rules (CR 101.1), "can't" over "can" (101.2), the
-  specific over the general, and level 1 over level 2 over level 4 (plan 028). A case can never contradict
+  specific over the general, and level 1 over level 2 over level 4 (the source levels in `reference/trusted-sources.json`). A case can never contradict
   level 1 text on the same facts. If the user still wants such a rule, it can only be kept as a **house rule**
   once the challenge is refuted.
 
