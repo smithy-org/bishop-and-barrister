@@ -16,6 +16,10 @@
   <a href="https://ko-fi.com/pjderouen"><img alt="Tip on Ko-fi" src="https://img.shields.io/badge/Ko--fi-tip-FF5E5B?logo=kofi&amp;logoColor=white"></a>
 </p>
 
+<p align="center">
+  English · <a href="README-de.md">Deutsch</a> · <a href="README-es.md">Español</a> · <a href="README-fr.md">Français</a> · <a href="README-it.md">Italiano</a> · <a href="README-ja.md">日本語</a>
+</p>
+
 Claude answers Magic rules questions from memory, and memory misses new sets, errata and the interactions where
 intuition fails. Bishop & Barrister makes Claude look the answer up in the current Comprehensive Rules, Oracle
 text and tournament documents, and cite the rule.
