@@ -91,10 +91,10 @@ oficiales (porcentaje de comprobaciones superadas, última ejecución de cada gr
 
 |                                     | Claude por sí solo | Con Bishop & Barrister |
 | ----------------------------------- | ------------------ | ---------------------- |
-| Todas las preguntas (29)            | 69%                | **98%**                |
+| Todas las preguntas (30)            | 68%                | **100%**                |
 | Cartas posteriores al entrenamiento de Claude | 39%      | **100%**               |
 | Penalizaciones y correcciones de torneo | 52%            | **100%**               |
-| Respuestas que citan reglas reales y pertinentes | 68%   | **100%**               |
+| Respuestas que citan reglas reales y pertinentes | 57%   | **100%**               |
 
 **Barrister.** Una regla solo entra en tu registro mediante una impugnación, y ese proceso está escrito en
 [Lean 4](https://lean-lang.org), un lenguaje funcional cuyo compilador verifica demostraciones matemáticas. 23
