@@ -33,6 +33,7 @@ card's Oracle text and the tournament documents, and it shows you the rule numbe
 - [Why use it](#why-use-it)
 - [Features](#features)
 - [Requirements](#requirements)
+- [Proved, not just tested](#proved-not-just-tested)
 - [Installation](#installation)
 - [Usage](#usage)
 - [How it works](#how-it-works)
@@ -82,6 +83,46 @@ latest run of that group of questions; the full results are in [`evals/BASELINE.
 - Claude Code, or claude.ai with code execution turned on.
 - Python 3.10 or later, and git.
 - [`pypdf`](https://pypi.org/project/pypdf/) for the three tournament documents (`pip install pypdf`).
+
+## Proved, not just tested
+
+Most AI tools ask you to trust them. Bishop & Barrister never adds an AI's opinion to your rules: the only way
+in is a **challenge**, and the rules of that process are written in [Lean 4](https://lean-lang.org), a language
+whose compiler checks mathematical proofs, theorem by theorem, that the code keeps its promises. If any proof
+breaks, the build fails, so no release can ship without them.
+
+```mermaid
+flowchart TD
+  A[You state your case] --> B[A clerk writes the brief]
+  B --> C[You confirm it]
+  C --> D[Five judges attack it, blind to each other]
+  D --> E[A script checks every quote against the rules]
+  E -->|an attack stands| F[You answer it]
+  E -->|nothing stands| G[The judges settle, each with evidence]
+  F -->|you revise the case| D
+  F -->|you stand by it| G
+  G -->|one or two unconvinced| D
+  G -->|three or more unconvinced| R[Refused: the official answer stands]
+  G -->|all five convinced| O[One judge writes the Opinion of the Court]
+  O --> J{All five join it?}
+  J -->|yes| I[The rule enters your record]
+  J -->|not yet| O
+  J -->|not after two revisions| R
+```
+
+What is proved, among 23 theorems checked on every build:
+
+- **No unearned rule.** A rule enters your record only if all five judges were convinced with evidence, every
+  quote checked out, nothing contradicts the official rules, and all five joined the same written opinion.
+- **No peeking.** A judge never sees another judge's work from the round in progress, so they can't simply
+  agree with each other.
+- **Same record, same result.** Every device reaches the same outcome from the same challenge.
+- **Finished is final.** A decided challenge can't be quietly reopened.
+- **Nothing gets stuck, nothing gets lost.** Every open challenge says who acts next, and two devices acting at
+  once is caught, never silently merged.
+
+The proofs cover the process, not Magic itself: Magic's rules are too large to formalise. Everyday answers rest
+on the official documents, cited so you can check them.
 
 ## Installation
 
