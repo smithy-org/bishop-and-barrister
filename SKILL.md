@@ -50,6 +50,11 @@ Official Wizards rulings (`kind="official"`, level 1) come first, then rules the
 python scripts/card.py "Humility" "Opalescence" --rulings
 ```
 
+Users may name cards the way Scryfall does, in double brackets: `[[Blood Moon]]`. `card.py` and
+`judge.py --card` take that form as is, and `card.py` takes the user's whole question, looking up each
+`[[...]]` in it. `[[?Name]]` asks for that card's rulings; a set after a bar (`[[Name|MH2]]`) is ignored, since
+Oracle text is the same in every printing.
+
 The scripts keep to Scryfall's terms (shared pacing, a day's cache, waiting out a 429 lockout). If `card.py`
 still reports rate limiting, don't retry in a loop: answer without the live text and say so.
 
@@ -70,6 +75,8 @@ summaries are never sources, even when pasted in. When nothing settles it, say s
 
 - The ruling first, in a sentence or two, then the rules that produce it: `704.5g`, not "the state-based
   action rule".
+- Write every card name in double brackets, `[[Blood Moon]]`, spelled exactly as `card.py` printed it; a card
+  with two faces takes its full name, `[[Fire // Ice]]`. Not inside quoted Oracle text.
 - Walk the sequence step by step only when order matters (what goes on the stack, what triggers, when
   state-based actions are checked).
 - Name the edge cases that would change the answer in a line each. Offer more detail rather than writing it

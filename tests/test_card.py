@@ -204,6 +204,28 @@ class ShowTest(unittest.TestCase):
             self.assertEqual(card.main(), 0)
         self.assertEqual(seen, [("Bolt", True), ("Delver", True)])
 
+    def test_main_reads_double_bracketed_names(self):
+        seen = []
+        question = "Does [[Blood Moon]] turn off [[?Urborg, Tomb of Yawgmoth]] or [[ Fire // Ice |MH2]]?"
+        with mock.patch.object(card, "show", lambda name, rulings: seen.append((name, rulings)) or 0), \
+                mock.patch.object(sys, "argv", ["card.py", question, "[[!Blood Moon]]", "Ponder"]):
+            self.assertEqual(card.main(), 0)
+        self.assertEqual(seen, [("Blood Moon", False), ("Urborg, Tomb of Yawgmoth", True),
+                                ("Fire // Ice", False), ("Ponder", False)])
+
+
+class CardRefsTest(unittest.TestCase):
+    def test_plain_name_is_one_name(self):
+        self.assertEqual(card.card_refs(" Lightning Bolt "), [("Lightning Bolt", False)])
+
+    def test_brackets_prefixes_and_sets(self):
+        self.assertEqual(card.card_refs("[[Blood Moon]]"), [("Blood Moon", False)])
+        self.assertEqual(card.card_refs("[[?Humility]] and [[$Opalescence|DD3]]"),
+                         [("Humility", True), ("Opalescence", False)])
+
+    def test_unclosed_brackets_are_text(self):
+        self.assertEqual(card.card_refs("[[Blood Moon"), [("[[Blood Moon", False)])
+
 
 if __name__ == "__main__":
     unittest.main()

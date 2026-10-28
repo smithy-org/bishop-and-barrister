@@ -762,7 +762,7 @@ def cmd_search(args) -> int:
         die("No index yet. Run: python scripts/judge.py build")
     conn = connect()
     oracle_ids, by_name = set(), set()
-    for name in args.card:
+    for name in [name for c in args.card for name, _ in scryfall.card_refs(c)]:
         # Rules quote cards by name.
         by_name |= {r[0] for r in conn.execute("SELECT ruling_id FROM ruling_cards WHERE lower(name) = lower(?)", (name,))}
         row = conn.execute("SELECT oracle_id FROM card_names WHERE lower(name) = lower(?)", (name,)).fetchone()
@@ -1402,7 +1402,7 @@ def main() -> int:
 
     p = sub.add_parser("search", help="find rulings by text, card or rule number")
     p.add_argument("text", nargs="?", default="")
-    p.add_argument("--card", action="append", default=[], help="card name (repeatable)")
+    p.add_argument("--card", action="append", default=[], help="card name, or [[Name]] (repeatable)")
     p.add_argument("--rule", action="append", default=[], help="CR rule number cited (repeatable)")
     p.add_argument("--type", choices=sorted(QUESTION_TYPES),
                    help="only your rulings of this question type (official card rulings have none), e.g. tournament")
