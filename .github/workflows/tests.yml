@@ -33,6 +33,14 @@ jobs:
       - name: Run the tests with coverage
         env:
           BISHOP_AND_BARRISTER_CHALLENGE_BIN: ${{ github.workspace }}/challenge/.lake/build/bin/bab-challenge
+          # The tests' records are git repositories in temporary folders. After a commit, git can start its
+          # housekeeping in the background, which may still be writing into .git when a test deletes the
+          # folder ("Directory not empty: '.git'"). Turn it off for the tests' git commands.
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: maintenance.auto
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: gc.auto
+          GIT_CONFIG_VALUE_1: '0'
         run: python -m coverage run -m unittest discover -s tests
       - name: Coverage report (fails below the threshold)
         run: |
