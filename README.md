@@ -16,8 +16,10 @@
   <a href="https://ko-fi.com/pjderouen"><img alt="Tip on Ko-fi" src="https://img.shields.io/badge/Ko--fi-tip-FF5E5B?logo=kofi&amp;logoColor=white"></a>
 </p>
 
-Bishop & Barrister is a skill for Claude. When you ask a Magic rules question, Claude reads the current
-Comprehensive Rules and Oracle card text instead of answering from memory, and cites the rules it relies on.
+Ask Claude a Magic rules question and it answers from memory. Usually that's close, but Magic's rules change
+with every set, card text gets errata, and the interactions people ask about are the ones where intuition
+fails. Bishop & Barrister makes Claude look the answer up instead: in the current Comprehensive Rules, the
+card's Oracle text and the tournament documents, and it shows you the rule numbers so you can check.
 
 > **You:** I have Blood Moon out. Does my opponent's Urborg, Tomb of Yawgmoth still make their lands Swamps?
 >
@@ -28,27 +30,47 @@ Comprehensive Rules and Oracle card text instead of answering from memory, and c
 
 ## Contents
 
+- [Why use it](#why-use-it)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
 - [How it works](#how-it-works)
-- [Development](#development)
 - [Future plans](#future-plans)
 - [Support](#support)
 - [Licence](#licence)
 - [Fan Content](#fan-content)
 
+## Why use it
+
+We test it on rules questions with known answers: each is asked once with the skill and once without, and
+every answer is graded against the official rules. The share of graded checks passed:
+
+|                                          | Claude on its own | With Bishop & Barrister |
+| ---------------------------------------- | ----------------- | ----------------------- |
+| All questions (29)                       | 69%               | **98%**                 |
+| Cards newer than Claude's training       | 39%               | **100%**                |
+| Tournament penalties and fixes           | 52%               | **100%**                |
+| Answers citing real rules that fit       | 68%               | **100%**                |
+
+On its own, Claude guessed at new mechanics, gave the Competitive fix for a Friday Night Magic mistake, and
+cited rules that say something else. With the skill, each answer names the rule it rests on. Each row is the
+latest run of that group of questions; the full results are in [`evals/BASELINE.md`](evals/BASELINE.md).
+
 ## Features
 
 - **Cited answers.** Every answer names the rules it rests on (`704.5g`, not "the state-based action rule"),
   so you can check it or show it at the table.
-- **Current card text.** Oracle text, official rulings and format legality come live from
-  [Scryfall](https://scryfall.com), not from memory.
-- **Tournament rules.** The Magic Tournament Rules, the Infraction Procedure Guide and Judging at Regular REL,
-  with the section and its effective date: "IPG 2.3 (effective September 23, 2024)".
-- **Formats.** Deck rules, starting life, mulligans and matches for Commander, Brawl, Oathbreaker, Standard,
-  Pioneer, Modern, Legacy, Vintage, Pauper, Draft and Sealed, each fact with its source.
+- **Always current.** Oracle text, official rulings and format legality come live from
+  [Scryfall](https://scryfall.com), and one request brings the rules documents up to date when Wizards revises
+  them, so new sets and mechanics are covered.
+- **Tournament-ready.** The Magic Tournament Rules, the Infraction Procedure Guide and Judging at Regular REL,
+  with the section and its effective date: "IPG 2.3 (effective September 23, 2024)". It tells Regular REL
+  from Competitive, which memory gets wrong.
+- **Eleven formats.** Deck rules, starting life, mulligans and matches for Commander, Brawl,
+  Oathbreaker, Standard, Pioneer, Modern, Legacy, Vintage, Pauper, Draft and Sealed, each fact with its source.
+- **Honest when it's unsettled.** If no official source decides a question, it says so, explains what would
+  change the answer, and points you to a judge, instead of guessing confidently.
 - **Challenges.** Think an answer is wrong, or want a rule of your own? Argue it before a panel of five
   adversarial judges. Only a case that convinces all five enters your rulings record. See
   [CHALLENGE.md](CHALLENGE.md).
@@ -186,24 +208,6 @@ changes, the record flags it.
 | `scripts/paths.py` | Where the skill keeps your data |
 | `challenge/` | The challenge state machine in Lean 4, with its proofs, built to `bab-challenge` |
 | `reference/formats/` | One file per format, with a source for every fact |
-
-## Development
-
-```bash
-git clone https://github.com/smithy-org/bishop-and-barrister
-cd bishop-and-barrister
-pip install -r requirements-dev.txt
-python -m unittest discover -s tests
-```
-
-CI also requires 70% test coverage (`python -m coverage run -m unittest discover -s tests`, then
-`python -m coverage report`). The challenge core needs Lean 4: install [elan](https://github.com/leanprover/elan),
-then `lake build` and `lake test` in `challenge/`.
-
-- Tests point `$BISHOP_AND_BARRISTER_HOME` at a temporary folder, so they never touch your real rulings or
-  documents.
-- [`evals/`](evals) holds rules questions with known answers.
-- [`docs/RELEASING.md`](docs/RELEASING.md) explains how a version is numbered and released.
 
 ## Future plans
 
