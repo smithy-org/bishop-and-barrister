@@ -1,7 +1,7 @@
 <h1 align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/bb-lockup-dark-bg.svg">
-    <img src="assets/bb-lockup-light-bg.svg" alt="Bishop &amp; Barrister" width="440">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/bb-lockup-ja-dark-bg.svg">
+    <img src="assets/bb-lockup-ja-light-bg.svg" alt="Bishop &amp; Barrister（ビショップ・バリスター）" width="440">
   </picture>
 </h1>
 
