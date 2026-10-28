@@ -9,8 +9,9 @@ on:
     branches: [main]
     tags: ['v[0-9]+.[0-9]+.[0-9]+']
     paths: ['challenge/**', 'scripts/**', 'tests/test_challenge.py', 'evals/challenges/**', '.github/workflows/challenge.yml']
+  # Every pull request, whatever it touches: proofs is a required check on main, and a required check that
+  # never starts would hold the pull request open.
   pull_request:
-    paths: ['challenge/**', 'scripts/**', 'tests/test_challenge.py', 'evals/challenges/**', '.github/workflows/challenge.yml']
   workflow_dispatch:
 
 permissions:
