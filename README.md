@@ -31,10 +31,9 @@ text and tournament documents, and cite the rule.
 
 - [Features](#features)
 - [Requirements](#requirements)
-- [Functionally Designed](#functionally-designed)
+- [How it works](#how-it-works)
 - [Installation](#installation)
 - [Usage](#usage)
-- [How it works](#how-it-works)
 - [Future plans](#future-plans)
 - [Support](#support)
 - [Licence](#licence)
@@ -60,7 +59,20 @@ text and tournament documents, and cite the rule.
 - Python 3.10 or later, and git.
 - [`pypdf`](https://pypi.org/project/pypdf/) for the tournament documents (`pip install pypdf`).
 
-## Functionally Designed
+## How it works
+
+Sources are ranked by authority, and the skill reads them in order:
+
+| Level | Source |
+| ----- | ------ |
+| 1 | The Comprehensive Rules, Oracle text and Wizards' official rulings |
+| 2 | The tournament documents (MTR, IPG, JAR), and rules binding for one format |
+| 4 | Judges' and community consensus, and Scryfall's own notes |
+| 5 | Rules you introduced by challenge, which never override level 1 |
+
+Forums and AI-written summaries are never sources ([`trusted-sources.json`](plugin/skills/bishop-and-barrister/reference/trusted-sources.json)).
+Nothing Claude answers is recorded: your rulings record in `~/.claude/bishop-and-barrister/` starts with the
+official rulings and grows only through challenges, and flags any rule whose sources change.
 
 **Bishop.** Rules questions with known answers, asked with and without the skill and graded against the
 official rules (share of checks passed, latest run of each group; details in
@@ -163,21 +175,6 @@ If an answer has no citations, call it by name: `/bishop-and-barrister:bishop-an
 - **New rules release?** Ask Claude to "check the Bishop & Barrister rules documents for updates".
 - **Disagree with an answer?** Say "I want to challenge that ruling". Claude states the cost first: a challenge
   uses up to a few million tokens. Details in [CHALLENGE.md](plugin/skills/bishop-and-barrister/CHALLENGE.md).
-
-## How it works
-
-Sources are ranked by authority, and the skill reads them in order:
-
-| Level | Source |
-| ----- | ------ |
-| 1 | The Comprehensive Rules, Oracle text and Wizards' official rulings |
-| 2 | The tournament documents (MTR, IPG, JAR), and rules binding for one format |
-| 4 | Judges' and community consensus, and Scryfall's own notes |
-| 5 | Rules you introduced by challenge, which never override level 1 |
-
-Forums and AI-written summaries are never sources ([`trusted-sources.json`](plugin/skills/bishop-and-barrister/reference/trusted-sources.json)).
-Nothing Claude answers is recorded: your rulings record in `~/.claude/bishop-and-barrister/` starts with the
-official rulings and grows only through challenges, and flags any rule whose sources change.
 
 ## Future plans
 
