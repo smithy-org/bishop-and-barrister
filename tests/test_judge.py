@@ -16,7 +16,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-JUDGE = Path(__file__).resolve().parent.parent / "scripts" / "judge.py"
+JUDGE = Path(__file__).resolve().parent.parent / "plugin" / "skills" / "bishop-and-barrister" / "scripts" / "judge.py"
 
 CR = """Magic: The Gathering Comprehensive Rules
 

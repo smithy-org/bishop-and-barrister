@@ -10,13 +10,13 @@ import sys
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-DOC = (ROOT / "CHALLENGE.md").read_text(encoding="utf-8")
+SKILL = Path(__file__).resolve().parent.parent / "plugin" / "skills" / "bishop-and-barrister"
+DOC = (SKILL / "CHALLENGE.md").read_text(encoding="utf-8")
 
 
 class ChallengeDocTest(unittest.TestCase):
     def test_every_command_named_exists(self):
-        help_text = subprocess.run([sys.executable, str(ROOT / "scripts" / "challenge.py"), "--help"],
+        help_text = subprocess.run([sys.executable, str(SKILL / "scripts" / "challenge.py"), "--help"],
                                    capture_output=True, text=True, encoding="utf-8").stdout
         commands = set(re.findall(r"challenge\.py (\w+)", DOC))
         self.assertTrue(commands)

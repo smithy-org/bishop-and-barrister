@@ -1,4 +1,4 @@
-# Test coverage of scripts/, measured with coverage.py (requirements-dev.txt).
+# Test coverage of plugin/skills/bishop-and-barrister/scripts/, measured with coverage.py (requirements-dev.txt).
 #
 #   python -m coverage run -m unittest discover -s tests
 #   python -m coverage combine
@@ -8,7 +8,7 @@
 # writes its own data file (parallel), which `combine` merges. CI fails below fail_under.
 
 [run]
-source = scripts
+source = plugin/skills/bishop-and-barrister/scripts
 parallel = true
 patch = subprocess
 

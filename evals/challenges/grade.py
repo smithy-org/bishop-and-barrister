@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-CHALLENGE = HERE.parent.parent / "scripts" / "challenge.py"
+CHALLENGE = HERE.parent.parent / "plugin/skills/bishop-and-barrister" / "scripts" / "challenge.py"
 
 
 def expected_state(case: str) -> str:

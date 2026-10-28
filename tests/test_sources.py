@@ -17,7 +17,7 @@ import unittest
 from contextlib import redirect_stderr
 from pathlib import Path
 
-SCRIPTS = Path(__file__).resolve().parent.parent / "scripts"
+SCRIPTS = Path(__file__).resolve().parent.parent / "plugin" / "skills" / "bishop-and-barrister" / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 import sources  # noqa: E402
 

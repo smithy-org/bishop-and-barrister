@@ -172,8 +172,8 @@ def last_positions(run, cap=650):
 
 
 def rule_texts(numbers, doc=None):
-    """Rule text from scripts/lookup.py in the main checkout, one dict number -> text."""
-    script = MAIN / "scripts" / "lookup.py"
+    """Rule text from plugin/skills/bishop-and-barrister/scripts/lookup.py in the main checkout, one dict number -> text."""
+    script = MAIN / "plugin/skills/bishop-and-barrister" / "scripts" / "lookup.py"
     out = {}
     for n in numbers:
         cmd = [sys.executable, str(script)] + (["--doc", doc] if doc else []) + ["rule", n]

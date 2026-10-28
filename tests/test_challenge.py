@@ -18,7 +18,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-CHALLENGE = Path(__file__).resolve().parent.parent / "scripts" / "challenge.py"
+CHALLENGE = Path(__file__).resolve().parent.parent / "plugin" / "skills" / "bishop-and-barrister" / "scripts" / "challenge.py"
 CORE = os.environ.get("BISHOP_AND_BARRISTER_CHALLENGE_BIN")
 HAVE_CORE = bool(CORE) and Path(CORE).exists()
 
@@ -416,7 +416,7 @@ class ChallengeTest(unittest.TestCase):
 
     def test_the_eval_grader_reads_a_finished_challenge(self):
         cid = self.introduce()
-        grade = CHALLENGE.parent.parent / "evals" / "challenges" / "grade.py"
+        grade = Path(__file__).resolve().parent.parent / "evals" / "challenges" / "grade.py"
         result = subprocess.run([sys.executable, str(grade), "multiplayer-match-who-chooses", "--home", str(self.home)],
                                 capture_output=True, text=True, encoding="utf-8", env=self.env)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

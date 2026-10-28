@@ -51,7 +51,7 @@ text and tournament documents, and cite the rule.
   and Sealed.
 - **Honest when unsettled.** If nothing official decides a question, it says so and points you to a judge.
 - **Challenges.** Dispute an answer before five adversarial judges; only a unanimous case enters your record.
-  See [CHALLENGE.md](CHALLENGE.md).
+  See [CHALLENGE.md](plugin/skills/bishop-and-barrister/CHALLENGE.md).
 - **Local.** Your rulings record and documents stay on your machine.
 
 ## Requirements
@@ -162,7 +162,7 @@ If an answer has no citations, call it by name: `/bishop-and-barrister:bishop-an
 
 - **New rules release?** Ask Claude to "check the Bishop & Barrister rules documents for updates".
 - **Disagree with an answer?** Say "I want to challenge that ruling". Claude states the cost first: a challenge
-  uses up to a few million tokens. Details in [CHALLENGE.md](CHALLENGE.md).
+  uses up to a few million tokens. Details in [CHALLENGE.md](plugin/skills/bishop-and-barrister/CHALLENGE.md).
 
 ## How it works
 
@@ -175,7 +175,7 @@ Sources are ranked by authority, and the skill reads them in order:
 | 4 | Judges' and community consensus, and Scryfall's own notes |
 | 5 | Rules you introduced by challenge, which never override level 1 |
 
-Forums and AI-written summaries are never sources ([`reference/trusted-sources.json`](reference/trusted-sources.json)).
+Forums and AI-written summaries are never sources ([`trusted-sources.json`](plugin/skills/bishop-and-barrister/reference/trusted-sources.json)).
 Nothing Claude answers is recorded: your rulings record in `~/.claude/bishop-and-barrister/` starts with the
 official rulings and grows only through challenges, and flags any rule whose sources change.
 

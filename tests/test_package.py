@@ -29,13 +29,13 @@ class ZipTest(unittest.TestCase):
         names = package_skill.build(self.out)
         self.assertEqual({n.split("/")[0] for n in names}, {"bishop-and-barrister"})
         for needed in ("SKILL.md", "CHALLENGE.md", "scripts/judge.py", "scripts/lookup.py", "reference/formats/commander.md",
-                       "challenge/binaries.json", "LICENSE", "NOTICE"):
+                       "binaries.json", "LICENSE", "NOTICE"):
             self.assertIn(f"bishop-and-barrister/{needed}", names)
 
     def test_only_runtime_files(self):
         names = package_skill.build(self.out)
-        for left_out in ("tests/", "evals/", "docs/", ".github/", "tools/", "challenge/Challenge", "__pycache__",
-                         "MagicCompRules.txt", "reference/docs/"):
+        for left_out in ("tests/", "evals/", "docs/", ".github/", "tools/", "challenge/", "__pycache__",
+                         "MagicCompRules.txt", "reference/docs/", "bishop-and-barrister/README.md", "requirements"):
             self.assertFalse([n for n in names if left_out in n], left_out)
 
     def test_skill_md_meets_claude_ai_limits(self):
@@ -52,7 +52,7 @@ class ZipTest(unittest.TestCase):
         pins = Path(self.tmp.name) / "pins.json"
         pins.write_text('{"release": "v9.9.9", "binaries": {}}', encoding="utf-8")
         package_skill.build(self.out, pins)
-        shipped = json.loads(zipfile.ZipFile(self.out).read("bishop-and-barrister/challenge/binaries.json"))
+        shipped = json.loads(zipfile.ZipFile(self.out).read("bishop-and-barrister/binaries.json"))
         self.assertEqual(shipped["release"], "v9.9.9")
 
     def test_refuses_a_description_claude_ai_would_reject(self):
@@ -62,22 +62,27 @@ class ZipTest(unittest.TestCase):
 
 
 class PluginTest(unittest.TestCase):
-    def test_marketplace_lists_the_plugin_at_the_repository_root(self):
+    def test_marketplace_lists_the_plugin_folder(self):
         market = json.loads((ROOT / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
-        plugin = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+        plugin = json.loads((package_skill.PLUGIN / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
         entry = market["plugins"][0]
         self.assertEqual(entry["name"], plugin["name"])  # a mismatch breaks install by name
-        self.assertEqual(entry["source"], "./")
-        self.assertTrue((ROOT / "SKILL.md").exists())  # a root SKILL.md loads as the plugin's one skill
+        self.assertEqual(entry["source"], "./plugin")  # only this folder is installed, not the whole repository
+        self.assertTrue((package_skill.SKILL / "SKILL.md").exists())  # skills/<name>/SKILL.md, the standard layout
+
+    def test_the_plugin_carries_the_licence(self):
+        for name in package_skill.LEGAL:
+            self.assertEqual((package_skill.PLUGIN / name).read_bytes(), (ROOT / name).read_bytes(),
+                             f"plugin/{name} must be a copy of the repository's {name}")
 
     def test_plugin_version_is_the_release_version(self):
-        plugin = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
+        plugin = json.loads((package_skill.PLUGIN / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
         main = (ROOT / "challenge" / "Main.lean").read_text(encoding="utf-8")
         program = re.search(r'def version : String := "bab-challenge (\d+\.\d+\.\d+)', main).group(1)
-        self.assertEqual(plugin["version"], program, "bump .claude-plugin/plugin.json with challenge/Main.lean")
+        self.assertEqual(plugin["version"], program, "bump plugin/.claude-plugin/plugin.json with challenge/Main.lean")
 
     def test_skill_md_frontmatter_for_claude_code(self):
-        fields, _ = package_skill.frontmatter((ROOT / "SKILL.md").read_text(encoding="utf-8"))
+        fields, _ = package_skill.frontmatter((package_skill.SKILL / "SKILL.md").read_text(encoding="utf-8"))
         self.assertLessEqual(len(fields["description"]) + len(fields.get("when_to_use", "")), 1536)
 
 

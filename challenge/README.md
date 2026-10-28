@@ -1,9 +1,9 @@
 # challenge/: the Lean core of a challenge
 
-The challenge state machine described in [CHALLENGE.md](../CHALLENGE.md), written in Lean 4 so its guarantees
-are proved rather than only tested. It builds to one binary, `bab-challenge`, which `scripts/challenge.py` runs.
+The challenge state machine described in [CHALLENGE.md](../plugin/skills/bishop-and-barrister/CHALLENGE.md), written in Lean 4 so its guarantees
+are proved rather than only tested. It builds to one binary, `bab-challenge`, which the skill's `scripts/challenge.py` runs.
 Users don't need Lean: the binary is downloaded from the release, checked against the SHA-256 in
-`binaries.json`.
+`plugin/skills/bishop-and-barrister/binaries.json`.
 
 ## What is here
 

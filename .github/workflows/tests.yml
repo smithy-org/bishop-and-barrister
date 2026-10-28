@@ -1,6 +1,6 @@
 name: tests
 
-# Every Python test, with coverage of scripts/, on the oldest Python the skill supports. The challenge core is
+# Every Python test, with coverage of the skill's scripts, on the oldest Python the skill supports. The challenge core is
 # built first so the challenge tests run instead of being skipped. Fails below the fail_under in .coveragerc.
 
 on:
