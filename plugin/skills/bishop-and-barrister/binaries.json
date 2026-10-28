@@ -1,25 +1,25 @@
 {
-  "release": "v0.2.1",
+  "release": "v0.2.3",
   "binaries": {
     "linux-arm64": {
       "file": "bab-challenge-linux-arm64",
-      "sha256": "0b67d91416fb949bd9b7adb45c094d8518938fd8fad2155e5ad55285320b7fac"
+      "sha256": "8bc76f5a531fb49fc2bfabeaae52c4a23ca0462d208167044194a0ec142f8b98"
     },
     "linux-x64": {
       "file": "bab-challenge-linux-x64",
-      "sha256": "e359bc2e86cef9055394ad3a6dd17944230969ccb449e50ee1123d179675fb73"
+      "sha256": "f154ef274d050a0ca51c4a164b6959d2211418fd7036d358f29cf561d99b95a5"
     },
     "macos-arm64": {
       "file": "bab-challenge-macos-arm64",
-      "sha256": "14df1c0f31f2fb5a4c73018d7e829fc0083f9ae92f787778c317f2c3f0097d56"
+      "sha256": "6ba5d9230a97d2a673e426073313a6e5f2848e99287ff9387d2c63fb2806f1c2"
     },
     "macos-x64": {
       "file": "bab-challenge-macos-x64",
-      "sha256": "ad54d7fe0774d13a347202c0df4a17aea2c78f2a6a786b600c6331c06d47b9c7"
+      "sha256": "d5cda1dccac000de1f5445244e511ff83b947125e67bfd498f85116a457dfb69"
     },
     "windows-x64": {
       "file": "bab-challenge-windows-x64.exe",
-      "sha256": "96e99ed61b50aca71dc191d679d70f9d6f2bd120e9938de5e167480ca36f981a"
+      "sha256": "d24fc62af9b8289ae86dd2c664cd0eca31496c394fae2b339b1178c2bf2fb37f"
     }
   }
 }
