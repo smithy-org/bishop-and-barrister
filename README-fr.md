@@ -24,9 +24,8 @@
   <em>Ceci est une traduction du <a href="README.md">README anglais</a> ; en cas de divergence, c'est la version anglaise qui fait foi.</em>
 </p>
 
-Claude répond de mémoire aux questions de règles de Magic, et sa mémoire ignore les nouvelles extensions, les errata
-et les interactions où l'intuition est prise en défaut. Bishop & Barrister oblige Claude à chercher la réponse dans
-les Comprehensive Rules, le texte Oracle et les documents de tournoi en vigueur, et à citer la règle.
+Un skill pour Claude qui répond aux questions de règles de Magic: The Gathering à partir des Comprehensive Rules
+officielles et du texte Oracle actuel des cartes, plutôt que de mémoire, et qui cite les règles sur lesquelles il s'appuie.
 
 > **Vous :** J'ai `[[Blood Moon]] (Lune de sang)` en jeu. Est-ce que `[[Urborg, Tomb of Yawgmoth]] (Urborg, tombe de Yaugzebul)`
 > de mon adversaire fait toujours de ses terrains des Marais ?

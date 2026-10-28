@@ -24,9 +24,8 @@
   <em>Esta es una traducción del <a href="README.md">English README</a>; si difieren, prevalece la versión en inglés.</em>
 </p>
 
-Claude responde las preguntas de reglas de Magic de memoria, y la memoria no conoce las colecciones nuevas ni las
-erratas, y falla en las interacciones donde la intuición engaña. Bishop & Barrister hace que Claude busque la
-respuesta en las Comprehensive Rules, el texto Oracle y los documentos de torneo vigentes, y que cite la regla.
+Una skill de Claude que responde preguntas de reglas de Magic: The Gathering a partir de las Comprehensive Rules
+oficiales y del texto Oracle actual de las cartas, en lugar de hacerlo de memoria, y cita las reglas en las que se basa.
 
 > **Tú:** Tengo `[[Blood Moon]] (Luna de sangre)` en juego. ¿La `[[Urborg, Tomb of Yawgmoth]] (Urborg, la tumba de Yawgmoth)`
 > de mi oponente sigue haciendo que sus tierras sean Pantanos?

@@ -24,9 +24,8 @@
   <em>Questa è una traduzione del <a href="README.md">English README</a>; in caso di differenze, fa fede la versione inglese.</em>
 </p>
 
-Claude risponde alle domande sulle regole di Magic a memoria, e la memoria non conosce le nuove espansioni, le
-errata e le interazioni in cui l'intuito sbaglia. Bishop & Barrister fa sì che Claude cerchi la risposta nelle
-Comprehensive Rules, nel testo Oracle e nei documenti di torneo aggiornati, e che citi la regola.
+Una skill di Claude che risponde alle domande sulle regole di Magic: The Gathering basandosi sulle Comprehensive Rules
+ufficiali e sul testo Oracle aggiornato delle carte invece che sulla memoria, e cita le regole su cui si fonda.
 
 > **Tu:** Ho `[[Blood Moon]] (Luna Insanguinata)` in gioco. La `[[Urborg, Tomb of Yawgmoth]] (Urborg, Tomba di Yawgmoth)`
 > del mio avversario rende ancora Paludi le sue terre?
