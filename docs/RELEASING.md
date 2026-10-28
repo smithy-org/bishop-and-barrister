@@ -30,9 +30,11 @@ what 1.0.0 will keep.
    ```
    The `challenge` workflow refuses a tag that isn't `v` plus the number the built program and the plugin
    report, so a forgotten bump fails before anything is published.
-3. **Wait for the release build.** It proves the theorems, runs the tests, builds five binaries, attaches them to
-   the release and attaches `pins.json` (each file's name and SHA-256), then builds `bishop-and-barrister.zip`
-   with those pins (`tools/package_skill.py`) and attaches it.
+3. **Wait for the release build.** It proves the theorems and runs the tests, makes the release as a draft,
+   builds five binaries and attaches them, attaches `pins.json` (each file's name and SHA-256), builds
+   `bishop-and-barrister.zip` with those pins (`tools/package_skill.py`) and attaches it, and only then publishes
+   the release. The repository has GitHub's immutable releases on: publishing locks a release's files and tag,
+   so nothing can be attached afterwards.
 4. **Pin the binaries.** Copy the release's `pins.json` into `plugin/skills/bishop-and-barrister/binaries.json` and merge that through a
    pull request. Until then `challenge.py` says there is no released program for the platform.
 5. **Check a real download** on at least one platform: with no `BISHOP_AND_BARRISTER_CHALLENGE_BIN` set, run
@@ -41,6 +43,9 @@ what 1.0.0 will keep.
 
 ## If a release goes wrong
 
-A tag that failed to build can be deleted and pushed again only before anyone has pinned its binaries. After
-`binaries.json` names a release, fix forward with a new PATCH version; never replace published binaries, because
-their SHA-256 sums are what users' installs check.
+- **The build failed before publishing:** the release is still a draft. Fix the cause and re-run the failed jobs;
+  the draft is reused. A draft can also be deleted, with its tag, and the tag pushed again.
+- **The release was published:** it is immutable. Its files and tag can't change, and even if the release is
+  deleted, its tag name can never be used again. Fix forward with a new PATCH version, and edit the published
+  release's notes (which stay editable) to point to it.
+- **Never replace published binaries.** Their SHA-256 sums are what users' installs check.
