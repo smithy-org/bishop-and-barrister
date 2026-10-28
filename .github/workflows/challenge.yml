@@ -42,12 +42,15 @@ jobs:
           done
           exit 1
       - name: Build and check the proofs
+        # --wfail: any warning fails the build, from Lean's default linters (unused variables, deprecations and the
+        # like) and from linter.missingDocs. The test driver isn't a default target, so it is built here too.
         run: |
           set -o pipefail
-          lake build 2>&1 | tee build.log
+          { lake build --wfail && lake build --wfail tests; } 2>&1 | tee build.log
       - name: Every declaration has a doc comment
         # linter.missingDocs (challenge/lakefile.lean) warns on any public declaration without `/-- -/`; doc-gen4
-        # builds the reference from those comments, so a missing one fails here.
+        # builds the reference from those comments. --wfail already fails the build on one; this step names the fix.
+        if: ${{ !cancelled() }}
         run: |
           if grep -n "missing doc string" build.log; then
             echo "::error::add a /-- -/ doc comment to each declaration listed above"; exit 1
