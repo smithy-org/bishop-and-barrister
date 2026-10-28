@@ -6,6 +6,57 @@ skills, no rules files and no web, so it answered from memory. Each answer was g
 `graders/`. The full outputs, grades and a review page are kept outside the repository, in
 `bishop-and-barrister-workspace/iteration-N/`, next to the clone.
 
+## Challenges on the Bash-and-Read judge agent (#64), 2026-10-28
+
+All ten challenge cases rerun with every judge launched as the plugin's `judge` agent (Bash and Read only) instead
+of a general-purpose subagent. Each case ran in its own copy of the record, orchestrated by an agent following
+`CHALLENGE.md`, with a simulated user from `user.md`, and was graded with `grade.py`.
+
+| Case                                | Expected   | Now                    | Rounds | Judges + user | Orchestrator | Last run |
+| ----------------------------------- | ---------- | ---------------------- | ------ | ------------- | ------------ | -------- |
+| `urborg-still-swamps`               | refuted    | refuted ✓              | 1      | 0.48M         | 0.16M        | 0.74M (7 judges) |
+| `deathtouch-trample-full-toughness` | refuted    | refuted ✓              | 1      | 0.35M         | 0.14M        | 0.73M (7 judges) |
+| `humility-always-wins`              | refuted    | refuted ✓ (rerun)      | 1      | 0.50M         | 0.16M        | 0.90M (7 judges) |
+| `summoning-sickness-all-permanents` | refuted    | refuted ✓              | 1      | 0.27M         | 0.17M        | 1.01M (7 judges) |
+| `extra-card-regular-rel-game-loss`  | refuted    | refuted ✓              | 1      | 0.39M         | 0.17M        | 2.14M (7 judges, 3 rounds) |
+| `forged-quote`                      | refuted    | withdrawn ✗            | 1      | 0.28M         | 0.14M        | 1.02M |
+| `multiplayer-match-who-chooses`     | introduced | introduced ✓           | 3      | 0.95M         | 0.21M        | 2.19M |
+| `multiplayer-match-ends-at-time`    | introduced | introduced ✓           | 2      | 0.86M         | 0.19M        | 0.53M (1 round) |
+| `magar-aftermath`                   | open       | open ✓                 | 1      | 0.70M         | 0.17M        | 1.21M |
+| `commander-tax-free-first-recast`   | house-rule | house-rule ✓           | 1      | 0.34M         | 0.15M        | 1.99M (3 rounds) |
+| **All ten**                         |            | **9 of 10**            |        | **5.1M**      | **1.7M**     | **12.5M** |
+
+Every refutation filed was verified (none dropped) and every record traces. "Judges + user" sums each agent's
+reported usage; some continued agents never reported theirs, so it is a lower bound. "Orchestrator" is the
+orchestrating agent's last reported usage. The last run's column is the panel total from the runs above.
+
+### What it shows
+
+- **About half the tokens for the same outcomes:** 6.8M against 12.5M for the ten cases. A judge's attack filing
+  now costs 17k to 34k tokens, its settled position 25k to 55k; a general-purpose subagent spent 63k before
+  reading anything. Some of the saving on the 7-judge cases is the cut to five judges (#14).
+- **Continuing a judge instead of starting a fresh one is cheaper still.** Several orchestrators sent the settle
+  and opinion steps to the same judge agent (25k to 40k) rather than a new one (39k to 43k). That is plan 030
+  step 2, and it worked without breaking blindness: each judge only ever received its own view.
+- **`forged-quote` ended withdrawn, not refuted,** because the simulated user conceded all seven verified
+  refutations and then withdrew before the judges settled. The panel did its part: the core refused the forged
+  quote in the brief, and all seven refutations were verified.
+- **The first `humility-always-wins` run ended withdrawn too,** after its orchestrator wrote a sourced rebuttal for
+  the user, which `CHALLENGE.md` forbids. Rerun with the rule restated, it was refuted.
+
+### Problems found in the skill
+
+1. **A rebuttal whose quotes are real but don't answer the refutation clears it.** The verifier checks that a
+   rebuttal's quotes exist, not that they meet the refutation, so the refutation stops standing and a case all
+   five judges reject ends `open` instead of `refuted`. It decided `magar-aftermath` (expected open anyway) and the
+   first Humility run.
+2. **Quotes fail to pin on typography:** straight apostrophes against the rules' curly ones, and line breaks or
+   hyphenation in the PDF documents (IPG 2.3). About 18 filings were refused and refiled across the run, each a
+   second judge turn.
+3. **Opinion revisions:** `CHALLENGE.md`'s draft prompt says `{r}`, the core numbers drafts from 0, and a draft
+   marked revision 1 was refused.
+4. **Unsourced steps not labelled as assumptions** were the commonest refusal reason in judges' filings.
+
 ## Cost per question, 2026-10-28
 
 Six cases, each answered by one fresh agent with the skill and one without (no tools but reading the prompt and
