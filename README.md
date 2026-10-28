@@ -95,6 +95,21 @@ flowchart TD
   J -->|not after two revisions| R
 ```
 
+Each judge attacks the case from its own angle:
+
+1. **The Comprehensive Rules.** Reads every cited rule in full, with its subrules, for skipped conditions,
+   exceptions and later rules that modify it.
+2. **Cards and rulings.** Reads each card's Oracle text word by word, since card text overrides the rules, and
+   looks for official rulings on these cards or on cards worded the same way that point the other way.
+3. **Game state.** Plays the situation out step by step (the stack, priority, triggers, state-based actions,
+   layers) to find where the case's sequence differs from the real one.
+4. **Counterexamples and logic.** Finds another situation where the proposed rule gives the wrong answer, and
+   checks the argument for hidden assumptions, gaps and quotes stretched past what they say.
+5. **Tournaments and formats.** Checks the tournament rules and format rules: whether the question is about
+   gameplay at all, and whether a format or enforcement level changes or already settles it.
+
+The theorems guarantee:
+
 - **No unearned rule:** all five judges convinced with evidence, every quote verified, no conflict with the
   official rules, and one opinion all five join.
 - **No peeking:** a judge can't see the others' work from the round in progress.
