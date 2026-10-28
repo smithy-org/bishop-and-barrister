@@ -199,7 +199,7 @@ class ShowTest(unittest.TestCase):
 
     def test_main_looks_up_each_name(self):
         seen = []
-        with mock.patch.object(card, "show", lambda name, rulings: seen.append((name, rulings)) or 0), \
+        with mock.patch.object(card, "show", lambda name, rulings, lang: seen.append((name, rulings)) or 0), \
                 mock.patch.object(sys, "argv", ["card.py", "Bolt", "Delver", "--rulings"]):
             self.assertEqual(card.main(), 0)
         self.assertEqual(seen, [("Bolt", True), ("Delver", True)])
@@ -207,11 +207,66 @@ class ShowTest(unittest.TestCase):
     def test_main_reads_double_bracketed_names(self):
         seen = []
         question = "Does [[Blood Moon]] turn off [[?Urborg, Tomb of Yawgmoth]] or [[ Fire // Ice |MH2]]?"
-        with mock.patch.object(card, "show", lambda name, rulings: seen.append((name, rulings)) or 0), \
+        with mock.patch.object(card, "show", lambda name, rulings, lang: seen.append((name, rulings)) or 0), \
                 mock.patch.object(sys, "argv", ["card.py", question, "[[!Blood Moon]]", "Ponder"]):
             self.assertEqual(card.main(), 0)
         self.assertEqual(seen, [("Blood Moon", False), ("Urborg, Tomb of Yawgmoth", True),
                                 ("Fire // Ice", False), ("Ponder", False)])
+
+
+    def test_main_passes_the_language_on(self):
+        seen = []
+        with mock.patch.object(card, "show", lambda name, rulings, lang: seen.append(lang) or 0),                 mock.patch.object(sys, "argv", ["card.py", "Blutmond", "--lang", "de"]):
+            self.assertEqual(card.main(), 0)
+        self.assertEqual(seen, ["de"])
+
+    def test_show_prints_the_local_name(self):
+        def fake_get(url):
+            return BOLT if "/named" in url else {"data": [{"printed_name": "Fulmine"}]}
+        out = io.StringIO()
+        with mock.patch.object(card, "get", fake_get), mock.patch("sys.stdout", out):
+            card.show("Lightning Bolt", False, "it")
+        self.assertIn("Printed name in Italian: Fulmine", out.getvalue())
+
+
+class PrintedNameTest(unittest.TestCase):
+    """card.printed_name: the newest translated printing, faces joined, and none when never printed."""
+
+    def printed(self, answer, name="Lightning Bolt", lang="it"):
+        urls = []
+        def fake_get(url):
+            urls.append(url)
+            if isinstance(answer, Exception):
+                raise answer
+            return answer
+        with mock.patch.object(card, "get", fake_get):
+            return card.printed_name(name, lang), urls
+
+    def test_searches_the_exact_name_newest_first(self):
+        name, urls = self.printed({"data": [{"printed_name": "Fulmine"}, {"printed_name": "Folgore"}]})
+        self.assertEqual(name, "Fulmine")
+        self.assertIn("/cards/search?q=%21%22Lightning%20Bolt%22%20lang%3Ait", urls[0])
+        self.assertIn("order=released&dir=desc", urls[0])
+
+    def test_faces_are_joined(self):
+        faces = {"data": [{"card_faces": [{"printed_name": "火"}, {"printed_name": "氷"}]}]}
+        self.assertEqual(self.printed(faces, "Fire // Ice", "ja")[0], "火 // 氷")
+
+    def test_an_english_printed_name_is_the_last_resort(self):
+        english_first = {"data": [
+            {"card_faces": [{"printed_name": "Delver of Secrets"}, {"printed_name": "Insectile Aberration"}]},
+            {"card_faces": [{"printed_name": "秘密を掘り下げる者"}, {"printed_name": "昆虫の逸脱者"}]},
+        ]}
+        name = "Delver of Secrets // Insectile Aberration"
+        self.assertEqual(self.printed(english_first, name, "ja")[0], "秘密を掘り下げる者 // 昆虫の逸脱者")
+        self.assertEqual(self.printed({"data": english_first["data"][:1]}, name, "ja")[0], name)
+
+    def test_never_printed(self):
+        missing = urllib.error.HTTPError("u", 404, "Not Found", email.message.Message(), io.BytesIO(b"{}"))
+        self.assertIsNone(self.printed(missing)[0])
+        self.assertIsNone(self.printed({"data": [{}]})[0])
+        with self.assertRaises(urllib.error.HTTPError):
+            self.printed(urllib.error.HTTPError("u", 500, "Error", email.message.Message(), io.BytesIO(b"")))
 
 
 class CardRefsTest(unittest.TestCase):

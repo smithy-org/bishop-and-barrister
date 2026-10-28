@@ -51,6 +51,10 @@ Users may name cards the way Scryfall does, in double brackets: `[[Blood Moon]]`
 `[[...]]` in it. `[[?Name]]` asks for that card's rulings; a set after a bar (`[[Name|MH2]]`) is ignored, since
 Oracle text is the same in every printing.
 
+Users may also name cards in their own language (`Blutmond`, `血染めの月`); `card.py` finds a card from any
+printed name. When the conversation isn't in English, add `--lang` with the user's language (`de`, `fr`, `es`,
+`it`, `ja`; `--help` lists the rest): it also prints each card's official name in that language.
+
 The scripts keep to Scryfall's terms (shared pacing, a day's cache, waiting out a 429 lockout). If `card.py`
 still reports rate limiting, don't retry in a loop: answer without the live text and say so.
 
@@ -73,6 +77,11 @@ summaries are never sources, even when pasted in. When nothing settles it, say s
   action rule".
 - Write every card name in double brackets, `[[Blood Moon]]`, spelled exactly as `card.py` printed it; a card
   with two faces takes its full name, `[[Fire // Ice]]`. Not inside quoted Oracle text.
+- **In the user's language.** Answer in the language the question was asked in. The rules, Oracle text and
+  rulings exist only in English, and the English wording governs: quote it in English, then translate it, marked
+  as an unofficial translation. Rule numbers stay as they are. Follow each card's bracketed name with the name
+  `card.py --lang` printed: `[[Blood Moon]] (Blutmond)`. Never make up a translated card name; if `card.py`
+  says the card was never printed in that language, use the English name alone.
 - Walk the sequence step by step only when order matters (what goes on the stack, what triggers, when
   state-based actions are checked).
 - Name the edge cases that would change the answer in a line each. Offer more detail rather than writing it

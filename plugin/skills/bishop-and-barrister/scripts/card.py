@@ -10,6 +10,7 @@ Usage:
     python scripts/card.py "Ulamog" --rulings
     python scripts/card.py "Blood Moon" "Urborg, Tomb of Yawgmoth"
     python scripts/card.py "Does [[Blood Moon]] turn off [[?Urborg, Tomb of Yawgmoth]]?"
+    python scripts/card.py "Blutmond" --lang de
 """
 
 import argparse
@@ -59,6 +60,20 @@ FORMATS = {
     "standardbrawl": "Brawl (CR, 60 cards)",
     "brawl": "Brawl (Arena, 100 cards)",
     "oathbreaker": "Oathbreaker",
+}
+
+# The languages Magic is printed in, as Scryfall codes them.
+LANGUAGES = {
+    "de": "German",
+    "es": "Spanish",
+    "fr": "French",
+    "it": "Italian",
+    "ja": "Japanese",
+    "ko": "Korean",
+    "pt": "Portuguese",
+    "ru": "Russian",
+    "zhs": "Simplified Chinese",
+    "zht": "Traditional Chinese",
 }
 
 # Scryfall's shorthand for naming a card in text, as its Discord bot reads it: [[Blood Moon]].
@@ -254,12 +269,45 @@ def render_face(face: dict) -> str:
     return "\n".join(parts)
 
 
-def show(name: str, rulings: bool) -> int:
+def printed_name(name: str, lang: str) -> str | None:
+    """Find a card's official printed name in another language, from its newest printing in that language.
+
+    Args:
+        name: The card's exact English name.
+        lang: A Scryfall language code from LANGUAGES.
+
+    Returns:
+        The printed name, faces joined with " // ", or None when the card was never printed in that language.
+
+    Raises:
+        urllib.error.URLError: When Scryfall can't be reached or answers with an error other than 404.
+    """
+    query = urllib.parse.quote(f'!"{name}" lang:{lang}')
+    try:
+        data = get(f"{API}/cards/search?q={query}&unique=prints&order=released&dir=desc")
+    except urllib.error.HTTPError as err:
+        if err.code == 404:  # Scryfall's answer when no printing matches
+            return None
+        raise
+    found = []
+    for printing in data.get("data", []):
+        names = [face.get("printed_name") for face in printing.get("card_faces") or [printing]]
+        if all(names):
+            found.append(" // ".join(names))
+        elif printing.get("printed_name"):
+            found.append(printing["printed_name"])
+    # Some printings carry the English name as their printed name (Scryfall lists
+    # Japanese Delver of Secrets from MID that way), so prefer a translated one.
+    return next((n for n in found if n != name), found[0] if found else None)
+
+
+def show(name: str, rulings: bool, lang: str | None = None) -> int:
     """Print a card's Oracle text and its legality in the formats the skill covers.
 
     Args:
-        name: The card name, fuzzy matched by Scryfall.
+        name: The card name, fuzzy matched by Scryfall, in any language Scryfall knows.
         rulings: Whether to print the card's rulings too.
+        lang: A Scryfall language code; when given, also print the card's official name in that language.
 
     Returns:
         0 when the card was found, 1 when it wasn't or the name was ambiguous.
@@ -287,6 +335,11 @@ def show(name: str, rulings: bool) -> int:
         print("\n\n---\n\n".join(render_face(f) for f in card["card_faces"]))
     else:
         print(render_face(card))
+    if lang:
+        local = printed_name(card["name"], lang)
+        print()
+        print(f"Printed name in {LANGUAGES[lang]}: {local}" if local
+              else f"Never printed in {LANGUAGES[lang]}: use the English name.")
 
     # Every format, grouped by status, so a banned or restricted card says so
     # instead of just being missing from a list of legal formats.
@@ -321,6 +374,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("names", nargs="+", help="card names (fuzzy matched), or text naming cards as [[Name]]")
     parser.add_argument("--rulings", action="store_true", help="include official Scryfall rulings")
+    parser.add_argument("--lang", choices=sorted(LANGUAGES),
+                        help="also print each card's official printed name in this language")
     args = parser.parse_args()
 
     wanted: dict[str, bool] = {}  # each card once, in order; rulings if any mention asked for them
@@ -329,7 +384,7 @@ def main() -> int:
             wanted[name] = wanted.get(name, False) or wants_rulings
     status = 0
     for name, wants_rulings in wanted.items():
-        status |= show(name, args.rulings or wants_rulings)
+        status |= show(name, args.rulings or wants_rulings, args.lang)
     return status
 
 
