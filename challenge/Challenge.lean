@@ -24,3 +24,6 @@ of five judges, and when it may introduce a rule. Importing `Challenge` brings i
 
 The six guarantees are proved in `Challenge.Theorems`.
 -/
+
+/-- Temporary probe: an unused variable, to check that `lake build --wfail` fails. -/
+def wfailProbe (x : Nat) : Nat := 0
