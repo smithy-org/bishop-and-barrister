@@ -468,9 +468,11 @@ class ChallengeTest(unittest.TestCase):
         self.assertIn("traces", self.ok("trace", cid))  # trace accepts a house rule's rule file
 
     def test_an_open_challenge_can_be_kept_as_a_house_rule_too(self):
-        cid = self.to_voting(refuters=(1, 2, 3))
+        cid = self.to_attack()
         for k in range(1, 6):
-            self.vote(cid, k, convinced=k > 3)  # three not convinced, nothing standing: unproven
+            self.file(cid, k)
+        self.cr.write_text(CR.replace("the loser of the previous game chooses", "the winner chooses"), encoding="utf-8")
+        self.ok("verify", cid)  # the case's source changed: unproven, not defeated
         self.assertEqual(self.status(cid)["state"], "open")
         self.ok("add", cid, self.write("house.json", {"type": "house-rule", "words": "At our table, yes"}), "--as", "user")
         self.assertEqual(self.status(cid)["state"], "house-rule")
@@ -478,13 +480,19 @@ class ChallengeTest(unittest.TestCase):
 
     # --- consensus: the thresholds, the split, evidence, stipulations -----------------------
 
-    def test_three_not_convinced_refuse_the_case_as_unproven(self):
+    def test_three_not_convinced_by_a_rebuttal_refute_the_case(self):
         cid = self.to_voting(refuters=(1, 2, 3))
         for k in range(1, 6):
             self.vote(cid, k, convinced=k > 3)
         state = self.status(cid)
-        self.assertEqual(state["state"], "open")
-        self.assertIn("3 of 5 judges were not convinced and no refutation stands", state["why"])
+        self.assertEqual(state["state"], "refuted")
+        self.assertIn("the rebuttal of a verified refutation didn't convince them", state["why"])
+
+    def test_judges_convinced_by_a_rebuttal_can_still_settle(self):
+        cid = self.to_voting(refuters=(1,))
+        for k in range(1, 6):
+            self.vote(cid, k, convinced=True)
+        self.assertEqual(self.status(cid)["state"], "drafting")
 
     def test_a_refused_case_leaves_a_per_curiam_record_assembled_from_the_judges_positions(self):
         cid = self.to_conceded()
