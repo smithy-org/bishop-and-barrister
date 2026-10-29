@@ -653,7 +653,7 @@ def oracle_text(name: str) -> tuple[str, str] | None:
 
 
 def official_ruling_with(excerpt: str) -> bool:
-    """Tell whether some official ruling in the index contains the excerpt, ignoring case and spacing.
+    """Tell whether some official ruling in the index contains the excerpt, ignoring case, spacing and typography.
 
     The index is narrowed with SQL LIKE on the excerpt's longest run free of wildcard characters, then
     each candidate is compared in full.
@@ -666,15 +666,15 @@ def official_ruling_with(excerpt: str) -> bool:
     """
     if not paths.index().exists():
         return False
-    needle = " ".join(excerpt.split()).lower()
-    probe = max(re.split(r"[%_\"\\]", needle), key=len)[:60]
+    # The probe avoids SQL wildcards and any punctuation whose typography may differ in the index.
+    probe = max(re.split(r"[%_\"\\'-]", normalized(excerpt)), key=len)[:60]
     conn = sqlite3.connect(paths.index())
     try:
         rows = conn.execute("SELECT json FROM rulings WHERE kind = 'official' AND lower(json) LIKE ?",
                             (f"%{probe}%",)).fetchall()
     finally:
         conn.close()
-    return any(needle in " ".join(str(json.loads(row[0]).get("comment") or json.loads(row[0]).get("ruling") or "").split()).lower()
+    return any(quoted(excerpt, str(json.loads(row[0]).get("comment") or json.loads(row[0]).get("ruling") or ""))
                for row in rows)
 
 
@@ -707,9 +707,31 @@ def source_text(src: dict) -> tuple[str | None, str | None]:
     return None, None  # quoted from elsewhere (a ruling, a format file): the excerpt is the text
 
 
+# Typography that differs between a quote typed by hand and the documents: curly and straight quotes,
+# the dashes, and spaces that aren't plain spaces. A soft hyphen is dropped.
+TYPOGRAPHY = str.maketrans({
+    "‘": "'", "’": "'", "‚": "'", "′": "'",
+    "“": '"', "”": '"', "„": '"', "″": '"',
+    "‐": "-", "‑": "-", "‒": "-", "–": "-", "—": "-", "−": "-",
+    " ": " ", " ": " ", "­": None,
+})
+LINE_BREAK_HYPHEN = re.compile(r"(?<=\w)- (?=\w)")
+
+
+def normalized(s: str) -> str:
+    """Return s in the form quotes are compared in: plain typography, single spaces, lower case."""
+    return " ".join(s.translate(TYPOGRAPHY).split()).lower()
+
+
 def quoted(excerpt: str, text: str) -> bool:
-    """Tell whether the excerpt appears in the text, ignoring case and spacing."""
-    return " ".join(excerpt.split()).lower() in " ".join(text.split()).lower()
+    """Tell whether the excerpt appears in the text, ignoring case, spacing and typography.
+
+    A word the PDF broke across lines ("excep- tion") matches joined ("exception"), and a compound that
+    really has a hyphen ("state- based") matches with it kept ("state-based").
+    """
+    needle, hay = normalized(excerpt), normalized(text)
+    return (needle in hay or needle in LINE_BREAK_HYPHEN.sub("", hay)
+            or needle in LINE_BREAK_HYPHEN.sub("-", hay))
 
 
 def pin(fields: dict) -> list[str]:
@@ -843,20 +865,22 @@ def build_report(cid: str, state: dict) -> dict:
 
     In the verify state it checks the judges' refutations; in verify-answers, the user's answers to
     the refutations still standing. A standing refutation falls only to a reply that checks: a rebuttal
-    whose sources verify, or a fix that changes or removes the step it attacked. Either way it checks
-    the case's own sources too.
+    whose sources verify, or a fix that changes or removes the step it attacked. A rebutted refutation is
+    listed as rebutted, not dropped: the verifier can check a rebuttal's quotes but not whether it answers
+    the refutation, so the judges decide that when they settle. Either way it checks the case's own
+    sources too.
 
     Args:
         cid: The challenge.
         state: Its state, which must be verify or verify-answers.
 
     Returns:
-        A report event's fields: round, stage, passed, level1_conflict, standing and notes.
+        A report event's fields: round, stage, passed, level1_conflict, standing, rebutted and notes.
     """
     events = events_in_order(cid)
     n = state["round"]
     case = events[state["case_seq"]]["case"]
-    notes, standing, conflict = [], [], False
+    notes, standing, rebutted, conflict = [], [], [], False
     if state["state"] == "verify":
         # Every refutation whose sources all check stands, until the user answers it.
         for k, filing in sorted(round_filings(events, n, len(events)).items()):
@@ -884,6 +908,8 @@ def build_report(cid: str, state: dict) -> dict:
                 problems = verify_steps(f"the reply to judge {slot['judge']}'s refutation {slot['index']}", rp.get("steps"))
                 notes += problems
                 holds = not problems and any(isinstance(st.get("source"), dict) for st in rp.get("steps") or [])
+                if holds:
+                    rebutted.append(slot)
             elif rp["kind"] == "fix" and answer.get("case"):
                 def step(c):
                     """Return the step of case c that the refutation attacked, or None if it's gone."""
@@ -896,7 +922,7 @@ def build_report(cid: str, state: dict) -> dict:
     case_problems = verify_steps("case", case["steps"])
     notes += case_problems
     return {"type": "report", "round": n, "stage": stage, "passed": not case_problems, "level1_conflict": conflict,
-            "standing": standing, "notes": notes}
+            "standing": standing, "rebutted": rebutted, "notes": notes}
 
 
 # --- commands --------------------------------------------------------------------------------
@@ -943,8 +969,8 @@ def status_text(cid: str, state: dict) -> str:
              f" ({state['panel']} panel)"]
     if state.get("why"):
         lines.append(f"Why: {state['why']}")
-    if state.get("revision"):
-        lines.append(f"The opinion is on revision {state['revision']} (at most 2).")
+    if state.get("revision") or state["state"] in ("drafting", "joining"):
+        lines.append(f"The opinion is on revision {state.get('revision', 0)} (drafts count from 0; at most 2).")
     if state["state"] in ("refuted", "open") and (paths.challenges() / cid / "record" / "per-curiam.json").exists():
         lines.append(f"A per curiam record of the judges' positions is in challenges/{cid}/record/per-curiam.json.")
     if state["settled"]:
@@ -1099,6 +1125,7 @@ def cmd_verify(args) -> int:
     report = build_report(args.id, state)
     _, new = propose(args.id, "verifier", report, f"Verifier's report, round {report['round']} ({report['stage']})")
     print(f"Case {'passes' if report['passed'] else 'fails'}; {len(report['standing'])} refutation(s) standing"
+          + (f", {len(report['rebutted'])} rebutted (the judges weigh the rebuttals)" if report["rebutted"] else "")
           + (", with a level 1 conflict" if report["level1_conflict"] else ""))
     for note in report["notes"]:
         print(f"- {note}")

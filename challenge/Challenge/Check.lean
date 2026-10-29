@@ -156,14 +156,14 @@ def checkSlots (fs : List Filing) (slots : List Slot) : List String :=
   (slots.filter (fun sl => !slotValid fs sl)).map fun sl =>
     s!"judge {sl.judge} filed no refutation {sl.index} this round"
 
-/-- A report is for this round and stage, and its standing refutations were filed this round. -/
+/-- A report is for this round and stage, and its standing and rebutted refutations were filed this round. -/
 def checkReport (n : Nat) (stage : Stage) (fs : List Filing) (r : Report) : List String :=
   (if r.round = n then [] else [s!"this is round {n}, not round {r.round}"]) ++
   (if r.stage = stage then [] else
     [match stage with
       | .attack => "the verifier checks the judges' refutations now (stage \"attack\")"
       | .answers => "the verifier checks the user's answers now (stage \"answers\")"]) ++
-  checkSlots fs r.standing
+  checkSlots fs r.standing ++ checkSlots fs r.rebutted
 
 /-- A reply has the user's words. A fix needs the revised case, and a rebuttal a derivation. -/
 def checkReply (c : Case) (hasRevision : Bool) (rp : Reply) : List String :=

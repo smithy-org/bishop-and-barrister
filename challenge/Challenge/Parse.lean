@@ -213,9 +213,10 @@ def parseEvent (actor : Actor) (j : Json) : Except String Event := do
                   concedes := ← getStrOr j "concedes" "", concedeEvidence := ← parseSources j "concede_evidence" })
   | "report" =>
     let standing ← (← getArr j "standing").mapM parseSlot
+    let rebutted ← if (getOpt j "rebutted").isSome then (← getArr j "rebutted").mapM parseSlot else pure []
     pure (.report { round := ← getNat j "round", stage := ← parseStage (← getStr j "stage"),
                     passed := ← getBool j "passed", level1Conflict := ← getBool j "level1_conflict",
-                    standing := standing })
+                    standing := standing, rebutted := rebutted })
   | "answer" =>
     let replies ← (← getArr j "replies").mapM parseReply
     let revised ← match getOpt j "case" with

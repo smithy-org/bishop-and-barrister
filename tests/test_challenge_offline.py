@@ -191,6 +191,17 @@ class VerifierTest(unittest.TestCase):
         self.assertTrue(challenge.quoted("DEPENDENCY   system", "a dependency\nsystem"))
         self.assertFalse(challenge.quoted("timestamp", "a dependency system"))
 
+    def test_quoting_ignores_typography(self):
+        self.assertTrue(challenge.quoted("can't be cast", "This half can’t be cast"))
+        self.assertTrue(challenge.quoted("“the player”", 'says "the player" twice'))
+        self.assertTrue(challenge.quoted("A - B", "A — B"))
+        self.assertTrue(challenge.quoted("no new games", "no new games"))
+
+    def test_quoting_mends_words_a_pdf_broke_across_lines(self):
+        self.assertTrue(challenge.quoted("the exception applies", "the excep-\ntion applies"))
+        self.assertTrue(challenge.quoted("state-based actions", "check state-\nbased actions"))
+        self.assertFalse(challenge.quoted("statebased", "state-based"))
+
     def test_level_1_overrides(self):
         self.assertTrue(challenge.overridden_by_level_1({"ground": "overridden", "steps": [{"source": {"doc": "cr"}}]}))
         self.assertFalse(challenge.overridden_by_level_1({"ground": "misread", "steps": [{"source": {"doc": "cr"}}]}))
