@@ -1,6 +1,6 @@
 {
   "name": "bishop-and-barrister",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Answers Magic: the Gathering rules questions from the Comprehensive Rules, current Oracle text and the tournament documents, with rule citations.",
   "author": { "name": "Peter Derouen" },
   "homepage": "https://github.com/smithy-org/bishop-and-barrister",
