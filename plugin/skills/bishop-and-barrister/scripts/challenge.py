@@ -865,20 +865,22 @@ def build_report(cid: str, state: dict) -> dict:
 
     In the verify state it checks the judges' refutations; in verify-answers, the user's answers to
     the refutations still standing. A standing refutation falls only to a reply that checks: a rebuttal
-    whose sources verify, or a fix that changes or removes the step it attacked. Either way it checks
-    the case's own sources too.
+    whose sources verify, or a fix that changes or removes the step it attacked. A rebutted refutation is
+    listed as rebutted, not dropped: the verifier can check a rebuttal's quotes but not whether it answers
+    the refutation, so the judges decide that when they settle. Either way it checks the case's own
+    sources too.
 
     Args:
         cid: The challenge.
         state: Its state, which must be verify or verify-answers.
 
     Returns:
-        A report event's fields: round, stage, passed, level1_conflict, standing and notes.
+        A report event's fields: round, stage, passed, level1_conflict, standing, rebutted and notes.
     """
     events = events_in_order(cid)
     n = state["round"]
     case = events[state["case_seq"]]["case"]
-    notes, standing, conflict = [], [], False
+    notes, standing, rebutted, conflict = [], [], [], False
     if state["state"] == "verify":
         # Every refutation whose sources all check stands, until the user answers it.
         for k, filing in sorted(round_filings(events, n, len(events)).items()):
@@ -906,6 +908,8 @@ def build_report(cid: str, state: dict) -> dict:
                 problems = verify_steps(f"the reply to judge {slot['judge']}'s refutation {slot['index']}", rp.get("steps"))
                 notes += problems
                 holds = not problems and any(isinstance(st.get("source"), dict) for st in rp.get("steps") or [])
+                if holds:
+                    rebutted.append(slot)
             elif rp["kind"] == "fix" and answer.get("case"):
                 def step(c):
                     """Return the step of case c that the refutation attacked, or None if it's gone."""
@@ -918,7 +922,7 @@ def build_report(cid: str, state: dict) -> dict:
     case_problems = verify_steps("case", case["steps"])
     notes += case_problems
     return {"type": "report", "round": n, "stage": stage, "passed": not case_problems, "level1_conflict": conflict,
-            "standing": standing, "notes": notes}
+            "standing": standing, "rebutted": rebutted, "notes": notes}
 
 
 # --- commands --------------------------------------------------------------------------------
@@ -1121,6 +1125,7 @@ def cmd_verify(args) -> int:
     report = build_report(args.id, state)
     _, new = propose(args.id, "verifier", report, f"Verifier's report, round {report['round']} ({report['stage']})")
     print(f"Case {'passes' if report['passed'] else 'fails'}; {len(report['standing'])} refutation(s) standing"
+          + (f", {len(report['rebutted'])} rebutted (the judges weigh the rebuttals)" if report["rebutted"] else "")
           + (", with a level 1 conflict" if report["level1_conflict"] else ""))
     for note in report["notes"]:
         print(f"- {note}")

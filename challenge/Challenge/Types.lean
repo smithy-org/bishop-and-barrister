@@ -160,6 +160,9 @@ structure Report where
   level1Conflict : Bool
   /-- The verified refutations that still stand. -/
   standing : List Slot
+  /-- The verified refutations the user answered with a rebuttal whose sources check. They no longer stand, but
+  whether the rebuttal actually answers them is the judges' call: if three or more stay unconvinced, they refute. -/
+  rebutted : List Slot := []
   deriving Repr
 
 /-- How the user answers one verified refutation. -/

@@ -251,8 +251,10 @@ def settledOn (looks : List Look) (version : Nat) : List Vote :=
   judges.filterMap (fun k => (looks.find? (fun l => l.judge == k && l.version == version)).bind (·.position))
 
 /-- The consensus, once every judge has settled. All convinced, and every guard holds: the judges are settled and
-write the opinion. Three or more not convinced: refused, as `refuted` if a verified refutation stands or the case
-contradicts a level 1 source, and as `open` if it is merely unproven. One or two not convinced: no consensus, so
+write the opinion. Three or more not convinced: refused, as `refuted` if a verified refutation stands, the user's
+rebuttal of one didn't convince them, or the case contradicts a level 1 source, and as `open` if it is merely
+unproven. A rebuttal is the judges' to weigh: it never refutes when all five are convinced. One or two not convinced:
+no consensus, so
 another round (the dissenters' reasons are visible to all), until the round limit, when it stays `open`. -/
 def close (c : Case) (r : Report) (vs : List Vote) (full : missingVoters vs = []) (p : Panel) : Phase :=
   match settle? c r vs full p with
@@ -268,6 +270,8 @@ def close (c : Case) (r : Report) (vs : List Vote) (full : missingVoters vs = []
       else .open_ c "all five were convinced, but the case has an unsourced step or a position without evidence"
     else if dissent ≥ refuseNeeds then
       if defeated then .refuted c s!"{dissent} of {panelSize} judges were not convinced, and a verified refutation stands"
+      else if !r.rebutted.isEmpty then
+        .refuted c s!"{dissent} of {panelSize} judges were not convinced, and the rebuttal of a verified refutation didn't convince them"
       else .open_ c s!"{dissent} of {panelSize} judges were not convinced and no refutation stands: the case is unproven"
     else if r.round + 1 ≤ roundCap then .attack (r.round + 1) c judges [] [] noneFiled
     else .open_ c s!"no consensus after {roundCap} rounds: {dissent} of {panelSize} judges were not convinced"

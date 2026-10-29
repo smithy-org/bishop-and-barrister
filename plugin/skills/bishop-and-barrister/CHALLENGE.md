@@ -35,8 +35,8 @@ In short:
   it, concurs in the judgment only, or dissents. A single judge who isn't convinced blocks the rule, and so does a
   single concurrence: that judge is the correct minority, and unanimity lets it win.
 - **A case is refused when three or more judges are not convinced** (or three dissent from the opinion). It ends
-  `refuted` if a verified refutation stands (or the case contradicts a level 1 source), and `open` if it is
-  merely unproven. With one or two not convinced there is no consensus yet, so the judges see each other's
+  `refuted` if a verified refutation stands, or the user rebutted one and the judges weren't convinced by the
+  rebuttal (or the case contradicts a level 1 source), and `open` if it is merely unproven. With one or two not convinced there is no consensus yet, so the judges see each other's
   reasons and a new round runs, up to three rounds, after which the case stays `open`. A refused case needs no
   agents to be written up: the script assembles a short per curiam record from the judges' own positions.
 - **After the first round, only the judges whose refutation was answered attack again.** The others' earlier
@@ -261,7 +261,9 @@ For each one, the user chooses, and you write down their choice in their words:
 - **fix**: they change the case. Give the whole revised case at the answer's top level as `"case"` (not inside
   the reply, and with `"open_questions"`); the fix holds only if it changes or removes the step that was
   attacked.
-- **rebut**: they argue back, in the proof standard, with sources. It holds only if every source checks.
+- **rebut**: they argue back, in the proof standard, with sources. The verifier accepts it only if every source
+  checks, and then marks the refutation **rebutted**. Whether the rebuttal actually answers the refutation is the
+  judges' call when they settle: real quotes that miss the point don't clear it.
 
 ```json
 {"type": "answer", "round": 1, "words": "<the user's words>",
@@ -312,8 +314,9 @@ without refutations already settled some on the final case) as subagents, in one
 own view (which never shows another judge's position) and this prompt:
 
 > Judge {k}, settle your position on the case as it now stands. Be convinced only if no verified refutation you
-> know of still stands and the derivation holds step by step, and every stipulation is something you accept as
-> the rule. Your position must carry **evidence and reasoning**:
+> know of still stands, every rebuttal the user made actually answers the refutation it replies to (not just
+> quotes real text), the derivation holds step by step, and every stipulation is something you accept as the
+> rule. Your position must carry **evidence and reasoning**:
 > - if convinced, the pinned sources behind the step that settled it for you, and why they are enough;
 > - if not convinced, the verified refutation that stands, or the specific evidence that is missing, with the
 >   sources you checked, and why the case fails without it.
@@ -330,8 +333,8 @@ step, and the judges' consensus decides the outcome:
 | Positions | Outcome |
 | --- | --- |
 | All five convinced, every guard holds | **Settled**: the opinion of the court is drafted (step 8) |
-| Three or more not convinced, a verified refutation stands (or a level 1 conflict) | **Refuted** |
-| Three or more not convinced, nothing stands | **Open**: unproven |
+| Three or more not convinced, a verified refutation stands or was rebutted (or a level 1 conflict) | **Refuted** |
+| Three or more not convinced, nothing stands or was rebutted | **Open**: unproven |
 | One or two not convinced | No consensus: another round (the dissent is visible to all); **open** after three |
 | All convinced but a guard fails (an unsourced step, a single-agent panel) | **Open**; **refuted** if a verified refutation stands |
 

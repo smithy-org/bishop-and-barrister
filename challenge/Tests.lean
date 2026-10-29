@@ -83,10 +83,11 @@ def refute (k n target : Nat) : Spec := refuteWith k n (refutationJ target)
 /-- Slots as JSON, from (judge, index) pairs. -/
 def slotsJ (slots : List (Nat × Nat)) : Json :=
   Json.arr (slots.map fun (j, i) => Json.mkObj [("judge", jnat j), ("index", jnat i)]).toArray
-/-- The verifier's report on round `n` at this stage, with these refutations standing. -/
-def reportS (n : Nat) (stage : String) (standing : List (Nat × Nat)) (passed := true) (conflict := false) : Spec :=
+/-- The verifier's report on round `n` at this stage, with these refutations standing (and these rebutted). -/
+def reportS (n : Nat) (stage : String) (standing : List (Nat × Nat)) (passed := true) (conflict := false)
+    (rebutted : List (Nat × Nat) := []) : Spec :=
   ("verifier", "report", [("round", jnat n), ("stage", jstr stage), ("passed", toJson passed),
-    ("level1_conflict", toJson conflict), ("standing", slotsJ standing)])
+    ("level1_conflict", toJson conflict), ("standing", slotsJ standing), ("rebutted", slotsJ rebutted)])
 /-- The user rebuts these refutations in round `n`. -/
 def answerS (n : Nat) (slots : List (Nat × Nat)) : Spec :=
   ("user", "answer", [("round", jnat n), ("words", jstr "my answers"),
@@ -275,6 +276,12 @@ def checks : List Check := [
   expect "five convinced after voting: settled, the opinion is drafted next"
     (stateOf (chain (toVotingWith panel ++ votesBy panel (fun _ => true)))) "drafting",
   expect "three not convinced and a refutation stands: refuted" (stateOf (chain toRefuted)) "refuted",
+  expect "three not convinced by a rebuttal whose sources check: refuted, not open"
+    (stateOf (chain (toAnswerBy [1, 2, 3] ++ [answerS 1 [(1, 1), (2, 1), (3, 1)],
+      reportS 1 "answers" [] (rebutted := [(1, 1), (2, 1), (3, 1)])] ++ votesBy panel (· > 3)))) "refuted",
+  expect "all five convinced by the rebuttal: settled, the opinion is drafted next"
+    (stateOf (chain (toAnswerBy [1] ++ [answerS 1 [(1, 1)], reportS 1 "answers" [] (rebutted := [(1, 1)])] ++
+      votesBy panel (fun _ => true)))) "drafting",
   expect "all convinced, but a verified refutation stands: refuted"
     (stateOf (chain (toConcededBy [1] ++ votesBy panel (fun _ => true)))) "refuted",
   expect "a failed verifier report: open, the case is unproven"
@@ -411,6 +418,8 @@ def checks : List Check := [
   expectRefused "a report citing a refutation nobody filed"
     (stateOf (chain ([opening, briefS, confirmS] ++ allConcede 1 ++ [reportS 1 "attack" [(3, 1)]]))),
   expectRefused "an answer that leaves a refutation unanswered" (stateOf (chain (toAnswer ++ [answerS 1 []]))),
+  expectRefused "a report marking as rebutted a refutation nobody filed"
+    (stateOf (chain (toAnswer ++ [answerS 1 [(1, 1)], reportS 1 "answers" [] (rebutted := [(4, 2)])]))),
   expectRefused "a vote with no reason"
     (stateOf (chain (toVoting ++ [("judge-1", "vote", [("convinced", toJson true), ("reason", jstr ""),
       ("evidence", evidenceJ)])]))),
