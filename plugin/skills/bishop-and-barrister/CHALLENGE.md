@@ -198,7 +198,8 @@ agent type isn't available (the skill installed on its own, without the plugin),
 > otherwise), `misread` (the quote doesn't say that), `wrong-fact` or `missing-fact`, or `counterexample` (the
 > proposed rule gives a wrong answer in another situation that official sources do settle). Back it with a
 > derivation in the proof standard. At least one step must quote a source; refer to the case's steps as `C<n>`
-> and its facts as `F<n>`.
+> and its facts as `F<n>`. Every other step either quotes a source or says `"assumption": true`: the core
+> refuses a step with neither, and the whole filing with it.
 >
 > If you honestly cannot refute it through your lens after trying, concede. A concession is a position, so like
 > a refutation it needs **evidence and reasoning**: the pinned sources you checked, and why they leave the case
@@ -338,7 +339,8 @@ step, and the judges' consensus decides the outcome:
 
 When all five are settled and convinced, `status` says `drafting`. **The lowest-numbered convinced judge writes the
 opinion** (in practice judge 1, as all five are convinced; the core refuses anyone else). Launch that one judge
-as a subagent with its own view and this prompt:
+as a subagent with its own view and this prompt. `{r}`, here and in the answers below, is the revision `status`
+names: drafts count from 0, so the first draft is revision 0 and the two possible revisions are 1 and 2.
 
 > Judge {k}, you and the other four judges are convinced of the case as it now stands. Write the Opinion of the
 > Court: the writing that, if all five join it, becomes the rule. It has three parts:
