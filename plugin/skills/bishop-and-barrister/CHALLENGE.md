@@ -103,7 +103,7 @@ The case and every refutation and rebuttal have the same shape. `challenge.py` p
   rule's own paragraph, never its `Example:` lines or a section heading: those aren't in the pinned text, and the
   core refuses the quote.
 - **Precedence**, when sources conflict: card text over rules (CR 101.1), "can't" over "can" (101.2), the
-  specific over the general, and level 1 over level 2 over level 4 (the source levels in `reference/trusted-sources.json`). A case can never contradict
+  specific over the general, and level 1 over level 2 over level 3 over level 4 (the source levels in `reference/trusted-sources.json`). A case can never contradict
   level 1 text on the same facts. If the user still wants such a rule, it can only be kept as a **house rule**
   once the challenge is refuted.
 
