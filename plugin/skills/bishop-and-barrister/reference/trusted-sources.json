@@ -1,6 +1,6 @@
 {
-  "checked": "2026-10-25",
-  "about": "Where the judge may look when the rulings record, the scripts and the skill's own files don't answer a question. Anything not listed here is not a source. 'level': 1 official, 2 binding for tournaments or one format, 4 judge and community consensus; null means a finding aid that is never cited.",
+  "checked": "2026-11-06",
+  "about": "Where the judge may look when the rulings record, the scripts and the skill's own files don't answer a question. Anything not listed here is not a source. 'level': 1 official, 2 binding for tournaments or one format, 3 informal posts by Wizards staff, below the CR, 4 judge and community consensus; null means a finding aid that is never cited.",
   "sources": [
     {
       "name": "Scryfall API",
@@ -36,6 +36,13 @@
       "level": 2,
       "good_for": "Oathbreaker's own rules and banned list (Commander's are on magic.wizards.com)",
       "cite_as": "The page and its own rule numbers, which are not CR numbers"
+    },
+    {
+      "name": "Mark Rosewater's blog (Blogatog)",
+      "domains": ["markrosewater.tumblr.com"],
+      "level": 3,
+      "good_for": "Design intent, and how Un-games (acorn or silver-bordered cards) play where the CR is silent. Wizards' head designer, well trusted in the community; informal answers, so never against level 1 or 2",
+      "cite_as": "The post's URL and date, with his answer quoted. Tumblr refuses scripted fetches: read the post in a browser"
     },
     {
       "name": "Magic Judges Rules Resources",
@@ -102,7 +109,7 @@
   ],
   "rules": [
     "Check every web page's date against the current CR's effective date. An answer written before a rules change doesn't count.",
-    "A ruling backed only by level 4 sources is at most 'likely', and the answer says so.",
+    "A ruling backed only by level 3 or level 4 sources is at most 'likely', and the answer says so.",
     "A web page a ruling cites goes in the citation with its URL, title, date and an excerpt."
   ]
 }
